@@ -1,0 +1,8 @@
+prefix=/home/jensen/nubot_ws/install
+
+Name: tiscamera
+Description: Description of tiscamera
+Version: 0.1.0
+Cflags: 
+Libs: -L/home/jensen/nubot_ws/install/lib 
+Requires: 

@@ -1,0 +1,8 @@
+prefix=/home/jensen/nubot_ws/install
+
+Name: plot_tool
+Description: Description of plot_tool
+Version: 0.0.0
+Cflags: -I/home/jensen/nubot_ws/install/include
+Libs: -L/home/jensen/nubot_ws/install/lib 
+Requires: std_msgs nav_msgs geometry_msgs rospy

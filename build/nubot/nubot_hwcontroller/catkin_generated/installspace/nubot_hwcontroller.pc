@@ -1,0 +1,8 @@
+prefix=/home/jensen/nubot_ws/install
+
+Name: nubot_hwcontroller
+Description: Description of nubot_hwcontroller
+Version: 1.0.0
+Cflags: -I/home/jensen/nubot_ws/install/include
+Libs: -L/home/jensen/nubot_ws/install/lib 
+Requires: roscpp std_msgs message_generation realtime_tools nubot_common

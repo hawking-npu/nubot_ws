@@ -1,0 +1,2 @@
+/usr/bin/ar qc /home/jensen/nubot_ws/devel/lib/libmulticast.a  CMakeFiles/multicast.dir/multicast.cpp.o
+/usr/bin/ranlib /home/jensen/nubot_ws/devel/lib/libmulticast.a

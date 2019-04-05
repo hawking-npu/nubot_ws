@@ -1,0 +1,10 @@
+<launch>
+  <include file="$(find tiscamera)/launch/generic.launch">
+    <arg name="camera" value="tiscamera" />
+
+    <arg name="ip_address" value="192.168.0.1" />
+    <arg name="trigger_mode" value="streaming" />
+    <arg name="frame_id" value="high_def_optical_frame" />
+   </include>
+
+</launch>

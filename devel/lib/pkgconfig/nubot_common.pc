@@ -1,0 +1,8 @@
+prefix=/home/jensen/nubot_ws/devel
+
+Name: nubot_common
+Description: Description of nubot_common
+Version: 0.0.0
+Cflags: -I/home/jensen/nubot_ws/devel/include -I/opt/ros/kinetic/include -I/opt/ros/kinetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include -I/home/jensen/nubot_ws/src/nubot/nubot_common/core/include
+Libs: -L/home/jensen/nubot_ws/devel/lib 
+Requires: 

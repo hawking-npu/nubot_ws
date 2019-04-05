@@ -1,0 +1,2 @@
+/usr/bin/ar qc /home/jensen/nubot_ws/devel/lib/libworld_model.a  CMakeFiles/world_model.dir/src/ball.cpp.o CMakeFiles/world_model.dir/src/obstacles.cpp.o CMakeFiles/world_model.dir/src/robot.cpp.o CMakeFiles/world_model.dir/src/MTTracker.cpp.o CMakeFiles/world_model.dir/src/iAuction.cpp.o
+/usr/bin/ranlib /home/jensen/nubot_ws/devel/lib/libworld_model.a

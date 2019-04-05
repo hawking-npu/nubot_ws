@@ -1,0 +1,9 @@
+\subsubsection usage Usage
+\verbatim
+<node name="nubot_control" pkg="nubot_control" type="nubot_control">
+  <param name="kp" type="double" value="1.5" />
+  <param name="kalpha" type="double" value="3.15" />
+  <param name="kbeta" type="double" value="-0.075" />
+</node>
+\endverbatim
+

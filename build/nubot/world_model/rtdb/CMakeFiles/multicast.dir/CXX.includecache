@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jensen/nubot_ws/src/nubot/world_model/include/nubot/rtdb/multicast.h
+
+/home/jensen/nubot_ws/src/nubot/world_model/rtdb/multicast.cpp
+sys/types.h
+-
+sys/socket.h
+-
+arpa/inet.h
+-
+string.h
+-
+stdio.h
+-
+signal.h
+-
+errno.h
+-
+sys/ioctl.h
+-
+linux/if.h
+-
+unistd.h
+-
+linux/if_ether.h
+-
+nubot/rtdb/multicast.h
+/home/jensen/nubot_ws/src/nubot/world_model/rtdb/nubot/rtdb/multicast.h
+

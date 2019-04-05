@@ -1,0 +1,8 @@
+prefix=/home/jensen/nubot_ws/devel
+
+Name: jpeg_streamer
+Description: Description of jpeg_streamer
+Version: 0.2.1
+Cflags: 
+Libs: -L/home/jensen/nubot_ws/devel/lib 
+Requires: 
