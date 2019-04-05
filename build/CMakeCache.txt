@@ -250,6 +250,9 @@ EMPY_SCRIPT:STRING=/usr/bin/empy
 //The directory containing a CMake configuration file for GMock.
 GMock_DIR:PATH=GMock_DIR-NOTFOUND
 
+//Dependencies for the target
+GSCamNodelet_LIB_DEPENDS:STATIC=general;gscam;general;/opt/ros/kinetic/lib/libimage_transport.so;general;/opt/ros/kinetic/lib/libmessage_filters.so;general;/opt/ros/kinetic/lib/libnodeletlib.so;general;/usr/lib/x86_64-linux-gnu/libuuid.so;general;/opt/ros/kinetic/lib/libbondcpp.so;general;/usr/lib/x86_64-linux-gnu/libtinyxml2.so;general;/opt/ros/kinetic/lib/libclass_loader.so;general;/usr/lib/libPocoFoundation.so;general;/usr/lib/x86_64-linux-gnu/libdl.so;general;/opt/ros/kinetic/lib/libroslib.so;general;/opt/ros/kinetic/lib/librospack.so;general;/usr/lib/x86_64-linux-gnu/libpython2.7.so;general;/usr/lib/x86_64-linux-gnu/libboost_program_options.so;general;/usr/lib/x86_64-linux-gnu/libtinyxml.so;general;/opt/ros/kinetic/lib/libcamera_info_manager.so;general;/opt/ros/kinetic/lib/libcamera_calibration_parsers.so;general;/opt/ros/kinetic/lib/libroscpp.so;general;/usr/lib/x86_64-linux-gnu/libboost_filesystem.so;general;/usr/lib/x86_64-linux-gnu/libboost_signals.so;general;/opt/ros/kinetic/lib/librosconsole.so;general;/opt/ros/kinetic/lib/librosconsole_log4cxx.so;general;/opt/ros/kinetic/lib/librosconsole_backend_interface.so;general;/usr/lib/x86_64-linux-gnu/liblog4cxx.so;general;/usr/lib/x86_64-linux-gnu/libboost_regex.so;general;/opt/ros/kinetic/lib/libxmlrpcpp.so;general;/opt/ros/kinetic/lib/libroscpp_serialization.so;general;/opt/ros/kinetic/lib/librostime.so;general;/opt/ros/kinetic/lib/libcpp_common.so;general;/usr/lib/x86_64-linux-gnu/libboost_system.so;general;/usr/lib/x86_64-linux-gnu/libboost_thread.so;general;/usr/lib/x86_64-linux-gnu/libboost_chrono.so;general;/usr/lib/x86_64-linux-gnu/libboost_date_time.so;general;/usr/lib/x86_64-linux-gnu/libboost_atomic.so;general;/usr/lib/x86_64-linux-gnu/libpthread.so;general;/usr/lib/x86_64-linux-gnu/libconsole_bridge.so;general;gstreamer-0.10;general;gobject-2.0;general;gmodule-2.0;general;gthread-2.0;general;glib-2.0;general;xml2;general;gstapp-0.10;general;gstbase-0.10;general;gstreamer-0.10;general;gobject-2.0;general;gmodule-2.0;general;gthread-2.0;general;glib-2.0;general;xml2;
+
 //Path to a file.
 GTEST_INCLUDE_DIR:PATH=/usr/include
 
@@ -434,6 +437,15 @@ gmock_build_tests:BOOL=OFF
 gmock_main_LIB_DEPENDS:STATIC=general;-lpthread;
 
 //Value Computed by CMake
+gscam_BINARY_DIR:STATIC=/home/jensen/nubot_ws/build/camera_driver/tiscamera/gscam
+
+//Dependencies for the target
+gscam_LIB_DEPENDS:STATIC=general;/opt/ros/kinetic/lib/libimage_transport.so;general;/opt/ros/kinetic/lib/libmessage_filters.so;general;/opt/ros/kinetic/lib/libnodeletlib.so;general;/usr/lib/x86_64-linux-gnu/libuuid.so;general;/opt/ros/kinetic/lib/libbondcpp.so;general;/usr/lib/x86_64-linux-gnu/libtinyxml2.so;general;/opt/ros/kinetic/lib/libclass_loader.so;general;/usr/lib/libPocoFoundation.so;general;/usr/lib/x86_64-linux-gnu/libdl.so;general;/opt/ros/kinetic/lib/libroslib.so;general;/opt/ros/kinetic/lib/librospack.so;general;/usr/lib/x86_64-linux-gnu/libpython2.7.so;general;/usr/lib/x86_64-linux-gnu/libboost_program_options.so;general;/usr/lib/x86_64-linux-gnu/libtinyxml.so;general;/opt/ros/kinetic/lib/libcamera_info_manager.so;general;/opt/ros/kinetic/lib/libcamera_calibration_parsers.so;general;/opt/ros/kinetic/lib/libroscpp.so;general;/usr/lib/x86_64-linux-gnu/libboost_filesystem.so;general;/usr/lib/x86_64-linux-gnu/libboost_signals.so;general;/opt/ros/kinetic/lib/librosconsole.so;general;/opt/ros/kinetic/lib/librosconsole_log4cxx.so;general;/opt/ros/kinetic/lib/librosconsole_backend_interface.so;general;/usr/lib/x86_64-linux-gnu/liblog4cxx.so;general;/usr/lib/x86_64-linux-gnu/libboost_regex.so;general;/opt/ros/kinetic/lib/libxmlrpcpp.so;general;/opt/ros/kinetic/lib/libroscpp_serialization.so;general;/opt/ros/kinetic/lib/librostime.so;general;/opt/ros/kinetic/lib/libcpp_common.so;general;/usr/lib/x86_64-linux-gnu/libboost_system.so;general;/usr/lib/x86_64-linux-gnu/libboost_thread.so;general;/usr/lib/x86_64-linux-gnu/libboost_chrono.so;general;/usr/lib/x86_64-linux-gnu/libboost_date_time.so;general;/usr/lib/x86_64-linux-gnu/libboost_atomic.so;general;/usr/lib/x86_64-linux-gnu/libpthread.so;general;/usr/lib/x86_64-linux-gnu/libconsole_bridge.so;general;gstreamer-0.10;general;gobject-2.0;general;gmodule-2.0;general;gthread-2.0;general;glib-2.0;general;xml2;general;gstapp-0.10;general;gstbase-0.10;general;gstreamer-0.10;general;gobject-2.0;general;gmodule-2.0;general;gthread-2.0;general;glib-2.0;general;xml2;
+
+//Value Computed by CMake
+gscam_SOURCE_DIR:STATIC=/home/jensen/nubot_ws/src/camera_driver/tiscamera/gscam
+
+//Value Computed by CMake
 gtest_BINARY_DIR:STATIC=/home/jensen/nubot_ws/build/gtest/gtest
 
 //Dependencies for the target
@@ -612,6 +624,12 @@ std_msgs_DIR:PATH=/opt/ros/kinetic/share/std_msgs/cmake
 std_srvs_DIR:PATH=/opt/ros/kinetic/share/std_srvs/cmake
 
 //Value Computed by CMake
+tis_camera_BINARY_DIR:STATIC=/home/jensen/nubot_ws/build/camera_driver/tiscamera/tis_camera
+
+//Value Computed by CMake
+tis_camera_SOURCE_DIR:STATIC=/home/jensen/nubot_ws/src/camera_driver/tiscamera/tis_camera
+
+//Value Computed by CMake
 tiscamera_BINARY_DIR:STATIC=/home/jensen/nubot_ws/build/camera_driver/tiscamera
 
 //Value Computed by CMake
@@ -773,7 +791,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=23
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=24
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -831,6 +849,74 @@ GMOCK_FROM_SOURCE_INCLUDE_DIRS:INTERNAL=/usr/include
 GMOCK_FROM_SOURCE_LIBRARIES:INTERNAL=gmock
 GMOCK_FROM_SOURCE_LIBRARY_DIRS:INTERNAL=/home/jensen/nubot_ws/build/gmock
 GMOCK_FROM_SOURCE_MAIN_LIBRARIES:INTERNAL=gmock_main
+GSTREAMER_CFLAGS:INTERNAL=-pthread;-I/usr/include/gstreamer-0.10;-I/usr/include/glib-2.0;-I/usr/lib/x86_64-linux-gnu/glib-2.0/include;-I/usr/include/libxml2
+GSTREAMER_CFLAGS_I:INTERNAL=
+GSTREAMER_CFLAGS_OTHER:INTERNAL=-pthread
+GSTREAMER_FOUND:INTERNAL=1
+GSTREAMER_INCLUDEDIR:INTERNAL=/usr/include/gstreamer-0.10
+GSTREAMER_INCLUDE_DIRS:INTERNAL=/usr/include/gstreamer-0.10;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/libxml2
+GSTREAMER_LDFLAGS:INTERNAL=-lgstreamer-0.10;-lgobject-2.0;-lgmodule-2.0;-pthread;-lgthread-2.0;-pthread;-lglib-2.0;-lxml2
+GSTREAMER_LDFLAGS_OTHER:INTERNAL=-pthread
+GSTREAMER_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+GSTREAMER_LIBRARIES:INTERNAL=gstreamer-0.10;gobject-2.0;gmodule-2.0;gthread-2.0;glib-2.0;xml2
+GSTREAMER_LIBRARY_DIRS:INTERNAL=
+GSTREAMER_LIBS:INTERNAL=
+GSTREAMER_LIBS_L:INTERNAL=
+GSTREAMER_LIBS_OTHER:INTERNAL=
+GSTREAMER_LIBS_PATHS:INTERNAL=
+GSTREAMER_PREFIX:INTERNAL=/usr
+GSTREAMER_STATIC_CFLAGS:INTERNAL=-pthread;-I/usr/include/gstreamer-0.10;-I/usr/include/glib-2.0;-I/usr/lib/x86_64-linux-gnu/glib-2.0/include;-I/usr/include/libxml2
+GSTREAMER_STATIC_CFLAGS_I:INTERNAL=
+GSTREAMER_STATIC_CFLAGS_OTHER:INTERNAL=-pthread
+GSTREAMER_STATIC_INCLUDE_DIRS:INTERNAL=/usr/include/gstreamer-0.10;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/libxml2
+GSTREAMER_STATIC_LDFLAGS:INTERNAL=-lgstreamer-0.10;-lgobject-2.0;-lffi;-lgmodule-2.0;-pthread;-ldl;-lgthread-2.0;-pthread;-lglib-2.0;-pthread;-lpcre;-pthread;-lxml2;-licui18n;-licuuc;-licudata;-lz;-llzma;-lm
+GSTREAMER_STATIC_LDFLAGS_OTHER:INTERNAL=-pthread
+GSTREAMER_STATIC_LIBDIR:INTERNAL=
+GSTREAMER_STATIC_LIBRARIES:INTERNAL=gstreamer-0.10;gobject-2.0;ffi;gmodule-2.0;dl;gthread-2.0;glib-2.0;pcre;xml2;icui18n;icuuc;icudata;z;lzma;m
+GSTREAMER_STATIC_LIBRARY_DIRS:INTERNAL=
+GSTREAMER_STATIC_LIBS:INTERNAL=
+GSTREAMER_STATIC_LIBS_L:INTERNAL=
+GSTREAMER_STATIC_LIBS_OTHER:INTERNAL=
+GSTREAMER_STATIC_LIBS_PATHS:INTERNAL=
+GSTREAMER_VERSION:INTERNAL=0.10.36
+GSTREAMER_gstreamer-0.10_INCLUDEDIR:INTERNAL=
+GSTREAMER_gstreamer-0.10_LIBDIR:INTERNAL=
+GSTREAMER_gstreamer-0.10_PREFIX:INTERNAL=
+GSTREAMER_gstreamer-0.10_VERSION:INTERNAL=
+GST_APP_CFLAGS:INTERNAL=-pthread;-I/usr/include/gstreamer-0.10;-I/usr/include/glib-2.0;-I/usr/lib/x86_64-linux-gnu/glib-2.0/include;-I/usr/include/libxml2
+GST_APP_CFLAGS_I:INTERNAL=
+GST_APP_CFLAGS_OTHER:INTERNAL=-pthread
+GST_APP_FOUND:INTERNAL=1
+GST_APP_INCLUDEDIR:INTERNAL=/usr/include/gstreamer-0.10
+GST_APP_INCLUDE_DIRS:INTERNAL=/usr/include/gstreamer-0.10;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/libxml2
+GST_APP_LDFLAGS:INTERNAL=-lgstapp-0.10;-lgstbase-0.10;-lgstreamer-0.10;-lgobject-2.0;-lgmodule-2.0;-pthread;-lgthread-2.0;-pthread;-lglib-2.0;-lxml2
+GST_APP_LDFLAGS_OTHER:INTERNAL=-pthread
+GST_APP_LIBDIR:INTERNAL=/usr/lib/x86_64-linux-gnu
+GST_APP_LIBRARIES:INTERNAL=gstapp-0.10;gstbase-0.10;gstreamer-0.10;gobject-2.0;gmodule-2.0;gthread-2.0;glib-2.0;xml2
+GST_APP_LIBRARY_DIRS:INTERNAL=
+GST_APP_LIBS:INTERNAL=
+GST_APP_LIBS_L:INTERNAL=
+GST_APP_LIBS_OTHER:INTERNAL=
+GST_APP_LIBS_PATHS:INTERNAL=
+GST_APP_PREFIX:INTERNAL=/usr
+GST_APP_STATIC_CFLAGS:INTERNAL=-pthread;-I/usr/include/gstreamer-0.10;-I/usr/include/glib-2.0;-I/usr/lib/x86_64-linux-gnu/glib-2.0/include;-I/usr/include/libxml2
+GST_APP_STATIC_CFLAGS_I:INTERNAL=
+GST_APP_STATIC_CFLAGS_OTHER:INTERNAL=-pthread
+GST_APP_STATIC_INCLUDE_DIRS:INTERNAL=/usr/include/gstreamer-0.10;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/libxml2
+GST_APP_STATIC_LDFLAGS:INTERNAL=-lgstapp-0.10;-lgstbase-0.10;-lgstreamer-0.10;-lgobject-2.0;-lffi;-lgmodule-2.0;-pthread;-ldl;-lgthread-2.0;-pthread;-lglib-2.0;-pthread;-lpcre;-pthread;-lxml2;-licui18n;-licuuc;-licudata;-lz;-llzma;-lm
+GST_APP_STATIC_LDFLAGS_OTHER:INTERNAL=-pthread
+GST_APP_STATIC_LIBDIR:INTERNAL=
+GST_APP_STATIC_LIBRARIES:INTERNAL=gstapp-0.10;gstbase-0.10;gstreamer-0.10;gobject-2.0;ffi;gmodule-2.0;dl;gthread-2.0;glib-2.0;pcre;xml2;icui18n;icuuc;icudata;z;lzma;m
+GST_APP_STATIC_LIBRARY_DIRS:INTERNAL=
+GST_APP_STATIC_LIBS:INTERNAL=
+GST_APP_STATIC_LIBS_L:INTERNAL=
+GST_APP_STATIC_LIBS_OTHER:INTERNAL=
+GST_APP_STATIC_LIBS_PATHS:INTERNAL=
+GST_APP_VERSION:INTERNAL=0.10.36
+GST_APP_gstreamer-app-0.10_INCLUDEDIR:INTERNAL=
+GST_APP_gstreamer-app-0.10_LIBDIR:INTERNAL=
+GST_APP_gstreamer-app-0.10_PREFIX:INTERNAL=
+GST_APP_gstreamer-app-0.10_VERSION:INTERNAL=
 GTEST_FROM_SOURCE_FOUND:INTERNAL=TRUE
 GTEST_FROM_SOURCE_INCLUDE_DIRS:INTERNAL=/usr/include
 GTEST_FROM_SOURCE_LIBRARIES:INTERNAL=gtest
@@ -908,6 +994,8 @@ _Boost_LIBRARY_DIR_RELEASE_LAST:INTERNAL=/usr/lib/x86_64-linux-gnu
 _Boost_NAMESPACE_LAST:INTERNAL=boost
 //Last used Boost_USE_MULTITHREADED value.
 _Boost_USE_MULTITHREADED_LAST:INTERNAL=TRUE
+__pkg_config_checked_GSTREAMER:INTERNAL=1
+__pkg_config_checked_GST_APP:INTERNAL=1
 __pkg_config_checked_PC_EIGEN:INTERNAL=1
-prefix_result:INTERNAL=
+prefix_result:INTERNAL=/usr/lib/x86_64-linux-gnu
 

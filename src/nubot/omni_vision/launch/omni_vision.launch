@@ -1,6 +1,6 @@
 <!-- -->
 <launch>
- <include file="$(find tiscamera)/launch/$(env AGENT)/generic.launch"></include>
+ <include file="$(find tis_camera)/launch/$(env AGENT)/generic.launch"></include>
    <node name="omni_vision_node" pkg="omni_vision" type="omni_vision_node">
     <param name="ball"         type="bool"    value="false" />
     <param name="white"        type="bool"    value="false" />

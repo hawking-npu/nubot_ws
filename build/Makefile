@@ -1739,6 +1739,175 @@ front_vision_node/fast:
 .PHONY : front_vision_node/fast
 
 #=============================================================================
+# Target rules for targets named gscam_node
+
+# Build rule for target.
+gscam_node: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gscam_node
+.PHONY : gscam_node
+
+# fast build rule for target.
+gscam_node/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/gscam_node.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/gscam_node.dir/build
+.PHONY : gscam_node/fast
+
+#=============================================================================
+# Target rules for targets named gscam
+
+# Build rule for target.
+gscam: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 gscam
+.PHONY : gscam
+
+# fast build rule for target.
+gscam/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/gscam.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/gscam.dir/build
+.PHONY : gscam/fast
+
+#=============================================================================
+# Target rules for targets named nodelet_generate_messages_nodejs
+
+# Build rule for target.
+nodelet_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_nodejs
+.PHONY : nodelet_generate_messages_nodejs
+
+# fast build rule for target.
+nodelet_generate_messages_nodejs/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_nodejs.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_nodejs.dir/build
+.PHONY : nodelet_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named bond_generate_messages_py
+
+# Build rule for target.
+bond_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_py
+.PHONY : bond_generate_messages_py
+
+# fast build rule for target.
+bond_generate_messages_py/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_py.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_py.dir/build
+.PHONY : bond_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named nodelet_generate_messages_eus
+
+# Build rule for target.
+nodelet_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_eus
+.PHONY : nodelet_generate_messages_eus
+
+# fast build rule for target.
+nodelet_generate_messages_eus/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_eus.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_eus.dir/build
+.PHONY : nodelet_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named nodelet_generate_messages_cpp
+
+# Build rule for target.
+nodelet_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_cpp
+.PHONY : nodelet_generate_messages_cpp
+
+# fast build rule for target.
+nodelet_generate_messages_cpp/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_cpp.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_cpp.dir/build
+.PHONY : nodelet_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named nodelet_generate_messages_py
+
+# Build rule for target.
+nodelet_generate_messages_py: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_py
+.PHONY : nodelet_generate_messages_py
+
+# fast build rule for target.
+nodelet_generate_messages_py/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_py.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_py.dir/build
+.PHONY : nodelet_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named bond_generate_messages_cpp
+
+# Build rule for target.
+bond_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_cpp
+.PHONY : bond_generate_messages_cpp
+
+# fast build rule for target.
+bond_generate_messages_cpp/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_cpp.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_cpp.dir/build
+.PHONY : bond_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named nodelet_generate_messages_lisp
+
+# Build rule for target.
+nodelet_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_lisp
+.PHONY : nodelet_generate_messages_lisp
+
+# fast build rule for target.
+nodelet_generate_messages_lisp/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_lisp.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/nodelet_generate_messages_lisp.dir/build
+.PHONY : nodelet_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named bond_generate_messages_nodejs
+
+# Build rule for target.
+bond_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_nodejs
+.PHONY : bond_generate_messages_nodejs
+
+# fast build rule for target.
+bond_generate_messages_nodejs/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_nodejs.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_nodejs.dir/build
+.PHONY : bond_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named bond_generate_messages_eus
+
+# Build rule for target.
+bond_generate_messages_eus: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_eus
+.PHONY : bond_generate_messages_eus
+
+# fast build rule for target.
+bond_generate_messages_eus/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_eus.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_eus.dir/build
+.PHONY : bond_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named GSCamNodelet
+
+# Build rule for target.
+GSCamNodelet: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 GSCamNodelet
+.PHONY : GSCamNodelet
+
+# fast build rule for target.
+GSCamNodelet/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/GSCamNodelet.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/GSCamNodelet.dir/build
+.PHONY : GSCamNodelet/fast
+
+#=============================================================================
+# Target rules for targets named bond_generate_messages_lisp
+
+# Build rule for target.
+bond_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_lisp
+.PHONY : bond_generate_messages_lisp
+
+# fast build rule for target.
+bond_generate_messages_lisp/fast:
+	$(MAKE) -f camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_lisp.dir/build.make camera_driver/tiscamera/gscam/CMakeFiles/bond_generate_messages_lisp.dir/build
+.PHONY : bond_generate_messages_lisp/fast
+
+#=============================================================================
 # Target rules for targets named diagnostic_msgs_generate_messages_nodejs
 
 # Build rule for target.
@@ -1856,17 +2025,17 @@ omni_vision_node/fast:
 .PHONY : omni_vision_node/fast
 
 #=============================================================================
-# Target rules for targets named uvc_stereo_node
+# Target rules for targets named nodelet_uvc_camera
 
 # Build rule for target.
-uvc_stereo_node: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 uvc_stereo_node
-.PHONY : uvc_stereo_node
+nodelet_uvc_camera: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 nodelet_uvc_camera
+.PHONY : nodelet_uvc_camera
 
 # fast build rule for target.
-uvc_stereo_node/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/uvc_stereo_node.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/uvc_stereo_node.dir/build
-.PHONY : uvc_stereo_node/fast
+nodelet_uvc_camera/fast:
+	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_uvc_camera.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_uvc_camera.dir/build
+.PHONY : nodelet_uvc_camera/fast
 
 #=============================================================================
 # Target rules for targets named uvc_camera_node
@@ -1882,147 +2051,17 @@ uvc_camera_node/fast:
 .PHONY : uvc_camera_node/fast
 
 #=============================================================================
-# Target rules for targets named nodelet_uvc_camera
+# Target rules for targets named uvc_stereo_node
 
 # Build rule for target.
-nodelet_uvc_camera: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 nodelet_uvc_camera
-.PHONY : nodelet_uvc_camera
+uvc_stereo_node: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 uvc_stereo_node
+.PHONY : uvc_stereo_node
 
 # fast build rule for target.
-nodelet_uvc_camera/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_uvc_camera.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_uvc_camera.dir/build
-.PHONY : nodelet_uvc_camera/fast
-
-#=============================================================================
-# Target rules for targets named nodelet_generate_messages_nodejs
-
-# Build rule for target.
-nodelet_generate_messages_nodejs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_nodejs
-.PHONY : nodelet_generate_messages_nodejs
-
-# fast build rule for target.
-nodelet_generate_messages_nodejs/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_nodejs.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_nodejs.dir/build
-.PHONY : nodelet_generate_messages_nodejs/fast
-
-#=============================================================================
-# Target rules for targets named bond_generate_messages_py
-
-# Build rule for target.
-bond_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_py
-.PHONY : bond_generate_messages_py
-
-# fast build rule for target.
-bond_generate_messages_py/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_py.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_py.dir/build
-.PHONY : bond_generate_messages_py/fast
-
-#=============================================================================
-# Target rules for targets named nodelet_generate_messages_eus
-
-# Build rule for target.
-nodelet_generate_messages_eus: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_eus
-.PHONY : nodelet_generate_messages_eus
-
-# fast build rule for target.
-nodelet_generate_messages_eus/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_eus.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_eus.dir/build
-.PHONY : nodelet_generate_messages_eus/fast
-
-#=============================================================================
-# Target rules for targets named nodelet_generate_messages_cpp
-
-# Build rule for target.
-nodelet_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_cpp
-.PHONY : nodelet_generate_messages_cpp
-
-# fast build rule for target.
-nodelet_generate_messages_cpp/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_cpp.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_cpp.dir/build
-.PHONY : nodelet_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named nodelet_generate_messages_py
-
-# Build rule for target.
-nodelet_generate_messages_py: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_py
-.PHONY : nodelet_generate_messages_py
-
-# fast build rule for target.
-nodelet_generate_messages_py/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_py.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_py.dir/build
-.PHONY : nodelet_generate_messages_py/fast
-
-#=============================================================================
-# Target rules for targets named bond_generate_messages_cpp
-
-# Build rule for target.
-bond_generate_messages_cpp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_cpp
-.PHONY : bond_generate_messages_cpp
-
-# fast build rule for target.
-bond_generate_messages_cpp/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_cpp.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_cpp.dir/build
-.PHONY : bond_generate_messages_cpp/fast
-
-#=============================================================================
-# Target rules for targets named nodelet_generate_messages_lisp
-
-# Build rule for target.
-nodelet_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 nodelet_generate_messages_lisp
-.PHONY : nodelet_generate_messages_lisp
-
-# fast build rule for target.
-nodelet_generate_messages_lisp/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_lisp.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/nodelet_generate_messages_lisp.dir/build
-.PHONY : nodelet_generate_messages_lisp/fast
-
-#=============================================================================
-# Target rules for targets named bond_generate_messages_nodejs
-
-# Build rule for target.
-bond_generate_messages_nodejs: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_nodejs
-.PHONY : bond_generate_messages_nodejs
-
-# fast build rule for target.
-bond_generate_messages_nodejs/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_nodejs.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_nodejs.dir/build
-.PHONY : bond_generate_messages_nodejs/fast
-
-#=============================================================================
-# Target rules for targets named bond_generate_messages_eus
-
-# Build rule for target.
-bond_generate_messages_eus: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_eus
-.PHONY : bond_generate_messages_eus
-
-# fast build rule for target.
-bond_generate_messages_eus/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_eus.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_eus.dir/build
-.PHONY : bond_generate_messages_eus/fast
-
-#=============================================================================
-# Target rules for targets named bond_generate_messages_lisp
-
-# Build rule for target.
-bond_generate_messages_lisp: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 bond_generate_messages_lisp
-.PHONY : bond_generate_messages_lisp
-
-# fast build rule for target.
-bond_generate_messages_lisp/fast:
-	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_lisp.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/bond_generate_messages_lisp.dir/build
-.PHONY : bond_generate_messages_lisp/fast
+uvc_stereo_node/fast:
+	$(MAKE) -f camera_driver/camera_umd/uvc_camera/CMakeFiles/uvc_stereo_node.dir/build.make camera_driver/camera_umd/uvc_camera/CMakeFiles/uvc_stereo_node.dir/build
+.PHONY : uvc_stereo_node/fast
 
 #=============================================================================
 # Target rules for targets named world_model
@@ -2457,18 +2496,8 @@ help:
 	@echo "... sensor_msgs_generate_messages_cpp"
 	@echo "... color_segment_node"
 	@echo "... front_vision_node"
-	@echo "... diagnostic_msgs_generate_messages_nodejs"
-	@echo "... diagnostic_msgs_generate_messages_eus"
-	@echo "... diagnostic_msgs_generate_messages_cpp"
-	@echo "... diagnostic_msgs_generate_messages_py"
-	@echo "... diagnostic_msgs_generate_messages_lisp"
-	@echo "... joy_node"
-	@echo "... jpeg_streamer"
-	@echo "... omni_vision_gencfg"
-	@echo "... omni_vision_node"
-	@echo "... uvc_stereo_node"
-	@echo "... uvc_camera_node"
-	@echo "... nodelet_uvc_camera"
+	@echo "... gscam_node"
+	@echo "... gscam"
 	@echo "... nodelet_generate_messages_nodejs"
 	@echo "... bond_generate_messages_py"
 	@echo "... nodelet_generate_messages_eus"
@@ -2478,7 +2507,20 @@ help:
 	@echo "... nodelet_generate_messages_lisp"
 	@echo "... bond_generate_messages_nodejs"
 	@echo "... bond_generate_messages_eus"
+	@echo "... GSCamNodelet"
 	@echo "... bond_generate_messages_lisp"
+	@echo "... diagnostic_msgs_generate_messages_nodejs"
+	@echo "... diagnostic_msgs_generate_messages_eus"
+	@echo "... diagnostic_msgs_generate_messages_cpp"
+	@echo "... diagnostic_msgs_generate_messages_py"
+	@echo "... diagnostic_msgs_generate_messages_lisp"
+	@echo "... joy_node"
+	@echo "... jpeg_streamer"
+	@echo "... omni_vision_gencfg"
+	@echo "... omni_vision_node"
+	@echo "... nodelet_uvc_camera"
+	@echo "... uvc_camera_node"
+	@echo "... uvc_stereo_node"
 	@echo "... world_model"
 	@echo "... world_model_node"
 	@echo "... comm"
