@@ -146,6 +146,7 @@ void get_controlpoint(DPoint *Point_online, int n)
        double matrix_after[n][n];
 
        matrix_inv(matrix,matrix_after);  //求逆矩阵
+       ///common.hpp中有4*4矩阵求逆
 
        double sum_x[n]={},sum_y[n]={};
 
