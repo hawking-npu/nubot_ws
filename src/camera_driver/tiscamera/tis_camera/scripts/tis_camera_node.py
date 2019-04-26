@@ -40,10 +40,10 @@ class Camera:
         self.sample = None
         self.samplelocked = False
         self.newsample = False
-        print("topic_name: " + str(topic_name))
-        print("node_name: " + str(node_name))
+        # print("topic_name: " + str(topic_name))
+        # print("node_name: " + str(node_name))
         self.topic_name = "/camera/image_raw:=/" + \
-            topic_name if topic_name is not None else ""
+           topic_name if topic_name is not None else "camera/image_raw"
         self.node_name = "__name:="
         self.node_name += node_name if node_name is not None else "tis_camera_node"
         print("self.topic_name: " + str(self.topic_name))
@@ -96,7 +96,7 @@ class Camera:
         try:
             self.pipeline.set_state(Gst.State.PLAYING)
             self.pid = subprocess.Popen(
-                ["rosrun", "gscam", "gscam", self.topic_name, self.node_name])
+                ["rosrun", "gscam", "gscam" , self.topic_name, self.node_name])
 
         except GLib.Error as error:
             print("Error starting pipeline: {0}".format(error))
@@ -172,8 +172,8 @@ class Camera:
 
 def main():
     # Open the camera. Parameters are serial number, width, height, frame rate, color and liveview.
-    # cam = Camera("24514123", 640, 480, 30, True, False)
-    cam = Camera("35814515", 640, 480, 30, True, False)
+    cam = Camera("24514123", 640, 480, 30, True, False)
+    # cam = Camera("35814515", 640, 480, 30, True, False)
 
     # Start the live stream from the camera and also "rosrun"
     cam.start_pipeline()

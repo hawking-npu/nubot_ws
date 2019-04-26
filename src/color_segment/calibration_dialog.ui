@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1157</width>
-    <height>733</height>
+    <width>1409</width>
+    <height>898</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>630</y>
-     <width>121</width>
-     <height>31</height>
+     <y>620</y>
+     <width>181</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -31,8 +31,8 @@
     <rect>
      <x>30</x>
      <y>670</y>
-     <width>121</width>
-     <height>31</height>
+     <width>181</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -45,10 +45,10 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>730</x>
-     <y>610</y>
-     <width>81</width>
-     <height>101</height>
+     <x>260</x>
+     <y>430</y>
+     <width>191</width>
+     <height>141</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -77,8 +77,8 @@
      <rect>
       <x>0</x>
       <y>30</y>
-      <width>53</width>
-      <height>50</height>
+      <width>91</width>
+      <height>92</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -105,10 +105,10 @@
   <widget class="QGroupBox" name="Object_Box">
    <property name="geometry">
     <rect>
-     <x>820</x>
-     <y>610</y>
-     <width>121</width>
-     <height>101</height>
+     <x>30</x>
+     <y>430</y>
+     <width>211</width>
+     <height>181</height>
     </rect>
    </property>
    <property name="title">
@@ -119,8 +119,8 @@
      <rect>
       <x>0</x>
       <y>20</y>
-      <width>121</width>
-      <height>81</height>
+      <width>208</width>
+      <height>152</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -154,10 +154,10 @@
   <widget class="QPushButton" name="segment_result_btn">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>630</y>
-     <width>121</width>
-     <height>31</height>
+     <x>220</x>
+     <y>620</y>
+     <width>191</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -167,10 +167,10 @@
   <widget class="QGroupBox" name="Image_ROI_Box">
    <property name="geometry">
     <rect>
-     <x>950</x>
-     <y>610</y>
-     <width>111</width>
-     <height>101</height>
+     <x>480</x>
+     <y>430</y>
+     <width>181</width>
+     <height>131</height>
     </rect>
    </property>
    <property name="title">
@@ -181,8 +181,8 @@
      <rect>
       <x>0</x>
       <y>20</y>
-      <width>101</width>
-      <height>79</height>
+      <width>174</width>
+      <height>160</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -219,10 +219,10 @@
   <widget class="QPushButton" name="Save_Result_Btn">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>590</x>
      <y>670</y>
-     <width>101</width>
-     <height>31</height>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -232,10 +232,10 @@
   <widget class="QPushButton" name="Load_Result_Btn">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>420</x>
+     <y>620</y>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -245,10 +245,10 @@
   <widget class="QPushButton" name="white_wave_Btn">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>590</x>
+     <y>620</y>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="focusPolicy">
@@ -261,10 +261,10 @@
   <widget class="QPushButton" name="show_segmentBtn">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>220</x>
      <y>670</y>
-     <width>121</width>
-     <height>31</height>
+     <width>191</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -274,10 +274,10 @@
   <widget class="QPushButton" name="Save_image_Btn">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>672</y>
-     <width>101</width>
-     <height>31</height>
+     <x>420</x>
+     <y>670</y>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
@@ -287,10 +287,10 @@
   <widget class="QPushButton" name="load_whites_Btn">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>760</x>
+     <y>620</y>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="focusPolicy">
@@ -303,10 +303,10 @@
   <widget class="QPushButton" name="save_whits_Btn">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>760</x>
      <y>670</y>
-     <width>101</width>
-     <height>31</height>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -319,10 +319,10 @@
   <widget class="QPushButton" name="Error_table_Btn">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>930</x>
+     <y>620</y>
+     <width>151</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="focusPolicy">

@@ -9,8 +9,7 @@
 
        2.初始化：rosrun prosilica_camera prosilica_node _height:=0  _width:=0  _x_offset:=0  _y_offset:=0 
                                                           row         colum    start_colum    start_row
-     
-     3.检查摄像头：运行rqt_image_view
+       3.检查摄像头：运行rqt_image_view
 
 第一部分：标定ROI
      4.大小圆标定：运行rosrun color_segment color_segment_node

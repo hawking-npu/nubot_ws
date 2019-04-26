@@ -73,7 +73,7 @@ public:
     RobotInformation robot;
 
 
-    image_transport::Subscriber img_sub_;
+    image_transport::Subscriber camera_sub_;
     ros::Subscriber motor_info_sub_;
 
     ros::Publisher  ballinfo_pub_;
@@ -149,8 +149,8 @@ public:
             field_image_ = cv::imread(calibration_path+"/"+ss.str()+"/field.bmp");
 
         ros::NodeHandle nh;
-        image_transport::ImageTransport it(nh);
-        img_sub_= it.subscribe("/camera/image_raw", 1, &Omni_Vision::imageCallback,this);
+        image_transport::ImageTransport image_transport_(nh);
+        camera_sub_= image_transport_.subscribe("/camera/image_raw", 1, &Omni_Vision::imageCallback, this);
         ros::NodeHandle local_nh;
         motor_info_sub_ = local_nh.subscribe("/nubotdriver/odoinfo", 1, &Omni_Vision::odometryupdate,this);
 
@@ -199,8 +199,8 @@ public:
         if(is_show_result_)
         {
             ROS_INFO("pos(%.f, %.f, %d, %.1f, %.1f, %.1f, %d ,%d, %d)",
-                     robot.final_location_.x_,robot.final_location_.y_,robot.angle_.degree(),robot.worldvtrans_.x_,
-                     robot.worldvtrans_.y_,robot_info_.vrot,whites_->img_white_.size(),robot.isglobal_,is_power_off_);
+                     robot.final_location_.x_,robot.final_location_.y_,int(robot.angle_.degree()),robot.worldvtrans_.x_,
+                     robot.worldvtrans_.y_,robot_info_.vrot,int(whites_->img_white_.size()),int(robot.isglobal_),int(is_power_off_));
         }
 
         ball_info_.header.stamp = receive_time_;
@@ -354,7 +354,7 @@ public:
         ros::Duration duration  = ros::Time::now() - time_before;
         ros::Duration duration1 = ros::Time::now() - start;
         time_before = ros::Time::now();
-        ROS_INFO("omni_time: %d %d %d",int(1.0/duration.toSec()),int(1.0/duration1.toSec()),whites_->img_white_.size());
+        ROS_INFO("omni_time: %d %d %d",int(1.0/duration.toSec()),int(1.0/duration1.toSec()),int(whites_->img_white_.size()));
     }
 
     void
@@ -386,14 +386,14 @@ int main(int argc, char **argv)
     struct sched_param schedp;
     memset(&schedp, 0, sizeof(schedp));
     schedp.sched_priority = DEFAULT_PRIO;
-   if (sched_setscheduler(0, SCHED_FIFO, &schedp)) {
+    if (sched_setscheduler(0, SCHED_FIFO, &schedp)) {
       printf("set scheduler failed.\n");
       sched_setscheduler(0, SCHED_OTHER, &schedp);
-   }
+    }
     ros::init(argc,argv,"omni_vision_node");
     ros::Time::init();
     ROS_INFO("start omni_vision process");
-    nubot::Omni_Vision vision_process(argc, argv);
+    //nubot::Omni_Vision vision_process(argc, argv);
     ros::spin();
     return 0;
 }

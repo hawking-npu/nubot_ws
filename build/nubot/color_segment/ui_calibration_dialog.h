@@ -36,8 +36,8 @@ public:
     QGroupBox *Object_Box;
     QWidget *layoutWidget1;
     QVBoxLayout *verticalLayout;
-    QRadioButton *ball_seg_Btn;
     QRadioButton *obs_seg_Btn;
+    QRadioButton *ball_seg_Btn;
     QRadioButton *field_segment_Btn;
     QPushButton *segment_result_btn;
     QGroupBox *Image_ROI_Box;
@@ -59,17 +59,17 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QStringLiteral("Dialog"));
-        Dialog->resize(1157, 733);
+        Dialog->resize(1361, 724);
         receive_image_btn = new QPushButton(Dialog);
         receive_image_btn->setObjectName(QStringLiteral("receive_image_btn"));
-        receive_image_btn->setGeometry(QRect(30, 630, 121, 31));
+        receive_image_btn->setGeometry(QRect(30, 620, 211, 41));
         loadImage_Btn = new QPushButton(Dialog);
         loadImage_Btn->setObjectName(QStringLiteral("loadImage_Btn"));
-        loadImage_Btn->setGeometry(QRect(30, 670, 121, 31));
+        loadImage_Btn->setGeometry(QRect(30, 670, 211, 41));
         Color_Box = new QGroupBox(Dialog);
         Color_Box->setObjectName(QStringLiteral("Color_Box"));
         Color_Box->setEnabled(true);
-        Color_Box->setGeometry(QRect(730, 610, 81, 101));
+        Color_Box->setGeometry(QRect(260, 400, 191, 211));
         Color_Box->setLayoutDirection(Qt::LeftToRight);
         Color_Box->setAutoFillBackground(false);
         Color_Box->setAlignment(Qt::AlignCenter);
@@ -77,7 +77,7 @@ public:
         Color_Box->setCheckable(false);
         layoutWidget = new QWidget(Color_Box);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(0, 30, 53, 50));
+        layoutWidget->setGeometry(QRect(0, 40, 191, 171));
         verticalLayout_3 = new QVBoxLayout(layoutWidget);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
@@ -95,24 +95,24 @@ public:
 
         Object_Box = new QGroupBox(Dialog);
         Object_Box->setObjectName(QStringLiteral("Object_Box"));
-        Object_Box->setGeometry(QRect(820, 610, 121, 101));
+        Object_Box->setGeometry(QRect(30, 400, 211, 211));
         layoutWidget1 = new QWidget(Object_Box);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(0, 20, 121, 81));
+        layoutWidget1->setGeometry(QRect(0, 40, 211, 171));
         verticalLayout = new QVBoxLayout(layoutWidget1);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
-        ball_seg_Btn = new QRadioButton(layoutWidget1);
-        ball_seg_Btn->setObjectName(QStringLiteral("ball_seg_Btn"));
-
-        verticalLayout->addWidget(ball_seg_Btn);
-
         obs_seg_Btn = new QRadioButton(layoutWidget1);
         obs_seg_Btn->setObjectName(QStringLiteral("obs_seg_Btn"));
 
         verticalLayout->addWidget(obs_seg_Btn);
+
+        ball_seg_Btn = new QRadioButton(layoutWidget1);
+        ball_seg_Btn->setObjectName(QStringLiteral("ball_seg_Btn"));
+
+        verticalLayout->addWidget(ball_seg_Btn);
 
         field_segment_Btn = new QRadioButton(layoutWidget1);
         field_segment_Btn->setObjectName(QStringLiteral("field_segment_Btn"));
@@ -122,13 +122,13 @@ public:
 
         segment_result_btn = new QPushButton(Dialog);
         segment_result_btn->setObjectName(QStringLiteral("segment_result_btn"));
-        segment_result_btn->setGeometry(QRect(160, 630, 121, 31));
+        segment_result_btn->setGeometry(QRect(250, 620, 211, 41));
         Image_ROI_Box = new QGroupBox(Dialog);
         Image_ROI_Box->setObjectName(QStringLiteral("Image_ROI_Box"));
-        Image_ROI_Box->setGeometry(QRect(950, 610, 111, 101));
+        Image_ROI_Box->setGeometry(QRect(480, 400, 181, 211));
         layoutWidget2 = new QWidget(Image_ROI_Box);
         layoutWidget2->setObjectName(QStringLiteral("layoutWidget2"));
-        layoutWidget2->setGeometry(QRect(0, 20, 101, 79));
+        layoutWidget2->setGeometry(QRect(0, 40, 181, 171));
         verticalLayout_2 = new QVBoxLayout(layoutWidget2);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -150,36 +150,33 @@ public:
 
         verticalLayout_2->addWidget(Save_ROI_Btn);
 
-        Save_ROI_Btn->raise();
-        BigCircle_Btn->raise();
-        SmallCircle_Btn->raise();
         Save_Result_Btn = new QPushButton(Dialog);
         Save_Result_Btn->setObjectName(QStringLiteral("Save_Result_Btn"));
-        Save_Result_Btn->setGeometry(QRect(400, 670, 101, 31));
+        Save_Result_Btn->setGeometry(QRect(690, 670, 211, 41));
         Load_Result_Btn = new QPushButton(Dialog);
         Load_Result_Btn->setObjectName(QStringLiteral("Load_Result_Btn"));
-        Load_Result_Btn->setGeometry(QRect(290, 630, 101, 31));
+        Load_Result_Btn->setGeometry(QRect(470, 620, 211, 41));
         white_wave_Btn = new QPushButton(Dialog);
         white_wave_Btn->setObjectName(QStringLiteral("white_wave_Btn"));
-        white_wave_Btn->setGeometry(QRect(400, 630, 101, 31));
+        white_wave_Btn->setGeometry(QRect(690, 620, 211, 41));
         white_wave_Btn->setFocusPolicy(Qt::WheelFocus);
         show_segmentBtn = new QPushButton(Dialog);
         show_segmentBtn->setObjectName(QStringLiteral("show_segmentBtn"));
-        show_segmentBtn->setGeometry(QRect(160, 670, 121, 31));
+        show_segmentBtn->setGeometry(QRect(250, 670, 211, 41));
         Save_image_Btn = new QPushButton(Dialog);
         Save_image_Btn->setObjectName(QStringLiteral("Save_image_Btn"));
-        Save_image_Btn->setGeometry(QRect(290, 672, 101, 31));
+        Save_image_Btn->setGeometry(QRect(470, 670, 211, 41));
         load_whites_Btn = new QPushButton(Dialog);
         load_whites_Btn->setObjectName(QStringLiteral("load_whites_Btn"));
-        load_whites_Btn->setGeometry(QRect(510, 630, 101, 31));
+        load_whites_Btn->setGeometry(QRect(910, 620, 211, 41));
         load_whites_Btn->setFocusPolicy(Qt::WheelFocus);
         save_whits_Btn = new QPushButton(Dialog);
         save_whits_Btn->setObjectName(QStringLiteral("save_whits_Btn"));
-        save_whits_Btn->setGeometry(QRect(510, 670, 101, 31));
+        save_whits_Btn->setGeometry(QRect(910, 670, 211, 41));
         save_whits_Btn->setContextMenuPolicy(Qt::ActionsContextMenu);
         Error_table_Btn = new QPushButton(Dialog);
         Error_table_Btn->setObjectName(QStringLiteral("Error_table_Btn"));
-        Error_table_Btn->setGeometry(QRect(620, 630, 101, 31));
+        Error_table_Btn->setGeometry(QRect(1130, 620, 191, 41));
         Error_table_Btn->setFocusPolicy(Qt::WheelFocus);
         Error_table_Btn->raise();
         receive_image_btn->raise();
@@ -204,31 +201,31 @@ public:
     void retranslateUi(QDialog *Dialog)
     {
         Dialog->setWindowTitle(QApplication::translate("Dialog", "Dialog", 0));
-        receive_image_btn->setText(QApplication::translate("Dialog", "update_image", 0));
-        loadImage_Btn->setText(QApplication::translate("Dialog", "LoadImage", 0));
+        receive_image_btn->setText(QApplication::translate("Dialog", "update image", 0));
+        loadImage_Btn->setText(QApplication::translate("Dialog", "load image", 0));
 #ifndef QT_NO_TOOLTIP
         Color_Box->setToolTip(QString());
 #endif // QT_NO_TOOLTIP
-        Color_Box->setTitle(QApplication::translate("Dialog", "color_selection", 0));
+        Color_Box->setTitle(QApplication::translate("Dialog", "color selection", 0));
         YUV_RadioBtn->setText(QApplication::translate("Dialog", "YUV", 0));
         HSI_RadioBtn->setText(QApplication::translate("Dialog", "HSI", 0));
-        Object_Box->setTitle(QApplication::translate("Dialog", "object_selection", 0));
-        ball_seg_Btn->setText(QApplication::translate("Dialog", "ball_segment", 0));
-        obs_seg_Btn->setText(QApplication::translate("Dialog", "obs_segment", 0));
-        field_segment_Btn->setText(QApplication::translate("Dialog", "field_segment", 0));
-        segment_result_btn->setText(QApplication::translate("Dialog", "segment_result", 0));
-        Image_ROI_Box->setTitle(QApplication::translate("Dialog", "Image_ROI", 0));
+        Object_Box->setTitle(QApplication::translate("Dialog", "object selection", 0));
+        obs_seg_Btn->setText(QApplication::translate("Dialog", "obs segment", 0));
+        ball_seg_Btn->setText(QApplication::translate("Dialog", "ball segment", 0));
+        field_segment_Btn->setText(QApplication::translate("Dialog", "field segment", 0));
+        segment_result_btn->setText(QApplication::translate("Dialog", "segment result", 0));
+        Image_ROI_Box->setTitle(QApplication::translate("Dialog", "image ROI", 0));
         BigCircle_Btn->setText(QApplication::translate("Dialog", "BigCircle", 0));
         SmallCircle_Btn->setText(QApplication::translate("Dialog", "SmallCircle", 0));
-        Save_ROI_Btn->setText(QApplication::translate("Dialog", "Save_ROI", 0));
-        Save_Result_Btn->setText(QApplication::translate("Dialog", "Save_Result", 0));
-        Load_Result_Btn->setText(QApplication::translate("Dialog", "Load_Result", 0));
-        white_wave_Btn->setText(QApplication::translate("Dialog", "white_wave", 0));
-        show_segmentBtn->setText(QApplication::translate("Dialog", "show_segment", 0));
-        Save_image_Btn->setText(QApplication::translate("Dialog", "Save_Image", 0));
-        load_whites_Btn->setText(QApplication::translate("Dialog", "load_whites", 0));
-        save_whits_Btn->setText(QApplication::translate("Dialog", "save_whits", 0));
-        Error_table_Btn->setText(QApplication::translate("Dialog", "ErrorTable", 0));
+        Save_ROI_Btn->setText(QApplication::translate("Dialog", "save ROI", 0));
+        Save_Result_Btn->setText(QApplication::translate("Dialog", "save result", 0));
+        Load_Result_Btn->setText(QApplication::translate("Dialog", "load result", 0));
+        white_wave_Btn->setText(QApplication::translate("Dialog", "white wave", 0));
+        show_segmentBtn->setText(QApplication::translate("Dialog", "show segment", 0));
+        Save_image_Btn->setText(QApplication::translate("Dialog", "save image", 0));
+        load_whites_Btn->setText(QApplication::translate("Dialog", "load whites", 0));
+        save_whits_Btn->setText(QApplication::translate("Dialog", "save whites", 0));
+        Error_table_Btn->setText(QApplication::translate("Dialog", "error-table", 0));
     } // retranslateUi
 
 };

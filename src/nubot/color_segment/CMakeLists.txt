@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(color_segment)
 #set(EXECUTABLE_OUTPUT_PATH  "${PROJECT_SOURCE_DIR}/bin")
-set(CMAKE_PREFIX_PATH  ${CMAKE_PREFIX_PATH} "/opt/Qt5.3.2/5.3/gcc_64/lib/cmake/Qt5Widgets/")
+set(CMAKE_PREFIX_PATH  ${CMAKE_PREFIX_PATH} "/opt/Qt5.9/lib/cmake/Qt5Widgets/")
 #set(CMAKE_AUTOMOC ON)
 #set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_srvs
 )
  
-find_package(Qt5Widgets)  
+find_package(Qt5Widgets)
 find_package(OpenCV 3 REQUIRED)
 
 catkin_package(
@@ -48,6 +48,7 @@ add_executable(color_segment_node
 target_link_libraries(color_segment_node
     ${catkin_LIBRARIES}
     ${OpenCV_LIBS}
+    #Qt5::Widgets}
 )
 qt5_use_modules(color_segment_node Widgets)
  

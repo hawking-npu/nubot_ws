@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1157</width>
-    <height>733</height>
+    <width>1361</width>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,13 +17,13 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>630</y>
-     <width>121</width>
-     <height>31</height>
+     <y>620</y>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>update_image</string>
+    <string>update image</string>
    </property>
   </widget>
   <widget class="QPushButton" name="loadImage_Btn">
@@ -31,12 +31,12 @@
     <rect>
      <x>30</x>
      <y>670</y>
-     <width>121</width>
-     <height>31</height>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>LoadImage</string>
+    <string>load image</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="Color_Box">
@@ -45,10 +45,10 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>730</x>
-     <y>610</y>
-     <width>81</width>
-     <height>101</height>
+     <x>260</x>
+     <y>400</y>
+     <width>191</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -61,7 +61,7 @@
     <bool>false</bool>
    </property>
    <property name="title">
-    <string>color_selection</string>
+    <string>color selection</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -76,9 +76,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>30</y>
-      <width>53</width>
-      <height>50</height>
+      <y>40</y>
+      <width>191</width>
+      <height>171</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -105,36 +105,36 @@
   <widget class="QGroupBox" name="Object_Box">
    <property name="geometry">
     <rect>
-     <x>820</x>
-     <y>610</y>
-     <width>121</width>
-     <height>101</height>
+     <x>30</x>
+     <y>400</y>
+     <width>211</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="title">
-    <string>object_selection</string>
+    <string>object selection</string>
    </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
-      <width>121</width>
-      <height>81</height>
+      <y>40</y>
+      <width>211</width>
+      <height>171</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QRadioButton" name="ball_seg_Btn">
+      <widget class="QRadioButton" name="obs_seg_Btn">
        <property name="text">
-        <string>ball_segment</string>
+        <string>obs segment</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="obs_seg_Btn">
+      <widget class="QRadioButton" name="ball_seg_Btn">
        <property name="text">
-        <string>obs_segment</string>
+        <string>ball segment</string>
        </property>
       </widget>
      </item>
@@ -144,7 +144,7 @@
         <enum>Qt::ActionsContextMenu</enum>
        </property>
        <property name="text">
-        <string>field_segment</string>
+        <string>field segment</string>
        </property>
       </widget>
      </item>
@@ -154,35 +154,35 @@
   <widget class="QPushButton" name="segment_result_btn">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>630</y>
-     <width>121</width>
-     <height>31</height>
+     <x>250</x>
+     <y>620</y>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>segment_result</string>
+    <string>segment result</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="Image_ROI_Box">
    <property name="geometry">
     <rect>
-     <x>950</x>
-     <y>610</y>
-     <width>111</width>
-     <height>101</height>
+     <x>480</x>
+     <y>400</y>
+     <width>181</width>
+     <height>211</height>
     </rect>
    </property>
    <property name="title">
-    <string>Image_ROI</string>
+    <string>image ROI</string>
    </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
-      <width>101</width>
-      <height>79</height>
+      <y>40</y>
+      <width>181</width>
+      <height>171</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -206,130 +206,127 @@
      <item>
       <widget class="QPushButton" name="Save_ROI_Btn">
        <property name="text">
-        <string>Save_ROI</string>
+        <string>save ROI</string>
        </property>
       </widget>
      </item>
     </layout>
-    <zorder>Save_ROI_Btn</zorder>
-    <zorder>BigCircle_Btn</zorder>
-    <zorder>SmallCircle_Btn</zorder>
    </widget>
   </widget>
   <widget class="QPushButton" name="Save_Result_Btn">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>690</x>
      <y>670</y>
-     <width>101</width>
-     <height>31</height>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Save_Result</string>
+    <string>save result</string>
    </property>
   </widget>
   <widget class="QPushButton" name="Load_Result_Btn">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>470</x>
+     <y>620</y>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Load_Result</string>
+    <string>load result</string>
    </property>
   </widget>
   <widget class="QPushButton" name="white_wave_Btn">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>690</x>
+     <y>620</y>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="focusPolicy">
     <enum>Qt::WheelFocus</enum>
    </property>
    <property name="text">
-    <string>white_wave</string>
+    <string>white wave</string>
    </property>
   </widget>
   <widget class="QPushButton" name="show_segmentBtn">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>250</x>
      <y>670</y>
-     <width>121</width>
-     <height>31</height>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>show_segment</string>
+    <string>show segment</string>
    </property>
   </widget>
   <widget class="QPushButton" name="Save_image_Btn">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>672</y>
-     <width>101</width>
-     <height>31</height>
+     <x>470</x>
+     <y>670</y>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
-    <string>Save_Image</string>
+    <string>save image</string>
    </property>
   </widget>
   <widget class="QPushButton" name="load_whites_Btn">
    <property name="geometry">
     <rect>
-     <x>510</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>910</x>
+     <y>620</y>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="focusPolicy">
     <enum>Qt::WheelFocus</enum>
    </property>
    <property name="text">
-    <string>load_whites</string>
+    <string>load whites</string>
    </property>
   </widget>
   <widget class="QPushButton" name="save_whits_Btn">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>910</x>
      <y>670</y>
-     <width>101</width>
-     <height>31</height>
+     <width>211</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
     <enum>Qt::ActionsContextMenu</enum>
    </property>
    <property name="text">
-    <string>save_whits</string>
+    <string>save whites</string>
    </property>
   </widget>
   <widget class="QPushButton" name="Error_table_Btn">
    <property name="geometry">
     <rect>
-     <x>620</x>
-     <y>630</y>
-     <width>101</width>
-     <height>31</height>
+     <x>1130</x>
+     <y>620</y>
+     <width>191</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="focusPolicy">
     <enum>Qt::WheelFocus</enum>
    </property>
    <property name="text">
-    <string>ErrorTable</string>
+    <string>error-table</string>
    </property>
   </widget>
   <zorder>Error_table_Btn</zorder>
