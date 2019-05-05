@@ -58,52 +58,47 @@ float basicPIDcontrol(float pgain,
                    float& istate );
 void fuzzyPIDcontrol(float &deltakp, float &deltaki,float &deltakd, float err,float err1)
 {
-}
-
-
-int main()
-{
-    float target=600;
-    float actual=0;
-    float u=0;
-    int deltaKpMatrix[7][7]={{PB,PB,PM,PM,PS,ZO,ZO},
-                             {PB,PB,PM,PS,PS,ZO,NS},
-                             {PM,PM,PM,PS,ZO,NS,NS},
-                             {PM,PM,PS,ZO,NS,NM,NM},
-                             {PS,PS,ZO,NS,NS,NM,NM},
-                             {PS,ZO,NS,NM,NM,NM,NB},
-                             {ZO,ZO,NM,NM,NM,NB,NB}};
-    int deltaKiMatrix[7][7]={{NB,NB,NM,NM,NS,ZO,ZO},
-                             {NB,NB,NM,NS,NS,ZO,ZO},
-                             {NB,NM,NS,NS,ZO,PS,PS},
-                             {NM,NM,NS,ZO,PS,PM,PM},
-                             {NM,NS,ZO,PS,PS,PM,PB},
-                             {ZO,ZO,PS,PS,PM,PB,PB},
-                             {ZO,ZO,PS,PM,PM,PB,PB}};
-    int deltaKdMatrix[7][7]={{PS,NS,NB,NB,NB,NM,PS},
-                             {PS,NS,NB,NM,NM,NS,ZO},
-                             {ZO,NS,NM,NM,NS,NS,ZO},
-                             {ZO,NS,NS,NS,NS,NS,ZO},
-                             {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
-                             {PB,NS,PS,PS,PS,PS,PB},
-                             {PB,PM,PM,PM,PS,PS,PB}};
-    float e_mf_paras[] ={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
-    float de_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
-    float Kp_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
-    float Ki_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
-    float Kd_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
-    FuzzyPID fuzzypid(1500,650,0.3,0.9,0.6,0.01,0.04,0.01);
-    fuzzypid.setMf("trimf",e_mf_paras,"trimf",de_mf_paras,"trimf",Kp_mf_paras,"trimf",Ki_mf_paras,"trimf",Kd_mf_paras);
-    fuzzypid.setRuleMatrix(deltaKpMatrix,deltaKiMatrix,deltaKdMatrix);
-    cout<<"num target    actual"<<endl;
-    for(int i=0;i<50;i++)
-    {
-        u=fuzzypid.realize(target,actual);
-        actual+=u;
-        cout<<i<<"   "<<target<<"    "<<actual<<endl;
-    }
-    ///fuzzypid.showInfo();
-    ///system("pause");
+        float target=600;
+        float actual=0;
+        float u=0;
+        int deltaKpMatrix[7][7]={{PB,PB,PM,PM,PS,ZO,ZO},
+                                 {PB,PB,PM,PS,PS,ZO,NS},
+                                 {PM,PM,PM,PS,ZO,NS,NS},
+                                 {PM,PM,PS,ZO,NS,NM,NM},
+                                 {PS,PS,ZO,NS,NS,NM,NM},
+                                 {PS,ZO,NS,NM,NM,NM,NB},
+                                 {ZO,ZO,NM,NM,NM,NB,NB}};
+        int deltaKiMatrix[7][7]={{NB,NB,NM,NM,NS,ZO,ZO},
+                                 {NB,NB,NM,NS,NS,ZO,ZO},
+                                 {NB,NM,NS,NS,ZO,PS,PS},
+                                 {NM,NM,NS,ZO,PS,PM,PM},
+                                 {NM,NS,ZO,PS,PS,PM,PB},
+                                 {ZO,ZO,PS,PS,PM,PB,PB},
+                                 {ZO,ZO,PS,PM,PM,PB,PB}};
+        int deltaKdMatrix[7][7]={{PS,NS,NB,NB,NB,NM,PS},
+                                 {PS,NS,NB,NM,NM,NS,ZO},
+                                 {ZO,NS,NM,NM,NS,NS,ZO},
+                                 {ZO,NS,NS,NS,NS,NS,ZO},
+                                 {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
+                                 {PB,NS,PS,PS,PS,PS,PB},
+                                 {PB,PM,PM,PM,PS,PS,PB}};
+        float e_mf_paras[] ={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
+        float de_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
+        float Kp_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
+        float Ki_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
+        float Kd_mf_paras[]={NB,NB,NM,NB,NM,NS,NM,NS,ZO,NS,ZO,PS,ZO,PS,PM,PS,PM,PB,PM,PB,PB};
+        FuzzyPID fuzzypid(1500,650,0.3,0.9,0.6,0.01,0.04,0.01);//float e_max,float de_max,float kp_max,float ki_max,float kd_max,float Kp0,float Ki0,float Kd0
+        fuzzypid.setMf("trimf",e_mf_paras,"trimf",de_mf_paras,"trimf",Kp_mf_paras,"trimf",Ki_mf_paras,"trimf",Kd_mf_paras);
+        fuzzypid.setRuleMatrix(deltaKpMatrix,deltaKiMatrix,deltaKdMatrix);
+        cout<<"num target    actual"<<endl;
+        for(int i=0;i<50;i++)
+        {
+            u=fuzzypid.realize(target,actual);
+            actual+=u;
+            ///cout<<i<<"   "<<target<<"    "<<actual<<endl;
+        }
+        ///fuzzypid.showInfo();
+        ///system("pause");
 }
 
 
@@ -435,90 +430,6 @@ float FuzzyPID::realize(float t,float a)
 
     return delta_u;
 }
-void FuzzyPID::showMf(const string & type,float *mf_paras)//show mf_paras
-{
-    int tab;
-    if(type=="trimf")
-        tab=2;
-    else if(type=="gaussmf")
-        tab=1;
-    else if(type=="trapmf")
-        tab=3;
-    cout<<"函数类型："<<mf_t_e<<endl;
-    cout<<"函数参数列表："<<endl;
-    float *p=mf_paras;
-    for(int i=0;i<N*(tab+1);i++)
-      {
-          cout.width(3);
-          cout<<p[i]<<"  ";
-          if(i%(tab+1)==tab)
-              cout<<endl;
-      }
-}
-void FuzzyPID::showInfo()//show infomation
-{
-   cout<<"Info of this fuzzy controller is as following:"<<endl;
-   cout<<"基本论域e：["<<-emax<<","<<emax<<"]"<<endl;
-   cout<<"基本论域de：["<<-demax<<","<<demax<<"]"<<endl;
-   cout<<"基本论域delta_Kp：["<<-delta_Kp_max<<","<<delta_Kp_max<<"]"<<endl;
-   cout<<"基本论域delta_Ki：["<<-delta_Ki_max<<","<<delta_Ki_max<<"]"<<endl;
-   cout<<"基本论域delta_Kd：["<<-delta_Kd_max<<","<<delta_Kd_max<<"]"<<endl;
-   cout<<"误差e的模糊隶属度函数参数："<<endl;
-   showMf(mf_t_e,e_mf_paras);
-   cout<<"误差变化率de的模糊隶属度函数参数："<<endl;
-   showMf(mf_t_de,de_mf_paras);
-   cout<<"delta_Kp的模糊隶属度函数参数："<<endl;
-   showMf(mf_t_Kp,Kp_mf_paras);
-   cout<<"delta_Ki的模糊隶属度函数参数："<<endl;
-   showMf(mf_t_Ki,Ki_mf_paras);
-   cout<<"delta_Kd的模糊隶属度函数参数："<<endl;
-   showMf(mf_t_Kd,Kd_mf_paras);
-   cout<<"模糊规则表："<<endl;
-   cout<<"delta_Kp的模糊规则矩阵"<<endl;
-   for(int i=0;i<N;i++)
-   {
-     for(int j=0;j<N;j++)
-       {
-         cout.width(3);
-         cout<<Kp_rule_matrix[i][j]<<"  ";
-        }
-       cout<<endl;
-   }
-   cout<<"delta_Ki的模糊规则矩阵"<<endl;
-   for(int i=0;i<N;i++)
-   {
-     for(int j=0;j<N;j++)
-       {
-         cout.width(3);
-         cout<<Ki_rule_matrix[i][j]<<"  ";
-        }
-       cout<<endl;
-   }
-   cout<<"delta_Kd的模糊规则矩阵"<<endl;
-   for(int i=0;i<N;i++)
-   {
-     for(int j=0;j<N;j++)
-       {
-         cout.width(3);
-         cout<<Kd_rule_matrix[i][j]<<"  ";
-        }
-       cout<<endl;
-   }
-   cout<<endl;
-   cout<<"误差的量化比例因子Ke="<<Ke<<endl;
-   cout<<"误差变化率的量化比例因子Kde="<<Kde<<endl;
-   cout<<"输出的量化比例因子Ku_p="<<Ku_p<<endl;
-   cout<<"输出的量化比例因子Ku_i="<<Ku_i<<endl;
-   cout<<"输出的量化比例因子Ku_d="<<Ku_d<<endl;
-   cout<<"设定目标target="<<target<<endl;
-   cout<<"误差e="<<e<<endl;
-   cout<<"Kp="<<Kp<<endl;
-   cout<<"Ki="<<Ki<<endl;
-   cout<<"Kd="<<Kd<<endl;
-   cout<<endl;
-}
-
-
 
 
 void move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target, float maxvel,
@@ -527,17 +438,80 @@ void move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target0, D
                           float maxvel, const DPoint & _robot_pos,const Angle  & _robot_ori, const DPoint & _robot_vel);
 // 采用PD控制运动到目标点
 void move2Position(float pval, float dval, DPoint target, float maxvel,
-                   const DPoint  & _robot_pos,const Angle  & _robot_ori );
+                   const DPoint  & _robot_pos,const Angle  & _robot_ori )//世界坐标系
+{
+    DPoint temp;
+    temp=target; temp-=_robot_pos[0];
+    //转角度
+    rotate2AbsOrienation(pval, dval, temp.angle(), 20, & _robot_ori);
+    temp.x_=temp.norm(); temp.y_=0;
+
+    //前进
+    double v_now=0, v_past=0;
+    double delta_val;
+    double tmp=temp.x_/2;
+    while(fabs(temp.x_)>0.01)
+    {
+        while(fabs(temp.x_)>=fabs(tmp))/////没到目的地
+        {
+            temp.x_-=v_now*T;/////
+            delta_val=maxvel-v_now;
+            v_now=pval*delta_val+dval*(v_now-v_past)/T;/////
+            Behaviour::setAppvx(v_now);
+            v_past=v_now;
+        }
+        while(fabs(temp.x_)<fabs(tmp))/////没到目的地
+        {
+            temp.x_-=v_now*T;/////
+            delta_val=-v_now;
+            v_now=pval*delta_val+dval*(v_now-v_past)/T;/////
+            Behaviour::setAppvx(v_now);
+            v_past=v_now;
+        }
+    }
+}
+
 void move2target(float pval, float dval,DPoint target, DPoint realtarvel, float maxvel,
                  const DPoint  & _robot_pos,const Angle  & _robot_ori);
 void traceTarget();
 void revDecoupleFromVel(float vx,float vy,float &positivemax_rev,float &negativemax_rev);
-// rotate to the target orientation by using PD control
-void rotate2AbsOrienation(float pval, float dval, float orientation,float maxw,const Angle & _robot_ori);
-void rotate2RelOrienation(float pval, float dval, float rel_orientation,float maxw);
-void rotatetowardsSetPoint(DPoint point);
-void rotatetowardsRelPoint(DPoint rel_point);
 
+
+
+
+/////////////////
+// rotate to the target orientation by using PD control
+void rotate2AbsOrienation(float pval, float dval, float orientation,float maxw,const Angle & _robot_ori)//自身坐标系
+{
+    double temp;
+    temp=orientation; temp-=_robot_ori[0];
+    double w_now=0, w_past=0;
+    double delta_w;
+    double tmp=temp/2;
+    while(fabs(temp)>0.01)
+    {
+        while(fabs(temp)>=fabs(tmp))
+        {
+            temp-=w_now*T;
+            delta_w=maxw-w_now;
+            w_now=pval*delta_w+dval*(w_now-w_past)/T;/////
+            Behaviour::setAppw(w_now);
+            w_past=w_now;
+        }
+        while(fabs(temp)>=fabs(tmp))
+        {
+            temp-=w_now*T;
+            delta_w=-w_now;
+            w_now=pval*delta_w+dval*(w_now-w_past)/T;/////
+            Behaviour::setAppw(w_now);
+            w_past=w_now;
+        }
+    }
+}
+void rotate2RelOrienation(float pval, float dval, float rel_orientation,float maxw);
+void rotatetowardsSetPoint(DPoint point);//自身坐标系
+void rotatetowardsRelPoint(DPoint rel_point);
+/////////////////
 
 
 
