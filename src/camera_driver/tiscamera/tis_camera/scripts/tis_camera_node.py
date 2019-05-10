@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
 
 from gi.repository import Tcam, Gst, GLib, GObject
 import os
 import subprocess
 from collections import namedtuple
 import gi
-# import rospy
+import rospy
 
 gi.require_version("Gst", "1.0")
 gi.require_version("Tcam", "0.1")
@@ -46,8 +46,8 @@ class Camera:
            topic_name if topic_name is not None else "camera/image_raw"
         self.node_name = "__name:="
         self.node_name += node_name if node_name is not None else "tis_camera_node"
-        print("self.topic_name: " + str(self.topic_name))
-        print("self.node_name: " + str(self.node_name))
+#        print("self.topic_name: " + str(self.topic_name))
+#        print("self.node_name: " + str(self.node_name))
         self.pid = -1
 
         self.__remove_tmp_file()
@@ -69,7 +69,7 @@ class Camera:
             p += ' ! videoconvert ! video/x-raw,format=RGB ,width=%d,height=%d,framerate=%d/1! shmsink socket-path=/tmp/ros_mem' % (
                 width, height, framerate,)
 
-        print(p)
+#        print(p)
 
         try:
             self.pipeline = Gst.parse_launch(p)
@@ -171,9 +171,11 @@ class Camera:
             pass
 
 def main():
+    rospy.init_node('tis_camera_node', anonymous=True)
     # Open the camera. Parameters are serial number, width, height, frame rate, color and liveview.
-    cam = Camera("24514123", 640, 480, 30, True, False)
+    # cam = Camera("24514123", 640, 480, 30, True, False)
     # cam = Camera("35814515", 640, 480, 30, True, False)
+    cam = Camera("35814519", 640, 480, 30, True, False)
 
     # Start the live stream from the camera and also "rosrun"
     cam.start_pipeline()
@@ -187,6 +189,7 @@ def main():
 
     # Stop the camera pipeline.
     cam.stop_pipeline()
+    rospy.spin()
 
 if __name__ == '__main__':
     main()
