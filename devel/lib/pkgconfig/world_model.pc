@@ -1,8 +1,0 @@
-prefix=/home/jensen/nubot_ws/devel
-
-Name: world_model
-Description: Description of world_model
-Version: 0.0.0
-Cflags: -I/home/jensen/nubot_ws/src/nubot/world_model/include
-Libs: -L/home/jensen/nubot_ws/devel/lib -lworld_model
-Requires: dynamic_reconfigure message_filters message_generation roscpp rospy std_msgs std_srvs

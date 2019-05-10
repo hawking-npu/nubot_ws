@@ -1,8 +1,0 @@
-prefix=/home/jensen/nubot_ws/install
-
-Name: color_segment
-Description: Description of color_segment
-Version: 0.0.0
-Cflags: -I/home/jensen/nubot_ws/install/include
-Libs: -L/home/jensen/nubot_ws/install/lib 
-Requires: 

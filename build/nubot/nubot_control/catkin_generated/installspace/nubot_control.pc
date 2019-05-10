@@ -1,8 +1,0 @@
-prefix=/home/jensen/nubot_ws/install
-
-Name: nubot_control
-Description: Description of nubot_control
-Version: 0.0.0
-Cflags: -I/home/jensen/nubot_ws/install/include
-Libs: -L/home/jensen/nubot_ws/install/lib 
-Requires: message_generation dynamic_reconfigure roscpp rospy std_msgs std_srvs

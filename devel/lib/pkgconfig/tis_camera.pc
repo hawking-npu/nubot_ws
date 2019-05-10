@@ -1,8 +1,0 @@
-prefix=/home/jensen/nubot_ws/devel
-
-Name: tis_camera
-Description: Description of tis_camera
-Version: 0.1.0
-Cflags: 
-Libs: -L/home/jensen/nubot_ws/devel/lib 
-Requires: 

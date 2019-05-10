@@ -1,2 +1,0 @@
-2D_Plot_Tool/plot_tool:camera_driver/camera_umd/camera_umd:camera_driver/camera_umd/jpeg_streamer:camera_driver/camera_umd/uvc_camera:camera_driver/tiscamera/gscam:camera_driver/tiscamera/tis_camera:cmake_modules:joystick_drivers/joy:joystick_drivers/joystick_drivers:nubot/color_segment:nubot/front_vision:nubot/nubot:nubot/nubot_common:nubot/nubot_control:nubot/nubot_hwcontroller:nubot/omni_vision:nubot/simulation_interface:nubot/world_model:realtime_tools
--DCATKIN_DEVEL_PREFIX=/home/jensen/nubot_ws/devel -DCMAKE_INSTALL_PREFIX=/home/jensen/nubot_ws/install -G Unix Makefiles

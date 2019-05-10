@@ -1,8 +1,0 @@
-\subsubsection parameters ROS parameters
-
-Reads and maintains the following parameters on the ROS server
-
-- \b "~kp" : \b [double] kP gain for feedback controller min: 0.0, default: 1.5, max: 20.0
-- \b "~kalpha" : \b [double] kalpha gain for feedback controller min: -10.0, default: 3.15, max: 10.0
-- \b "~kbeta" : \b [double] kbeta gain for feedback controller min: -20.0, default: -0.075, max: 0.0
-

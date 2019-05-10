@@ -1,8 +1,0 @@
-prefix=/home/jensen/nubot_ws/devel
-
-Name: realtime_tools
-Description: Description of realtime_tools
-Version: 1.8.3
-Cflags: -I/home/jensen/nubot_ws/src/realtime_tools/include
-Libs: -L/home/jensen/nubot_ws/devel/lib -lrealtime_tools
-Requires: roscpp rospy
