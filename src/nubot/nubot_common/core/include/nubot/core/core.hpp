@@ -8,7 +8,7 @@
 #include "PPoint.hpp"
 #include "Line.hpp"
 
-#define  SIMULATION
+//#define  SIMULATION
 #define  NET_TYPE "wlp3s0"
 
 //#define using_openmp

@@ -1,5 +1,5 @@
 Header header
-ObstaclesInfo obstacleinfo
+ObstaclesInfo[] obstacleinfo
 ObstaclesInfo oppinfo
 RobotInfo[]   robotinfo
 BallInfo[]    ballinfo
