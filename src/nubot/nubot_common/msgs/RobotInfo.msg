@@ -15,7 +15,6 @@ bool     isvalid
 bool     isstuck 
 bool     isdribble
 char     current_role
-char     current_action
 float32  role_time
 Point2d  target
  

@@ -1,8 +1,8 @@
 #ifndef __NUBOT_VISION_FIELDINFOMATION_H_
 #define __NUBOT_VISION_FIELDINFOMATION_H_
 
-#include <opencv2/opencv.hpp>
 #include "nubot/core/core.hpp"
+#include <opencv2/opencv.hpp>
 
 namespace nubot
 {
