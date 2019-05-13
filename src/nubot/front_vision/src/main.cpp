@@ -51,7 +51,7 @@ Front_Vision(int argc, char **argv)
 
     if(argc>1)
         calibration_path=argv[1];
-    ROS_INFO("initialize the front_vision  process");
+    ROS_INFO("initialize the front_vision process");
 
     colorsegmet_ = new ColorSegment(calibration_path+"/CTableBGR.dat");
     ballfinder_  = new BallFinder(calibration_path+"/Param.txt");
@@ -59,10 +59,10 @@ Front_Vision(int argc, char **argv)
 
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    img_sub_= it.subscribe("/front_vision/image_raw", 1, &Front_Vision::imageCallback,this);
+    img_sub_= it.subscribe("/zedcamera/image_raw", 1, &Front_Vision::imageCallback,this);
 
     ros::NodeHandle node;
-    ballinfo_pub_  = node.advertise<nubot_common::FrontBallInfo>("/front_vision/FrontBallInfo",1);
+    ballinfo_pub_  = node.advertise<nubot_common::FrontBallInfo>("/frontvision/FrontBallInfo",1);
 
 }
 ~Front_Vision()

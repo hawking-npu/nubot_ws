@@ -104,16 +104,21 @@ public:
 
     Omni_Vision(int argc, char **argv)
     {
-        char * environment;
-        if((environment = getenv("AGENT"))==NULL)
+        char * environment = getenv("HOME");
+        std::stringstream ss,env;
+        env<<environment;
+
+        char * agent_id_;
+        if((agent_id_ = getenv("AGENT"))==NULL)
         {
             ROS_ERROR("this agent number is not read by robot");
             return ;
         }
-        Agent_ID_ = atoi(environment);
-        std::stringstream ss;
+        Agent_ID_ = atoi(agent_id_);
         ss<<Agent_ID_;
-        std::string calibration_path="/home/jensen"+ss.str()+"/nubot_ws/src/nubot/omni_vision/calib_results";
+
+        std::string calibration_path=env.str()+"/nubot_ws/src/nubot/omni_vision/calib_results";
+
         if(argc>1)
             calibration_path=argv[1];
 
@@ -150,7 +155,7 @@ public:
 
         ros::NodeHandle nh;
         image_transport::ImageTransport image_transport_(nh);
-        camera_sub_= image_transport_.subscribe("/camera/image_raw", 1, &Omni_Vision::imageCallback, this);
+        camera_sub_= image_transport_.subscribe("/tiscamera/image_raw", 1, &Omni_Vision::imageCallback, this);
         ros::NodeHandle local_nh;
         motor_info_sub_ = local_nh.subscribe("/nubotdriver/odoinfo", 1, &Omni_Vision::odometryupdate,this);
 
@@ -393,7 +398,7 @@ int main(int argc, char **argv)
     ros::init(argc,argv,"omni_vision_node");
     ros::Time::init();
     ROS_INFO("start omni_vision process");
-    //nubot::Omni_Vision vision_process(argc, argv);
+    nubot::Omni_Vision vision_process(argc, argv);
     ros::spin();
     return 0;
 }

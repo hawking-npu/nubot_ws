@@ -1,36 +1,12 @@
 <launch>
-  <!-- Namespace to publish in -->
-  <arg name="camera" default="camera" />
-
-  <!-- select the camera to be opened by its IP address. -->
-  <arg name="ip_address" default="" />
-
-  <!-- Trigger mode: 'streaming' or 'polled' -->
-  <arg name="trigger_mode" default="streaming" />
-
-  <!-- tf frame if associated with this cam -->
-  <arg name="frame_id" default="$(arg camera)_optical_frame" />
-
-
   <!-- The camera node -->
-  <node name="tis_camera_node" pkg="tis_camera" type="tis_camera_node.py" output="screen">
-    <remap from="camera" to="$(arg camera)" />
-    <param name="ip_address" type="str" value="$(arg ip_address)" />
-    <param name="trigger_mode"  value="$(arg trigger_mode)" />
-    <param name="frame_id"  value="$(arg frame_id)" />
+  <node name="gige_camera_node" pkg="tis_camera" type="gige_camera_node.py">
+
     <param name="x_offset" type="int" value="89" />
     <param name="y_offset" type="int" value="23" />
     <param name="width" type="int" value="467" />
     <param name="height" type="int" value="466" />
-    <param name="exposure" type="double" value="0.025" />
-    <param name="gain" type="int" value="4" />
   </node>
-
-<!--  <env name="GSCAM_CONFIG" value="shmsrc socket-path=/tmp/ros_mem ! video/x-raw-rgb, width=640,height=480,framerate=30/1,bpp=24,depth=24,blue_mask=16711680,green_mask=65280,red_mask=255 ! ffmpegcolorspace" />
-  <node name="tis_camera_node" pkg="gscam" type="gscam" output="screen">
-     <param name="camera_info_url" value="package://localcam/calibrations/${NAME}.yaml" />
-     <remap from="camera/image_raw" to="/sensors/scanner/camera/image_raw" />
-  </node>-->
 
   <group ns="$(arg camera)">
   </group>

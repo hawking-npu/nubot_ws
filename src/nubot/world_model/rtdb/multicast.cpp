@@ -91,7 +91,7 @@ int if_NameToIndex(char *ifname, char *address)
 		(int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[4],
 		(int) ((unsigned char *) if_info.ifr_hwaddr.sa_data)[5]);
 
-	printf("**** Using device %s -> Ethernet %s\n ****", if_info.ifr_name, address);
+  printf("used device %s -> Ethernet %s", if_info.ifr_name, address);
 
 	return (if_index);
 }

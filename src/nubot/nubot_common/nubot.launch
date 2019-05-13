@@ -3,9 +3,17 @@
 -->
 
 <launch>
+  <!-- GigE Camera Needed -->
   <include file="$(find omni_vision)/launch/omni_vision.launch"> </include>
+
+  <!-- UVC Camera Needed -->
   <include file="$(find front_vision)/launch/front_vision.launch"> </include>
+
+  <!-- Serial Needed -->
+<!--  <include file="$(find nubot_hwcontroller)/launch/nubot_hwcontroller.launch"> </include>-->
+
+  <!-- Basic Nodes -->
   <include file="$(find world_model)/launch/world_model.launch"> </include>
-  <include file="$(find nubot_hwcontroller)/launch/nubot_hwcontroller.launch"> </include> 
   <include file="$(find nubot_control)/launch/nubot_control.launch"> </include>
+
 </launch>

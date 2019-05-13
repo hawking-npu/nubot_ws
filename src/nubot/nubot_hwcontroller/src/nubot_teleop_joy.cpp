@@ -22,24 +22,24 @@
 class TeleopNubot
 {
 public:
-	TeleopNubot();
-	ros::NodeHandle n;
+    TeleopNubot();
+    ros::NodeHandle n;
     ros::ServiceClient ballhandle_client_;
     ros::ServiceClient shoot_client_;
 
     double Vx,Vy,w;
 
 private:
-	ros::Publisher vel_pub;
+    ros::Publisher vel_pub;
     ros::Subscriber joy_sub;
     ros::Subscriber ball_sub;
 
     nubot_common::VelCmd cmd;
     bool CatchEnable;
     double ball_angle;
-	double deadzone_;
+    double deadzone_;
 
-	void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
+    void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
     void ballCallback(const nubot_common::OminiVisionInfo::ConstPtr& ball);
 };
 
@@ -48,19 +48,20 @@ TeleopNubot::TeleopNubot()
 {
     vel_pub = n.advertise<nubot_common::VelCmd>("/nubotcontrol/velcmd", 10);
     joy_sub = n.subscribe<sensor_msgs::Joy>("joy", 2, &TeleopNubot::joyCallback, this);
-    ball_sub= n.subscribe<nubot_common::OminiVisionInfo>("/omnivision/OminiVisionInfo", 2, &TeleopNubot::ballCallback, this);
+//    ball_sub= n.subscribe<nubot_common::OminiVisionInfo>("/omnivision/OminiVisionInfo", 2, &TeleopNubot::ballCallback, this);
     ballhandle_client_ =  n.serviceClient<nubot_common::BallHandle>("BallHandle");
     shoot_client_ = n.serviceClient<nubot_common::Shoot>("Shoot");
 }
 
 // 手柄消息回调函数，在ros::spin()里执行
-#define idx_X 1
-#define idx_Y 0
-#define idx_w 3
+#define linearVel_X 0
+#define linearVel_Y 1
+#define angularVel 3 // direction <0:clockwise >0:counter-clockwise
 
-#define Button_A    0
+#define click    0
+#define click_depression 5
 #define Button_B    1
-#define Button_X    2
+#define ballhandle    2
 #define Button_Y    3
 
 #define Button_Up   5
@@ -68,53 +69,36 @@ TeleopNubot::TeleopNubot()
 
 void TeleopNubot::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
 {
-
+    // click
     static float strength = 1;
-    //if(joy->buttons[Button_Up] || joy->buttons[Button_Down])
+    static int depression = 0;
+    if(joy->buttons[Button_Y])
     {
-        if(joy->buttons[Button_A])
-        {
-            /*nubot_common::Shoot s;
-            s.request.ShootPos=0;
-            s.request.strength=17;
-            shoot_client_.call(s);*/
-            strength += 0.2;
+        strength += 0.2;
 
-            if(strength > 40)
-               strength = 40;
-
-        }
-        else if(joy->buttons[Button_X])
-        {
-            /*nubot_common::Shoot s;
-            s.request.ShootPos=0;
-            s.request.strength=8;
-            shoot_client_.call(s);*/
-            strength -= 0.2;
-
-            if(strength < 0)
-               strength = 0;
-
-        }
-        else if(joy->buttons[Button_Y])
-        {
-            nubot_common::Shoot s;
-            s.request.ShootPos=0;
-            s.request.strength=strength;
-            shoot_client_.call(s);
-        }
-        else
-        {
-            nubot_common::Shoot s;
-            s.request.strength=0;
-            s.request.ShootPos= joy->buttons[Button_Up]  ?    1 :
-                                joy->buttons[Button_Down]?    -1 : 0;
-            shoot_client_.call(s);
-        }
+        if(strength > 40)
+           strength = 40;
     }
-    ROS_INFO("POWER :  %.1f", strength);
+    else if(joy->buttons[Button_B])
+    {
+        strength -= 0.2;
+
+        if(strength < 0)
+           strength = 0;
+    }
+    if(joy->buttons[click])
+    {
+        nubot_common::Shoot s;
+        depression = (int) (1 - joy->axes[click_depression])*30; // max_depression : 2*30=60
+        s.request.ShootPos= depression;
+        s.request.strength=strength;
+        ROS_INFO("[CLICK] POWER :  %.1f, POS:  %d", strength, depression);
+        shoot_client_.call(s);
+    }
+
+    // ballhandle
     static bool BallHandleEnable = false;
-    if(joy->buttons[Button_B]==1)
+    if(joy->buttons[ballhandle]==1)
     {
         BallHandleEnable=!BallHandleEnable;
         nubot_common::BallHandle b;
@@ -122,131 +106,24 @@ void TeleopNubot::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
         ballhandle_client_.call(b);
     }
 
-    /*速度指令*/
-    cmd.Vx = joy->axes[idx_X]*500;
-    cmd.Vy = joy->axes[idx_Y]*500;
-
-    CatchEnable = joy->buttons[Button_X];
-    // 朝球转
-    //if(!CatchEnable)
-        cmd.w  = joy->axes[idx_w]*2*M_PI;
-
-        //*yqh ACC method
-        #define WHEELS 4
-        const double WHEEL_DISTANCE=20.3;
-        #define ACC_THRESH 15  //cm/s^2
-        #define DCC_THRESH (ACC_THRESH*3)  //cm/s^2
-           //同时平动和转动，要想保持全局速度方向不变，会给轮子带来额外的加速度开销，暂且称为牵连加速度:|acc_convect| <= |v*w|
-          static float wheel_speed_old[WHEELS] = {0};
-          float wheel_speed[WHEELS];
-          float wheel_acc[WHEELS];
-          float& Vx = cmd.Vx;
-          float& Vy = cmd.Vy;
-          float&  w = cmd.w;
-
-        if(WHEELS == 4)
-        {
-          wheel_speed[0]= ( 0.707*( Vx - Vy) - w*WHEEL_DISTANCE);
-          wheel_speed[1]= ( 0.707*( Vx + Vy) - w*WHEEL_DISTANCE);
-          wheel_speed[2]= ( 0.707*(-Vx + Vy) - w*WHEEL_DISTANCE);
-          wheel_speed[3]= ( 0.707*(-Vx - Vy) - w*WHEEL_DISTANCE);
-        }
-        else
-        {
-            wheel_speed[0]= ( 0.866*Vx -  0.5*Vy - w*WHEEL_DISTANCE);
-            wheel_speed[1]= (   0.0*Vx +      Vy - w*WHEEL_DISTANCE);
-            wheel_speed[2]= ( -0.866*Vx - 0.5*Vy - w*WHEEL_DISTANCE);
-        }
-          float acc_thresh_ratio = 1;
-          for(int i=0; i<WHEELS; i++)
-          {
-            wheel_acc[i] = wheel_speed[i]-wheel_speed_old[i];
-            float acc_thresh_ratio_temp = 0;
-            if( wheel_acc[i]*wheel_speed_old[i]>=0 ) //speed up
-              acc_thresh_ratio_temp = fabs(wheel_acc[i])/ACC_THRESH;
-            else                                 //speed down
-              acc_thresh_ratio_temp = fabs(wheel_acc[i])/DCC_THRESH;
-            if( acc_thresh_ratio_temp>acc_thresh_ratio )
-            {
-               acc_thresh_ratio = acc_thresh_ratio_temp;
-            }
-          }
-
-          if( acc_thresh_ratio > 1 )
-          {
-            for(int i=0; i<WHEELS; i++)
-            {
-              wheel_acc[i] /= acc_thresh_ratio;
-              wheel_speed[i] = wheel_speed_old[i] + wheel_acc[i];
-            }
-          }
-          if(WHEELS==4)
-          {
-            w  = -(wheel_speed[0]+wheel_speed[1]+wheel_speed[2]+wheel_speed[3])/(4*WHEEL_DISTANCE);
-            Vx =  (wheel_speed[0]+wheel_speed[1]-wheel_speed[2]-wheel_speed[3])/(2*1.414);
-            Vy =  (wheel_speed[1]+wheel_speed[2]-wheel_speed[0]-wheel_speed[3])/(2*1.414);
-          }
-          else
-          {
-            Vx = ( 0.577*wheel_speed[0]  + 0 * wheel_speed[1] -  wheel_speed[2] * 0.577);
-            Vy = (-0.333*wheel_speed[0]  + 0.667*wheel_speed[1] - wheel_speed[2]*0.333);
-            w  = (-wheel_speed[0] - wheel_speed[1] - wheel_speed[2] )/(3*WHEEL_DISTANCE);
-          }
-
-          if(hypot(Vx,Vy)*fabs(w)*0.03>ACC_THRESH)//无法保持全局速度方向不变,进一步限速
-          {
-            float v_wheel=0;
-            for(int i=0; i<WHEELS; i++)
-            {
-              if( fabs(wheel_speed[i])>v_wheel )
-                v_wheel = fabs(wheel_speed[i]);
-            }
-            if(v_wheel<ACC_THRESH) v_wheel = ACC_THRESH;
-            for(int i=0; i<WHEELS; i++)
-            {
-              wheel_speed[i] *= (1-ACC_THRESH/v_wheel);
-            }
-            if(WHEELS==4)
-            {
-              w  = -(wheel_speed[0]+wheel_speed[1]+wheel_speed[2]+wheel_speed[3])/(4*WHEEL_DISTANCE);
-              Vx =  (wheel_speed[0]+wheel_speed[1]-wheel_speed[2]-wheel_speed[3])/(2*1.414);
-              Vy =  (wheel_speed[1]+wheel_speed[2]-wheel_speed[0]-wheel_speed[3])/(2*1.414);
-            }
-            else
-            {
-              Vx = ( 0.577*wheel_speed[0]  + 0 * wheel_speed[1] -  wheel_speed[2] * 0.577);
-              Vy = (-0.333*wheel_speed[0]  + 0.667*wheel_speed[1] - wheel_speed[2]*0.333);
-              w  = (-wheel_speed[0] - wheel_speed[1] - wheel_speed[2] )/(3*WHEEL_DISTANCE);
-            }
-          }
- //         float Vx_r = m_plan_.m_behaviour_.worldmodelinfo_.robot_vel_.x_;
- //         float Vy_r = m_plan_.m_behaviour_.worldmodelinfo_.robot_vel_.y_;
- //         float  w_r = m_plan_.m_behaviour_.worldmodelinfo_.robot_omega_;
-//          float temp = Vx;
-//          Vx -=-Vy*w*0.1;
-//          Vy -= temp*w*0.1;
-
-          for(int i=0; i<WHEELS; i++)
-          {
-            wheel_speed_old[i] = wheel_speed[i];
-          }
-
-
-
+    // velocity
+    cmd.Vx = - joy->axes[linearVel_X]*2000;
+    cmd.Vy = joy->axes[linearVel_Y]*2000;
+    cmd.w  = - joy->axes[angularVel]*1500;
     vel_pub.publish(cmd);
 }
 
-void TeleopNubot::ballCallback(const nubot_common::OminiVisionInfo::ConstPtr& ball)
-{
-    ball_angle = ball->ballinfo.real_pos.angle;
-    ROS_INFO("Angle:%.2f",ball_angle/M_PI*180.0);
+//void TeleopNubot::ballCallback(const nubot_common::OminiVisionInfo::ConstPtr& ball)
+//{
+//    ball_angle = ball->ballinfo.real_pos.angle;
+//    ROS_INFO("Angle:%.2f",ball_angle/M_PI*180.0);
 
-    if(CatchEnable)
-    {
-        cmd.w  = ball_angle;
-        vel_pub.publish(cmd);
-    }
-}
+//    if(CatchEnable)
+//    {
+//        cmd.w  = ball_angle;
+//        vel_pub.publish(cmd);
+//    }
+//}
 
 int main(int argc, char** argv)
 {
@@ -254,20 +131,16 @@ int main(int argc, char** argv)
 	TeleopNubot teleop_nubot;
 
 #if 1
-	// 调用joy_node进程,驱动手柄
 	pid_t pid = vfork();
 	if(pid==0)
-	{
-        if(execlp("rosrun", "rosrun", "joy", "joy_node", "_deadzone:=0.14", (char *)0) < 0)
-			ROS_WARN("Process Joy not found!");
-
-		// 正常情况下exec函数不会返回
+  {
+    if(execlp("rosrun", "rosrun", "joy", "joy_node", "_deadzone:=0.14", (char *)0) < 0)
+      ROS_WARN("Process Joy not found!");
+    // 正常情况下exec函数不会返回
 		return(-1);
 	}
 #endif
-
-    ros::spin();
-
+  ros::spin();
 	return (0);
 }
 

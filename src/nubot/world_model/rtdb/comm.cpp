@@ -416,6 +416,7 @@ int main(int argc, char *argv[])
     argv[0]= "comm";
 //    argv[1] = "wlan0"
     argv[1]= "wlp3s0";
+
 #ifdef UNI_DEBUG
     char tempBuffer[BUFFER_SIZE];
     int tempIndex;
@@ -444,7 +445,6 @@ int main(int argc, char *argv[])
         printf("Usage: comm <interface_name>\n\n");
         return (-1);
     }
-
     /* initializations */
     delay = 0;
     timer = 0;
@@ -542,11 +542,11 @@ int main(int argc, char *argv[])
     it.it_interval.tv_sec=0;
     setitimer (ITIMER_REAL, &it, NULL);
 
-    printf("communication: STARTED in ");
+    printf("started communication in ");
 #ifdef UNSYNC
-    printf("unsync mode...\n");
+    printf("unsync mode\n");
 #else
-    printf("sync mode...\n");
+    printf("sync mode\n");
 #endif 
 
     while (!end)

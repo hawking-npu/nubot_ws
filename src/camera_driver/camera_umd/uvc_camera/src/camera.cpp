@@ -26,7 +26,7 @@ Camera::Camera(ros::NodeHandle _comm_nh, ros::NodeHandle _param_nh) :
       fps = 30;
       skip_frames = 0;
       frames_to_skip = 0;
-      device = "/dev/video1";
+      device = "/dev/video0";
       frame = "camera";
       rotate = false;
 
@@ -50,9 +50,9 @@ Camera::Camera(ros::NodeHandle _comm_nh, ros::NodeHandle _param_nh) :
       pnode.getParam("frame_id", frame);
 
       /* advertise image streams and info streams */
-      pub = it.advertise("/front_vision/image_raw", 1);
+      pub = it.advertise("/zedcamera/image_raw", 1);
 
-      info_pub = node.advertise<CameraInfo>("/front_vision/camera_info", 1);
+      info_pub = node.advertise<CameraInfo>("/zedcamera/camera_info", 1);
 
       /* initialize the cameras */
       cam = new uvc_cam::Cam(device.c_str(), uvc_cam::Cam::MODE_RGB, width, height, fps);

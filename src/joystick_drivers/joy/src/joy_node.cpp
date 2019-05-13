@@ -174,7 +174,7 @@ public:
           ROS_ERROR("Couldn't open joystick %s. Will retry every second.", joy_dev_.c_str());
           first_fault = false;
         }
-        sleep(1.0);
+        sleep(3); // 100 bps
         diagnostic_.update();
       }
       

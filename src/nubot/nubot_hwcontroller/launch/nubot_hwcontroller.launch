@@ -1,3 +1,4 @@
 <launch>
-  <node name="nubot_hwcontroller_node" pkg="nubot_hwcontroller" type="nubot_hwcontroller_node"/>
+  <node name="nubot_hwcontroller_node" pkg="nubot_hwcontroller" type="nubot_hwcontroller_node" output="screen"/>
+<!--  <node name="nubot_teleop_joy" pkg="nubot_hwcontroller" type="nubot_teleop_joy" output="screen"/>-->
 </launch>

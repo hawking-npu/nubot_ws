@@ -4,6 +4,9 @@ project(gscam)
 
 # System Dependencies
 find_package(PkgConfig)
+#generate_dynamic_reconfigure_options(
+#  cfg/GsCam.cfg
+#)
 
 pkg_check_modules(GSTREAMER QUIET gstreamer-0.10)
 if(NOT GSTREAMER_FOUND)
@@ -48,16 +51,19 @@ if(USE_ROSBUILD)
 
 else()
   # Use Catkin
+  find_package(Boost  REQUIRED)
   find_package(catkin REQUIRED 
     COMPONENTS roscpp image_transport sensor_msgs nodelet
     camera_calibration_parsers camera_info_manager
+#    driver_base
+    dynamic_reconfigure
     )
 
   catkin_package(
     INCLUDE_DIRS include
     LIBRARIES gscam
     CATKIN_DEPENDS roscpp nodelet image_transport sensor_msgs
-    camera_calibration_parsers camera_info_manager
+    camera_calibration_parsers camera_info_manager dynamic_reconfigure
     DEPENDS GSTREAMER GST_APP
     )
 
@@ -119,6 +125,7 @@ else()
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
   set(EXECUTABLE_OUTPUT_PATH ${CATKIN_DEVEL_PREFIX}/lib/${PROJECT_NAME})
 endif()
+
 
 # Interim compatibility
 # Remove this in the next distribution release

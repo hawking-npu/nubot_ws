@@ -15,8 +15,8 @@ endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  std_msgs message_generation
-  dynamic_reconfigure
+  std_msgs
+  serial
   realtime_tools
   nubot_common
 )
@@ -55,9 +55,9 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
- add_message_files(FILES
-   DebugInfo.msg
- )
+# add_message_files(FILES
+#   DebugInfo.msg
+# )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -72,14 +72,6 @@ find_package(catkin REQUIRED COMPONENTS
 #   Action1.action
 #   Action2.action
 # )
-
-## Generate added messages and services with any dependencies listed here
- generate_messages(DEPENDENCIES std_msgs)
-
-#add dynamic reconfigure api
-generate_dynamic_reconfigure_options(
-  cfg/controller.cfg
-)
 
 ###################################
 ## catkin specific configuration ##
@@ -108,39 +100,23 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a cpp library
- add_library(soem   src/soem/ethercatbase.c
-                    src/soem/ethercatconfig.c
-                    src/soem/ethercatmain.c
-                    src/soem/nicdrv.c
-                    src/soem/EtherCAT.c
-                    src/soem/ethercatdc.c
-                    src/soem/ethercatprint.c
-                    src/soem/osal.c
-                    src/soem/ethercatcoe.c
-                    src/soem/ethercatfoe.c
-                    src/soem/ethercatsoe.c
-                    src/soem/oshw.c
- )
-
 ## Declare a cpp executable
-add_executable(nubot_hwcontroller_node src/nubot_hwcontroller_node.cpp
-                                       src/cmac.cpp)
+add_executable(nubot_hwcontroller_node
+    src/nubot_hwcontroller_node.cpp)
 
 add_executable(nubot_teleop_joy src/nubot_teleop_joy.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(nubot_hwcontroller_node ${PROJECT_NAME}_gencfg)
 add_dependencies(nubot_hwcontroller_node ${catkin_EXPORTED_TARGETS})
 add_dependencies(nubot_teleop_joy ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(nubot_hwcontroller_node
-   ${catkin_LIBRARIES} soem ncurses
+target_link_libraries(nubot_hwcontroller_node
+   ${catkin_LIBRARIES}
 )
 
- target_link_libraries(nubot_teleop_joy
+target_link_libraries(nubot_teleop_joy
    ${catkin_LIBRARIES}
 )
 #############

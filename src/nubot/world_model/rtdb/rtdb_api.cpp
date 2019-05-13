@@ -114,23 +114,23 @@ int read_configuration(RTDBconf_agents *conf)
 	int id, size, period;
 	char type;
 
-    int agent_number;
-    char * environment;
-    if((environment = getenv("AGENT"))==NULL)
-    {
-        PERR("this agent number is not read by robot");
-        return -1;
-    }
-    agent_number = atoi(environment);
-    std::stringstream ss;
-    ss<<agent_number;
-    std::string ini_config_file="/home/nubot"+ss.str()+"/nubot_ws/src/nubot/world_model/config/rtdb.ini";
-    if ((f_def = fopen(ini_config_file.c_str(), "r")) == NULL)
-	{
-		PERRNO("fopen");
+  char * agent_number_;
+  if((agent_number_ = getenv("AGENT"))==NULL)
+  {
+      PERR("this agent number is not read by robot");
+      return -1;
+  }
+
+  char * environment = getenv("HOME");
+  std::stringstream ss;
+  ss<<environment;
+
+  std::string ini_config_file=ss.str()+"/nubot_ws/src/nubot/world_model/config/rtdb.ini";
+  if ((f_def = fopen(ini_config_file.c_str(), "r")) == NULL)
+  {
+    PERRNO("fopen");
 		return -1;
 	}
-
 	do
 	{
 		rc = fscanf(f_def, "%100[^\n]", s);
@@ -448,28 +448,28 @@ int DB_initialization (int _agent, int _second_rtdb)
 //
 int DB_init(void)
 {
-	char *environment;
+  char *agent_number_;
 	int agent;
-    int second_rtdb = 0;
+  int second_rtdb = 0;
 
 	// retrieve agent number
-	if((environment = getenv("AGENT")) == NULL)
+  if((agent_number_ = getenv("AGENT")) == NULL)
 	{
 		PERR("getenv");
 		return -1;
 	}
-	agent = atoi(environment);
+  agent = atoi(agent_number_);
 	__agent = agent;
 	PDEBUG("agent = %d", agent);
 
 	// 
-	if((environment = getenv("SECOND_RTDB")) == NULL)
+  if((agent_number_ = getenv("SECOND_RTDB")) == NULL)
 	{
 		second_rtdb = 0;
   }
   else
   {
-  	second_rtdb = atoi(environment);
+    second_rtdb = atoi(agent_number_);
   }
 
 	return (DB_initialization (agent, second_rtdb));

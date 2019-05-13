@@ -1,0 +1,11 @@
+<launch>
+  <node name="gige_camera_node" pkg="tis_camera" type="gige_camera_node.py">
+
+    <param name="x_offset" value="0" />
+    <param name="y_offset" value="0" />
+    <param name="width" value="0" />
+    <param name="height" value="0" />
+  </node>
+  <node name="calibration_util_node" pkg="calibration_util" type="calibration_util_node" />
+
+</launch>
