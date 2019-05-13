@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <opencv_storage>
-<start_row>71</start_row>
-<start_column>43</start_column>
-<center_point_row>77</center_point_row>
-<center_point_column>77</center_point_column>
-<big_radius>67</big_radius>
-<small_radius>0</small_radius>
-<rows>155</rows>
-<cols>155</cols>
+<start_row>1</start_row>
+<start_column>82</start_column>
+<center_point_row>249</center_point_row>
+<center_point_column>249</center_point_column>
+<big_radius>239</big_radius>
+<small_radius>20</small_radius>
+<rows>479</rows>
+<cols>499</cols>
 </opencv_storage>

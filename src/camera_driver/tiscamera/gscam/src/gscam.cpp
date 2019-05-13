@@ -16,12 +16,15 @@ extern "C"{
 #include <image_transport/image_transport.h>
 #include <camera_info_manager/camera_info_manager.h>
 
-
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CompressedImage.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/SetCameraInfo.h>
 #include <sensor_msgs/image_encodings.h>
+
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <camera_calibration_parsers/parse_ini.h>
 
@@ -38,8 +41,16 @@ namespace gscam {
     image_transport_(nh_camera),
     camera_info_manager_(nh_camera)
   {
-     // Start dynamic_reconfigure
-//     reconfigure_server_.setCallback(boost::bind(&GSCam::dynamic_configure, this, _1, _2));
+    // Start dynamic_reconfigure
+    reconfigure_server_.setCallback(boost::bind(&GSCam::dynamic_configure, this, _1, _2));
+
+    // param initialization
+    ros::param::get("/gige_camera_node/x_offset", roi_x_offset_);
+    ros::param::get("/gige_camera_node/y_offset", roi_y_offset_);
+    ros::param::get("/gige_camera_node/width", roi_width_);
+    ros::param::get("/gige_camera_node/height", roi_height_);
+//    ROS_INFO("%d %d %d %d", roi_x_offset_, roi_y_offset_, roi_width_, roi_height_);
+
   }
 
   GSCam::~GSCam()
@@ -109,14 +120,20 @@ namespace gscam {
     return true;
   }
 
-//  void GSCam::dynamic_configure()
-//  {
-//    ROS_DEBUG("Reconfigure request received");
-//    roi_x_offset_ = config.x_offset;
-//    roi_y_offset_ = config.y_offset;
-//    roi_width_ = config.width;
-//    roi_height_ = config.height;
-//  }
+  void GSCam::dynamic_configure(Config& config, uint32_t level)
+  {
+    ROS_DEBUG("Reconfigure request received");
+    if (level < (uint32_t)driver_base::SensorLevels::RECONFIGURE_STOP && level!=-1)
+    {
+      // RUNNING
+//      ROS_INFO("%d %d %d %d", roi_x_offset_, roi_y_offset_, roi_width_, roi_height_);
+      roi_x_offset_ = config.x_offset;
+      roi_y_offset_ = config.y_offset;
+      roi_width_ = config.width;
+      roi_height_ = config.height;
+    }
+  }
+
   bool GSCam::init_stream()
   {
     if(!gst_is_initialized()) {
@@ -345,52 +362,39 @@ namespace gscam {
       }
       // ROS_INFO("Image time stamp: %.3f",cinfo->header.stamp.toSec());
       cinfo->header.frame_id = frame_id_;
-
-      // format of 'jpeg'
       if (image_encoding_ == "jpeg") {
           sensor_msgs::CompressedImagePtr img(new sensor_msgs::CompressedImage());
           img->header = cinfo->header;
           img->format = "jpeg";
-//          if(!roi_x_offset_ && !roi_y_offset_ && !roi_width_ && !roi_height_)
+          img->data.resize(buf_size);
+          std::copy(buf_data, (buf_data)+(buf_size),
+                  img->data.begin());
+
+//          if(roi_x_offset_ || roi_y_offset_ || roi_width_ || roi_height_)
 //          {
-//            // roi selected
-//            expected_frame_size =
-//                          image_encoding_ == sensor_msgs::image_encodings::RGB8
-//                          ? roi_width_ * roi_height_ * 3
-//                          : roi_width_ * roi_height_;
-//            img->data.resize(expected_frame_size);
-//            if (image_encoding_ == sensor_msgs::image_encodings::RGB8) {
-//              // color crop
-//              for(int c=0; c<2; c++)
-//              {
-//                for(int i=roi_x_offset_; i<roi_x_offset_+roi_width_; i++)
-//                {
-//                  for(int j=roi_y_offset_,k=0; j<roi_y_offset_+roi_height_; j++,k++)
-//                  {
-//                    img->data[k++] = buf_data[c*roi_width*roi_height_+j*roi_width_+i];
-//                  }
-//                }
-//              }
-//            } else {
-//              // gray crop
-//              for(int i=roi_x_offset_; i<roi_x_offset_+roi_width_; i++)
-//              {
-//                for(int j=roi_y_offset_,k=0; j<roi_y_offset_+roi_height_; j++,k++)
-//                {
-//                  img->data[k++] = buf_data[j*roi_width_+i];
-//                }
-//              }
+//            roi_x_offset_ = std::min(roi_x_offset_, width_);
+//            roi_y_offset_ = std::min(roi_y_offset_, width_);
+//            roi_width_ = std::min(roi_width_, width_-roi_x_offset_);
+//            roi_height_ = std::min(roi_height_, height_-roi_y_offset_);
+//            cv_bridge::CvImagePtr cv_ptr;
+//            try{
+//              if(sensor_msgs::image_encodings::isColor(img->encoding))
+//                cv_ptr=cv_bridge::toCvCopy(img,sensor_msgs::image_encodings::BGR8);
+//              else
+//                cv_ptr=cv_bridge::toCvCopy(img,sensor_msgs::image_encodings::MONO8);
 //            }
-//          } else {
-            // raw image
-            img->data.resize(buf_size);
-            std::copy(buf_data, (buf_data)+(buf_size),
-                    img->data.begin());
+//            catch (cv_bridge::Exception& e)
+//            {
+//              ROS_ERROR("cv_bridge exception: %s", e.what());
+//              return;
+//            }
+//            cv_ptr->image = cv_ptr->image(cv::Rect(roi_x_offset_, roi_y_offset_, roi_width_, roi_height_));
+//            img = cv_ptr->toImageMsg();
 //          }
+
           jpeg_pub_.publish(img);
           cinfo_pub_.publish(cinfo);
       } else {
-          // format of not 'jpeg'
           // Complain if the returned buffer is smaller than we expect
           const unsigned int expected_frame_size =
               image_encoding_ == sensor_msgs::image_encodings::RGB8
@@ -413,53 +417,43 @@ namespace gscam {
           img->height = height_;
           img->encoding = image_encoding_;
           img->is_bigendian = false;
-//          if(!roi_x_offset_ && !roi_y_offset_ && !roi_width_ && !roi_height_)
-//          {
-//            // roi selected
-//            expected_frame_size =
-//                          image_encoding_ == sensor_msgs::image_encodings::RGB8
-//                          ? roi_width_ * roi_height_ * 3
-//                          : roi_width_ * roi_height_;
-//            img->data.resize(expected_frame_size);
-//            if (image_encoding_ == sensor_msgs::image_encodings::RGB8) {
-//              // color crop
-//              for(int c=0; c<2; c++)
-//              {
-//                for(int i=roi_x_offset_; i<roi_x_offset_+roi_width_; i++)
-//                {
-//                  for(int j=roi_y_offset_,k=0; j<roi_y_offset_+roi_height_; j++,k++)
-//                  {
-//                    img->data[k++] = buf_data[c*roi_width*roi_height_+j*roi_width_+i];
-//                  }
-//                }
-//              }
-//            } else {
-//              // gray crop
-//              for(int i=roi_x_offset_; i<roi_x_offset_+roi_width_; i++)
-//              {
-//                for(int j=roi_y_offset_,k=0; j<roi_y_offset_+roi_height_; j++,k++)
-//                {
-//                  img->data[k++] = buf_data[j*roi_width_+i];
-//                }
-//              }
-//            }
-//          } else {
-            // raw image
-            img->data.resize(expected_frame_size);
-            // Copy only the data we received
-            // Since we're publishing shared pointers, we need to copy the image so
-            // we can free the buffer allocated by gstreamer
-            if (image_encoding_ == sensor_msgs::image_encodings::RGB8) {
-                img->step = width_ * 3;
-            } else {
-                img->step = width_;
-            }
-            std::copy(
-                    buf_data,
-                    (buf_data)+(buf_size),
-                    img->data.begin());
-//          }
+          img->data.resize(expected_frame_size);
 
+          // Copy only the data we received
+          // Since we're publishing shared pointers, we need to copy the image so
+          // we can free the buffer allocated by gstreamer
+          if (image_encoding_ == sensor_msgs::image_encodings::RGB8) {
+              img->step = width_ * 3;
+          } else {
+              img->step = width_;
+          }
+          std::copy(
+                  buf_data,
+                  (buf_data)+(buf_size),
+                  img->data.begin());
+
+//          ROS_INFO("%d %d %d %d", roi_x_offset_, roi_y_offset_, roi_width_, roi_height_);
+          if(roi_x_offset_ || roi_y_offset_ || roi_width_ || roi_height_)
+          {
+            roi_x_offset_ = std::min(roi_x_offset_, width_);
+            roi_y_offset_ = std::min(roi_y_offset_, width_);
+            roi_width_ = std::min(roi_width_, width_-roi_x_offset_);
+            roi_height_ = std::min(roi_height_, height_-roi_y_offset_);
+            cv_bridge::CvImagePtr cv_ptr;
+            try{
+              if(sensor_msgs::image_encodings::isColor(img->encoding))
+                cv_ptr=cv_bridge::toCvCopy(img,sensor_msgs::image_encodings::BGR8);
+              else
+                cv_ptr=cv_bridge::toCvCopy(img,sensor_msgs::image_encodings::MONO8);
+            }
+            catch (cv_bridge::Exception& e)
+            {
+              ROS_ERROR("cv_bridge exception: %s", e.what());
+              return;
+            }
+            cv_ptr->image = cv_ptr->image(cv::Rect(roi_x_offset_, roi_y_offset_, roi_width_, roi_height_));
+            img = cv_ptr->toImageMsg();
+          }
           // Publish the image/info
           camera_pub_.publish(img, cinfo);
       }

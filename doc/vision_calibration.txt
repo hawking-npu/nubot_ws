@@ -19,7 +19,7 @@
            ->    保存ROI
 
      5.重新载入roi数据：查看roi数据（保存路径）
-           ->    载入数据：rosrun prosilica_camera prosilica_node _height:=  _width:=  _x_offset:=  _y_offset:=
+           ->    载入数据：rosrun tis_camera gige_camera_node.py _height:=  _width:=  _x_offset:=  _y_offset:=
            ->    修改/home/nubot3/nubot_ws/src/prosilica_driver/prosilica_camera/launch/3中generic.launch文件中的x_offset，y_offset，height width的参数值（大小为roi中各参数的大小）        
 
 第二部分：颜色标定（现在只需要标定足球就可以了，障碍物和场地是通过其他方法标定的，不是颜色标定）         
@@ -36,6 +36,9 @@
            ->    HIV空间
            ->    找到场地（长方形）
            ->    result_save
+     10.检测标定结果：
+           ->    segment_show
+           ->    segment_result
 
 第三部分：距离标定
      9.检测白线：
@@ -47,9 +50,7 @@
            ->    save white
            ->    load whites
            ->    white wave(查看是否保存结果)
-     10.检测标定结果：
-           ->    segment_result
-           ->    segment_show
+
      11.进入该机器人标定的文件夹/home/nubot3/nubot_ws/src/nubot/omni_vision/calib_results/3修改场地参数
          修改文件：calibration2.m    costfcn.m 和show_calibration.m中以下参数
 				     startx =-900-100;

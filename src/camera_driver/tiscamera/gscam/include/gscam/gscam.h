@@ -15,11 +15,17 @@ extern "C"{
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/SetCameraInfo.h>
 
-//#include <dynamic_reconfigure/server.h>
-//#include <driver_base/SensorLevels.h>
-//#include "gscamera/GsCamConfig.h"
-
 #include <stdexcept>
+
+// dynamic configuration
+#include <dynamic_reconfigure/server.h>
+#include <driver_base/SensorLevels.h>
+#include <stdint.h>
+#include "gscam/GsCamConfig.h"
+
+// Dynamic gstreamer configuration
+typedef gscam::GsCamConfig Config; // conflict with namespace
+typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
 
 namespace gscam {
 
@@ -29,7 +35,7 @@ namespace gscam {
     ~GSCam();
 
     bool configure();
-//    void dynamic_configure(Config& config, int level);
+    void dynamic_configure(Config& config, uint32_t level);
     bool init_stream();
     void publish_stream();
     void cleanup_stream();
@@ -39,11 +45,7 @@ namespace gscam {
   private:
     // General gstreamer configuration
     std::string gsconfig_;
-
-    // Dynamic gstreamer configuration
-//     typedef gscamera::GsCamConfig Config; // conflict with namespace
-//     typedef dynamic_reconfigure::Server<Config> ReconfigureServer;
-//     ReconfigureServer reconfigure_server_;
+    ReconfigureServer reconfigure_server_;
 
     // Gstreamer structures
     GstElement *pipeline_;

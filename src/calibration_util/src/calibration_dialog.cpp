@@ -12,8 +12,8 @@ Dialog::Dialog(image_subscribe & _image,QWidget *parent) :
     image_sub_ = &_image;
 
     start_pts_.push_back(QPoint(0,0));
-    start_pts_.push_back(QPoint(520,0));
-    start_pts_.push_back(QPoint(520,0));
+    start_pts_.push_back(QPoint(640,0));
+    start_pts_.push_back(QPoint(640,0));
 
     scale_factor_=2;
 
