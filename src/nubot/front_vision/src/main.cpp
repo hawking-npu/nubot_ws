@@ -37,17 +37,21 @@ public:
 
 Front_Vision(int argc, char **argv)
 {
-    char * environment;
+    char * environment = getenv("AGENT");
+    std::stringstream env;
+    env<<environment;
+
+    char * agent_id;
     int agent;
-    if((environment = getenv("AGENT"))==NULL)
+    if((agent_id = getenv("AGENT"))==NULL)
     {
         ROS_ERROR("this agent number is not read by robot");
         return ;
     }
-    agent = atoi(environment);
+    agent = atoi(agent_id);
     std::stringstream ss;
     ss<<agent;
-    std::string calibration_path="/home/nubot"+ss.str()+"/nubot_ws/src/nubot/front_vision/calib_results/"+ss.str();
+    std::string calibration_path=env.str()+"/nubot_ws/src/nubot/front_vision/calib_results/"+ss.str();
 
     if(argc>1)
         calibration_path=argv[1];

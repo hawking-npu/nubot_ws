@@ -19,9 +19,9 @@ Globallocalization::rankErrorsforSamples(const std::vector<double> & _weights,co
 	int endy   = opti_->endy_;
 	location_err tmpLocErr;
 
-	for (int n=starty;n<=endy;n=n+100)                
+  for (int n=starty;n<=endy;n=n+50)
 	{                      
-		for(int m=startx;m<=endx;m=m+100)       
+    for(int m=startx;m<=endx;m=m+50)
 		{
 			tmpLocErr.loction=DPoint(m,n);
 			tmpLocErr.ang=_angle;
@@ -31,14 +31,14 @@ Globallocalization::rankErrorsforSamples(const std::vector<double> & _weights,co
 	}
 	if(_times==1)
 	{
-		for (int n=starty;n<=endy;n=n+100)  
+    for (int n=starty;n<=endy;n=n+50)
 		{
 			tmpLocErr.loction=DPoint(opti_->endx_,n);
 			tmpLocErr.ang=_angle;
             tmpLocErr.error=opti_->caculateErrors(_weights,_white_pt,tmpLocErr.loction,_angle);
 			samples_.push_back(tmpLocErr);
 		}
-		for (int m=startx;m<=endx;m=m+100)  
+    for (int m=startx;m<=endx;m=m+50)
 		{
 			tmpLocErr.loction=DPoint(m,opti_->endy_);
 			tmpLocErr.ang=_angle;
@@ -53,14 +53,14 @@ Globallocalization::rankErrorsforSamples(const std::vector<double> & _weights,co
 	}
 	if(_times==2)
 	{
-		for (int n=starty;n<=endy;n=n+100)  
+    for (int n=starty;n<=endy;n=n+50)
 		{
 			tmpLocErr.loction=DPoint(opti_->startx_,n);
 			tmpLocErr.ang=_angle;
 			tmpLocErr.error=opti_->caculateErrors(_weights,_white_pt,tmpLocErr.loction,_angle);
 			samples_.push_back(tmpLocErr);
 		}
-		for (int m=startx;m<=endx;m=m+100)  
+    for (int m=startx;m<=endx;m=m+50)
 		{
 			tmpLocErr.loction=DPoint(m,opti_->starty_);
 			tmpLocErr.ang=_angle;
@@ -88,14 +88,15 @@ Globallocalization::process(const std::vector<double> & _weights,const std::vect
 	static int times(0);
 	static std::vector<location_err> tmpRecord(3);
 
-    rankErrorsforSamples(_weights,real_white,_angle,times);
+  rankErrorsforSamples(_weights,real_white,_angle,times);
 	DPoint tempglobalpos(100000,100000),tempglobalposold(100000,100000);            
 	Angle  tempglobalangle(0.0),tempglobalangleold(0);
-	double referror(-1000),referrorold(10000);
+  double referror(-1000/4),referrorold(10000/4);
+//  double referror(-1000),referrorold(10000);
 	size_t numtrans=_weights.size(); 
 	bool IsGlobalAgain(false);
 	
-	for(size_t j = 0; j < 5; j++)
+  for(size_t j = 0; j < 5; j++) // 5 prior position with lowest error
 	{
 		tempglobalpos=samples_[j].loction;
 		tempglobalangle=samples_[j].ang; 

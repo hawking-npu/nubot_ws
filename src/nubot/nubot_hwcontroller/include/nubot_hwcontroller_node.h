@@ -26,7 +26,9 @@ public:
 
     // read info
     double Real_Vx,Real_Vy,Real_w;
-    bool  BallSensor_IsHolding,RobotStuck;
+    bool PowerState,RobotStuck;
+    bool  BallIsHolding;
+    int Real_angle;
     ros::ServiceServer ballhandle_service_;
     ros::ServiceServer shoot_service_;
 
@@ -45,7 +47,7 @@ private:
     ros::Subscriber Velcmd_sub_;
     ros::Timer timer1;
 //    realtime_tools::RealtimePublisher<nubot_hwcontroller::DebugInfo> *DebugInfo_pub;
-    realtime_tools::RealtimePublisher<nubot_common::OdoInfo> *OdeInfo_pub;
+    realtime_tools::RealtimePublisher<nubot_common::OdoInfo> *OdoInfo_pub;
 
 };
 

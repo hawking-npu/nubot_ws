@@ -21,7 +21,7 @@ nubot::World_Model::World_Model(int argc,char** argv,const char * name)
     coach_sub_ = nh->subscribe(info_topic, 1 , &nubot::World_Model::receiveFromCoach, this);
 #else
     std::string strategy_topic = "/nubotcontrol/strategy";
-    /** 读取机器人标号并赋值. 在.bashrc中输入export AGENT=1，2，3，4，等等；*/
+    /** 读取机器人标号并赋值. 在.bashrc中输入export AGENT=1，2，3，等等；*/
     if((environment = getenv("AGENT"))==NULL)
     {
         ROS_ERROR("this agent number is not read by robot");
@@ -85,7 +85,7 @@ nubot::World_Model::receiveFromCoach(const nubot_common::CoachInfo & _coach)
 //    coach2robot_.MatchState = _coach.MatchState ;
 //    coach2robot_.m_nCatchNumber = _coach.m_nCatchNumber ;
 //    coach2robot_.m_nPassNumber = _coach.m_nPassNumber ;
-//    for(int i = 0; i < 5; i++)
+//    for(int i = 0; i < 3; i++)
 //        coach2robot_.target[i] =DPoint(_coach.target[i].x,_coach.target[i].y);
 }
 /**  仿真程序更新所有的机器人的策略信息，在实际比赛中通过RTDB进行传输，现在采用topic传输*/
@@ -224,6 +224,7 @@ nubot::World_Model::updateOminivision(const nubot_common::OminiVisionInfo & omni
     omni_update_time_ = omni_info.header.stamp;
     /** 给机器人信息赋值，其中特别要说明的是setValid表示机器人的开关电状态，关闭总开关时false */
     int robot_nums = omni_info.robotinfo.size();
+//    ROS_INFO("%d", robot_nums);
     for(int  i = 0 ; i < robot_nums; i++)
     {
         int AgentId = omni_info.robotinfo[i].AgentID;
@@ -299,7 +300,7 @@ nubot::World_Model::update(const ros::TimerEvent & )
     static ros::Time time_before = ros::Time::now();
     ros::Duration duration = ros::Time::now() - time_before;
     time_before = ros::Time::now();
-    ROS_INFO("%.3f",duration.toNSec()/1000000.0);
+//    ROS_INFO("%.3f",duration.toNSec()/1000000.0);
     static  int  streaming_cout = 0;
 #ifdef SIMULATION
     /** 所有的信息均认为有效，不需要额外的融合措施，仅仅需要将其发布到控制节点和COACH即可*/

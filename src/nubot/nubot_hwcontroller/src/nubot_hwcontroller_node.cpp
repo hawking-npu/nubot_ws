@@ -15,7 +15,6 @@ Type stringToNum(const string& str)
 }
 
 Nubot_HWController::Nubot_HWController()
-  :BallSensor_IsHolding(0)
 {
     //设置串口属性，并打开串口
     try
@@ -42,7 +41,7 @@ Nubot_HWController::Nubot_HWController()
 
    // 注册里程计以及调试信息topic
 //   DebugInfo_pub = new realtime_tools::RealtimePublisher<nubot_hwcontroller::DebugInfo>(nh, "/nubotdriver/debug", 1);
-   OdeInfo_pub = new realtime_tools::RealtimePublisher<nubot_common::OdoInfo>(nh, "/nubotdriver/odoinfo", 1);
+   OdoInfo_pub = new realtime_tools::RealtimePublisher<nubot_common::OdoInfo>(nh, "/nubotdriver/odoinfo", 1);
 
    // 接受底盘速度指令
    Velcmd_sub_ = nh.subscribe("/nubotcontrol/velcmd",1,&Nubot_HWController::SerialWrite,this);
@@ -93,27 +92,31 @@ void Nubot_HWController::SerialWrite(const bool BallHandleEnable)
 
 void Nubot_HWController::SerialRead()
 {
-  if(serial.available() && OdeInfo_pub->trylock())
+  if(serial.available() && OdoInfo_pub->trylock())
   {
 //      ROS_INFO_STREAM("Reading from serial port\n");
       std_msgs::String read_stream;
       read_stream.data = serial.read(serial.available());
       std::istringstream read_stream_(read_stream.data);
-      string tmp1,tmp2,tmp3,tmp4,tmp5;
-      read_stream_ >> tmp1 >> tmp2 >> tmp3 >> tmp4  >> tmp5;
+      string tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7;
+      read_stream_ >> tmp1 >> tmp2 >> tmp3 >> tmp4  >> tmp5 >> tmp6 >> tmp7;
       Real_Vx = stringToNum<double>(tmp1);
       Real_Vy = stringToNum<double>(tmp2);
       Real_w = stringToNum<double>(tmp3);
-      BallSensor_IsHolding = stringToNum<bool>(tmp4);
+      PowerState = stringToNum<bool>(tmp4);
       RobotStuck = stringToNum<bool>(tmp5);
+      BallIsHolding = stringToNum<bool>(tmp6);
+      Real_angle = stringToNum<bool>(tmp7);
 
-      OdeInfo_pub->msg_.header.stamp = ros::Time::now();
-      OdeInfo_pub->msg_.Vx=Real_Vx;
-      OdeInfo_pub->msg_.Vy=Real_Vy;
-      OdeInfo_pub->msg_.w =Real_w;
-      OdeInfo_pub->msg_.BallSensor_IsHolding = BallSensor_IsHolding;
-      OdeInfo_pub->msg_.RobotStuck = RobotStuck;
-      OdeInfo_pub->unlockAndPublish();
+      OdoInfo_pub->msg_.header.stamp = ros::Time::now();
+      OdoInfo_pub->msg_.Vx=Real_Vx;
+      OdoInfo_pub->msg_.Vy=Real_Vy;
+      OdoInfo_pub->msg_.w =Real_w;
+      OdoInfo_pub->msg_.PowerState =PowerState;
+      OdoInfo_pub->msg_.RobotStuck = RobotStuck;
+      OdoInfo_pub->msg_.BallIsHolding = BallIsHolding;
+      OdoInfo_pub->msg_.angle=Real_angle;
+      OdoInfo_pub->unlockAndPublish();
   }
 }
 
@@ -124,7 +127,7 @@ bool Nubot_HWController::BallHandleControlService(nubot_common::BallHandle::Requ
 //       Ballhandle_Enable(req.enable);
    BallHandleEnable=req.enable;
    SerialWrite(BallHandleEnable);
-   res.BallIsHolding = BallSensor_IsHolding;
+   res.BallIsHolding = BallIsHolding;
 
    return true;
 }

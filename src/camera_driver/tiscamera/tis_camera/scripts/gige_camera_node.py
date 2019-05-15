@@ -172,8 +172,8 @@ class Camera:
 def main():
     # Open the camera. Parameters are serial number, width, height, frame rate, color and liveview.
     # cam = Camera("24514123", 640, 480, 30, True, False)
-    # cam = Camera("35814515", 640, 480, 30, True, False)
-    cam = Camera("35814519", 640, 480, 30, True, False)
+    cam = Camera("35814515", 640, 480, 30, True, False)
+    # cam = Camera("35814519", 640, 480, 30, True, False)
 
     # Set some properties
     cam.set_property("Exposure Auto", True)

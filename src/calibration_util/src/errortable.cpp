@@ -3,10 +3,10 @@ using namespace nubot;
 
 ErrorTable::ErrorTable()
 {
-    startx_ = field_info_.xline_[6]-100;
-    endx_   = field_info_.xline_[0]+100;
-    starty_ = field_info_.yline_[5]-100;
-    endy_   = field_info_.yline_[0]+100;
+    startx_ = field_info_.xline_[6]-50;
+    endx_   = field_info_.xline_[0]+50;
+    starty_ = field_info_.yline_[5]-50;
+    endy_   = field_info_.yline_[0]+50;
     xlong_  = endx_-startx_+1;
     ylong_  = endy_-starty_+1;
 

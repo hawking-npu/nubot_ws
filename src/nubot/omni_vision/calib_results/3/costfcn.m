@@ -5,6 +5,7 @@
 %
 % @author DJH Bruijnen <d.j.h.bruijnen@tue.nl>
 % @date 2006
+% @modified in 2019 by Jensen@Hawking
 %
 % @param p - optimization parameters [double array, 1x7]
 % @param fieldmap - grid with distance to the most nearby line [uint8 array, size(fieldmap)]
@@ -13,10 +14,10 @@
 
 function J=costfcn(p,DistoMarkLine, fieldwidth, fieldlength, resolution, borderwidth, linepoints)
 
-startx =-900-100;
-endx   = 900+100;
-starty =-600-100;
-endy   = 600+100;
+startx =-300-50;
+endx   = 300+50;
+starty =-200-50;
+endy   = 200+50;
 xlong  = endx-startx+1;
 ylong  = endy-starty+1;
 %p1,p2: center

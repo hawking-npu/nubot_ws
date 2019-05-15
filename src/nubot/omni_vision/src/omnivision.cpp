@@ -74,7 +74,7 @@ public:
 
 
     image_transport::Subscriber camera_sub_;
-    ros::Subscriber motor_info_sub_;
+    ros::Subscriber odo_info_sub_;
 
     ros::Publisher  ballinfo_pub_;
     ros::Publisher  robotinfo_pub_;
@@ -157,7 +157,7 @@ public:
         image_transport::ImageTransport image_transport_(nh);
         camera_sub_= image_transport_.subscribe("/tiscamera/image_raw", 1, &Omni_Vision::imageCallback, this);
         ros::NodeHandle local_nh;
-        motor_info_sub_ = local_nh.subscribe("/nubotdriver/odoinfo", 1, &Omni_Vision::odometryupdate,this);
+        odo_info_sub_ = local_nh.subscribe("/nubotdriver/odoinfo", 1, &Omni_Vision::odometryupdate,this);
 
         ros::NodeHandle node;
         omin_vision_pub_   = node.advertise<nubot_common::OminiVisionInfo>("/omnivision/OmniVisionInfo",1);
@@ -363,16 +363,18 @@ public:
     }
 
     void
-    odometryupdate(const nubot_common::OdoInfo & _motorinfo_msg)
+    odometryupdate(const nubot_common::OdoInfo & _odoinfo_msg)
     {
         static std::vector<double> motor_data(nubot::MOTOR_NUMS_CONST,0);
-        static ros::Time time_before = _motorinfo_msg.header.stamp;
-        ros::Time time_update = _motorinfo_msg.header.stamp;
-        motor_data[0]=(double)_motorinfo_msg.Vx;
-        motor_data[1]=(double)_motorinfo_msg.Vy;
-        motor_data[2]=(double)_motorinfo_msg.w;
-        is_power_off_   = _motorinfo_msg.PowerState;
-        is_robot_stuck_ = _motorinfo_msg.RobotStuck;
+        static int gyro_data;
+        static ros::Time time_before = _odoinfo_msg.header.stamp;
+        ros::Time time_update = _odoinfo_msg.header.stamp;
+        motor_data[0]=(double)_odoinfo_msg.Vx;
+        motor_data[1]=(double)_odoinfo_msg.Vy;
+        motor_data[2]=(double)_odoinfo_msg.w;
+        is_power_off_   = _odoinfo_msg.PowerState;
+        is_robot_stuck_ = _odoinfo_msg.RobotStuck;
+        gyro_data = _odoinfo_msg.angle;
         ros::Duration duration= time_update-time_before;
         time_before = time_update ;
         double secs=duration.toSec();

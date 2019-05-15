@@ -26,7 +26,7 @@ Localization::kalmanfilter(DPoint _delta_pos,Angle _delta_ang,DPoint _pos_visual
 	robotlocation.y_ = (v2*_pos_odo.y_+v1*_pos_visual.y_)/(v1+v2);
 	variant_pos_.y_ = (v1*v2)/(v1+v2);
 
-    v1=variant_ang_;
+  v1=variant_ang_;
 	v2=_var_phi;
 	double radian_tmp=(v2*_facing_odo.radian_+v1*_ang_visual.radian_)/(v1+v2);
 	if(std::abs(_facing_odo.radian_-_ang_visual.radian_)>SINGLEPI_CONSTANT)

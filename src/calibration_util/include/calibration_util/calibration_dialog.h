@@ -40,6 +40,7 @@ public:
     std::vector <cv::Mat>  segment_img_;
 
     int scale_factor_;
+    bool seg_flip_;
 
 private slots:
 
@@ -61,7 +62,7 @@ private slots:
    void on_Save_image_Btn_clicked();
    void on_load_whites_Btn_clicked();
    void on_save_whits_Btn_clicked();
-
+   void on_live_seg_Btn_clicked();
    void on_Error_table_Btn_clicked();
 
 protected:

@@ -44,7 +44,7 @@ public:
 class Teammatesinfo_sim          // This is for simulation only. Not used now.
 {
 public:
-    Teammatesinfo info_sim[5];
+    Teammatesinfo info_sim[3];
 };
 #endif
 

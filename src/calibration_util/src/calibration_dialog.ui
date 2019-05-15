@@ -46,7 +46,7 @@
    <property name="geometry">
     <rect>
      <x>440</x>
-     <y>720</y>
+     <y>710</y>
      <width>201</width>
      <height>51</height>
     </rect>
@@ -108,7 +108,7 @@
    <property name="geometry">
     <rect>
      <x>440</x>
-     <y>780</y>
+     <y>770</y>
      <width>201</width>
      <height>51</height>
     </rect>
@@ -134,17 +134,16 @@
    <property name="geometry">
     <rect>
      <x>440</x>
-     <y>850</y>
+     <y>890</y>
      <width>201</width>
-     <height>91</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="focusPolicy">
     <enum>Qt::WheelFocus</enum>
    </property>
    <property name="text">
-    <string>initialize
-error-table</string>
+    <string>error-table</string>
    </property>
   </widget>
   <widget class="QGroupBox" name="ColorCalibration_Box">
@@ -350,6 +349,22 @@ error-table</string>
     </layout>
    </widget>
   </widget>
+  <widget class="QPushButton" name="live_seg_Btn">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>830</y>
+     <width>201</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>live segment</string>
+   </property>
+   <property name="autoExclusive">
+    <bool>false</bool>
+   </property>
+  </widget>
   <zorder>Error_table_Btn</zorder>
   <zorder>receive_image_btn</zorder>
   <zorder>loadImage_Btn</zorder>
@@ -359,6 +374,7 @@ error-table</string>
   <zorder>Save_image_Btn</zorder>
   <zorder>ColorCalibration_Box</zorder>
   <zorder>DstCalibration_Box</zorder>
+  <zorder>live_seg_Btn</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

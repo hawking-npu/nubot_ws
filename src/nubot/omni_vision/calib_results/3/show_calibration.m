@@ -1,10 +1,10 @@
 clear 
 clc
 DistoMarkLine1=load('errortable.txt');
-startx =-900-100;
-endx   = 900+100;
-starty =-600-100;
-endy   = 600+100;
+startx =-300-50;
+endx   = 300+50;
+starty =-200-50;
+endy   = 200+50;
 xlong  =endx-startx+1;
 ylong  =endy-starty+1;
 idx=1;
@@ -18,10 +18,10 @@ for i=starty:0
     end
 end
 
-fieldwidth =  1200 ;
-fieldlength = 1800 ;
+fieldwidth =  400 ;
+fieldlength = 600 ;
 resolution =  1;
-borderwidth = 12;
+borderwidth = 6;
 fmx = fieldwidth/2+borderwidth;
 fmy = fieldlength/2+borderwidth;
 
