@@ -291,6 +291,7 @@ ScanPoints::showScanPoints()
             img.at<cv::Vec3b>(cv::Point(pts[j].x_,pts[j].y_))=cv::Vec3b(0,255,255);
   }
   imshow("ScanPoints",img);
+  ROS_INFO("show!");
   cv::waitKey(5.0);
 }
 

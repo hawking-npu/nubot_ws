@@ -1,5 +1,5 @@
 <launch>
-  <include file="$(find tis_camera)/launch/$(env AGENT)/generic.launch"></include>
+  <include file="$(find tis_camera)/launch/$(env AGENT)/generic.launch" ></include>
   <node name="calibration_util_node" pkg="calibration_util" type="calibration_util_node" output="screen"/>
 
 </launch>

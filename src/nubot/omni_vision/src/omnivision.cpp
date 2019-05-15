@@ -141,7 +141,7 @@ public:
         is_show_ball_=false;
         is_show_obstacles_=false;
         is_show_whites_=false;
-        is_show_scan_points=false;
+        is_show_scan_points=true;
         is_show_result_=false;
         is_robot_stuck_ = false;
 

@@ -7,8 +7,7 @@
 
 Dialog::Dialog(image_subscribe & _image,QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Dialog),
-    seg_flip_(false)
+    ui(new Ui::Dialog)
 {
     image_sub_ = &_image;
 
@@ -1003,39 +1002,6 @@ void Dialog::on_save_whits_Btn_clicked()
          whites_write<<white_pts_[i].x_<<" "<<white_pts_[i].y_<<" \n";
      whites_write.close();
 
-}
-
-void
-Dialog::on_live_seg_Btn_clicked()
-{
-//    while(true)
-//    {
-      image_sub_->set_update_state(true);
-      bool update_img=true;
-      while(update_img)
-      {
-          if(!image_sub_->get_update_state())
-          {
-              cv::cvtColor(image_sub_->get_camera_img(),orignal_img_[0],CV_BGR2RGB);
-              update_img=false;
-          }
-      }
-      cv::cvtColor(orignal_img_[0],orignal_img_[2],CV_RGB2YUV);
-      cv::cvtColor(orignal_img_[0],orignal_img_[1],CV_RGB2HSV);
-
-      image[0]=QImage((const unsigned char*)(orignal_img_[0].data),
-                       orignal_img_[0].cols,orignal_img_[0].rows,
-                       orignal_img_[0].cols*orignal_img_[0].channels(),
-                       QImage::Format_RGB888);
-
-      segment_img_[0]=orignal_img_[0];
-      is_screen_update_[0]=true;
-      is_draw_Img_[0]=false;
-      paint(image[0]);
-      bufferImg_[0]=image[0];
-      Img_selected_=0;
-      on_segment_result_btn_clicked();
-//    }
 }
 
 void Dialog::on_Error_table_Btn_clicked()

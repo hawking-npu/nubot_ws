@@ -7,15 +7,10 @@
     <param name="width" type="int" value="0" />
     <param name="height" type="int" value="0" />-->
 
-<!--    <param name="x_offset" type="int" value="89" />
-    <param name="y_offset" type="int" value="7" />
-    <param name="width" type="int" value="481" />
-    <param name="height" type="int" value="480" />-->
-
-    <param name="x_offset" type="int" value="82" />
-    <param name="y_offset" type="int" value="1" />
-    <param name="width" type="int" value="499" />
-    <param name="height" type="int" value="479" />
+    <param name="x_offset" type="int" value="76" />
+    <param name="y_offset" type="int" value="0" />
+    <param name="width" type="int" value="505" />
+    <param name="height" type="int" value="480" />
 
   </node>
 </launch>

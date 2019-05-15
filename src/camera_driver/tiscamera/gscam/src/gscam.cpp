@@ -123,6 +123,7 @@ namespace gscam {
   void GSCam::dynamic_configure(Config& config, uint32_t level)
   {
     ROS_DEBUG("Reconfigure request received");
+    ROS_INFO("%d",level);
     if (level < (uint32_t)driver_base::SensorLevels::RECONFIGURE_STOP && level!=-1)
     {
       // RUNNING
