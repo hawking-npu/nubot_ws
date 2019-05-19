@@ -8,6 +8,8 @@
 #include"nubot/core/core.hpp"
 #include "common.hpp"
 
+#include <ros/ros.h>
+
 #define NB 0
 #define NM 1
 #define NS 2

@@ -10,15 +10,11 @@ DPoint ball_pos_;
 */
 Subtargets::Subtargets()
 {
-    ///world_model_ init
-
-
-    robot_pos_ = world_model_->RobotInfo_[world_model_->AgentID_-1].getLocation();
-    ball_pos_  = world_model_->BallInfo_[world_model_->AgentID_-1].getGlobalLocation();
 
 }
 
-int Min_num(int n,double *q)
+
+int Subtargets::Min_num(int n,double *q)
 {
     double minn=inf;
     int temp=inf;
@@ -30,7 +26,7 @@ int Min_num(int n,double *q)
         }
     return temp;
 }
-double Min(int n,double *q)
+double Subtargets::Min(int n,double *q)
 {
     double minn=inf;
     for(int i=0; i<n; i++)
@@ -38,7 +34,7 @@ double Min(int n,double *q)
             minn=q[i];
     return minn;
 }
-int Max_num(int n,double *q)
+int Subtargets::Max_num(int n,double *q)
 {
     double maxn=0;
     int temp=inf;
@@ -50,7 +46,7 @@ int Max_num(int n,double *q)
         }
     return temp;
 }
-double Max(int n,double *q)
+double Subtargets::Max(int n,double *q)
 {
     double maxn=0;
     for(int i=0; i<n; i++)
@@ -65,12 +61,13 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     //std::vector<nubot::Robot>      RobotInfo_; //! 机器人信息
     //std::vector<nubot::BallObject> BallInfo_;  //!
     //std::vector<nubot::DPoint>     Obstacles_; //!障碍物
-    //std::vector<nubot::DPoint>     Opponents_; //!敌人
+    //std::vector<nubot::DPoint>     Opponents_; //!多个机器人障碍物融合信息
     //此处为世界坐标系*/
 
 
     //坐标转换
     //robot_pos_
+
     DPoint tran_ob;
     std::vector<nubot::DPoint> myObstacles_;//自身坐标下，筛选保留x>0的点
     std::vector<nubot::DPoint> _myObstacles;
@@ -100,6 +97,11 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     {
         theta_t=atan(tar_now.y_/tar_now.x_);
     }
+    theta_t=-theta_t;
+    ori_x=tar_now.x_, ori_y=tar_now.y_;
+    tar_now.x_=ori_x*cos(theta_t)-ori_y*sin(theta_t);
+    tar_now.y_=ori_x*sin(theta_t)+ori_y*cos(theta_t);
+
     myObstacles_.clear();
     for(int i=0; i<_myObstacles.size(); i++)
     {
@@ -117,6 +119,9 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     //确定第一障碍物,建立分组
     std::vector <int> setB, setG;
     setB.clear(), setG.clear();
+
+
+    ROS_INFO("Subtargets myObstacles_num: %ld", myObstacles_.size());
 
     //确定集合B：机器人沿直线运动到目标点会撞到的障碍物
     DPoint now_ob;
@@ -144,7 +149,7 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     }
     if(first_ob_num==100)//无障碍物
     {
-        subtargets_pos_=tar_now;
+        subtargets_pos_=target;
         return;
     }
     else
@@ -189,7 +194,7 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     }
     if(min_Ob_num==100)//无障碍物
     {
-        subtargets_pos_=tar_now;
+        subtargets_pos_=target;
         return;
     }
     double now_ob_angle=1000;
@@ -326,6 +331,7 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
 
     if(subtargets_pos_==tar_now)
     {
+        subtargets_pos_=target;
         return;
     }
     else
@@ -333,12 +339,11 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
         //!转回世界坐标
         tran_ob=subtargets_pos_;
         theta_t=-theta_t;
-        tran_ob.x_=tran_ob.x_*cos(theta_t)-tran_ob.y_*sin(theta_t);
-        tran_ob.y_=tran_ob.x_*sin(theta_t)+tran_ob.y_*cos(theta_t);
+        ori_x=tran_ob.x_, ori_y=tar_now.y_;
+        tran_ob.x_=ori_x*cos(theta_t)-ori_y*sin(theta_t);
+        tran_ob.y_=ori_x*sin(theta_t)+ori_y*cos(theta_t);
         tran_ob.x_+=robot_pos_.x_, tran_ob.y_+=robot_pos_.y_;
         subtargets_pos_=tran_ob;
-
-        subtarget(target, subtargets_pos_, avoid_ball);
     }
 }
 

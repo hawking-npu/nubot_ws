@@ -8,6 +8,8 @@
 #include "nubot/nubot_control/world_model_info.h"
 #include "nubot/nubot_control/mydefine.hpp"
 
+#include <ros/ros.h>
+
 using namespace std;
 
 namespace nubot{
