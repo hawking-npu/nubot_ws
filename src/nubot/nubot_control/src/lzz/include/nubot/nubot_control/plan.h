@@ -47,6 +47,10 @@ public:
         bool   SearchMinPE4PassThrough(double &direction, double pridictlen, DPoint trap[4], double step, int flg);
 
         void   update();
+
+
+        /*********round with foot************/
+        void roundfoot();
 public:
         World_Model_Info * world_model_;
         Behaviour  m_behaviour_;

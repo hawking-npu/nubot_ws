@@ -2,12 +2,6 @@
 #include "nubot/core/core.hpp"
 #include "nubot/nubot_control/mydefine.hpp"
 using namespace nubot;
-/*
-World_Model_Info * world_model_;
-DPoint subtargets_pos_;
-DPoint robot_pos_;
-DPoint ball_pos_;
-*/
 Subtargets::Subtargets()
 {
 
@@ -62,6 +56,11 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     //std::vector<nubot::BallObject> BallInfo_;  //!
     //std::vector<nubot::DPoint>     Obstacles_; //!障碍物
     //std::vector<nubot::DPoint>     Opponents_; //!多个机器人障碍物融合信息
+
+World_Model_Info * world_model_;
+DPoint subtargets_pos_;
+DPoint robot_pos_;
+DPoint ball_pos_;
     //此处为世界坐标系*/
 
 
@@ -74,6 +73,7 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     _myObstacles=world_model_->Obstacles_;
     if(avoid_ball)
         _myObstacles.push_back(ball_pos_);
+    ROS_INFO("Subtargets 1myObstacles_num: %ld", _myObstacles.size());
     double ori_x, ori_y;
     double theta_t;
     DPoint tar_now=target;
@@ -121,7 +121,7 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     setB.clear(), setG.clear();
 
 
-    ROS_INFO("Subtargets myObstacles_num: %ld", myObstacles_.size());
+    ROS_INFO("Subtargets 2myObstacles_num: %ld", myObstacles_.size());
 
     //确定集合B：机器人沿直线运动到目标点会撞到的障碍物
     DPoint now_ob;
@@ -239,111 +239,58 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     //求自身和该障碍物的切线，切线的斜率绝对值更大
     //子目标点与切线和障碍物向量相切，且不与障碍物相交
     now_ob=myObstacles_.at(max_angle_num);
-    int line_num;
-    line_num=getpoint(0.0, 0.0, my_radius, now_ob.x_, now_ob.y_, obs_radius);
-    DPoint point_one, point_two;
-    double k, b, ans_k, ans_b, ans_line;
-    double point_k=now_ob.y_/now_ob.x_;
-    int ans_point;
-    for(int i=0; i<line_num; i++)
+    //圆心连线
+    //y=nowob.y/nowob.x *x;
+    //k=nowob.y/nowob.x;=y1/x1;
+    double k=now_ob.y_/now_ob.x_;
+    double a=1;
+    double b=-2*now_ob.x_;
+    double c=now_ob.x_*now_ob.x_;
+    c=c-(my_radius+obs_radius)*(my_radius+obs_radius)/(1/(k*k)+1);
+    //解出x，y=-kx+kx1-y1
+    double delta=b*b-4*a*c;
+    double x1, x2, y1, y2, k1, k2;
+    if(delta>=0)
     {
-        point_one=Subtargets::first_point.at(i);
-        point_two=Subtargets::second_point.at(i);
-        if(point_two.y_*now_ob.y_<0)
-            continue;
-        //两个圆在切线两侧
-        if(now_ob.x_>=my_radius+obs_radius)
+        x1=(-b+sqrt(delta))/2/a;
+        x2=(-b+sqrt(delta))/2/a;
+        y1=-k*x1+k*now_ob.x_-now_ob.y_;
+        y2=-k*x2+k*now_ob.x_-now_ob.y_;
+        k1=y1/x1;
+        k2=y2/x2;
+        if(k>=0)
         {
-            if(fabs(point_one.x_-point_two.x_)<1e-7)
+            if(k1>=k2)//k1
             {
-                ans_b=my_radius;
-                ans_point=i;
-                break;
-                //斜率不存在
+                subtargets_pos_.x_=x1, subtargets_pos_.y_=y1;
             }
             else
             {
-                k=(point_one.y_-point_two.y_)/(point_one.x_-point_two.x_);
-                b=point_one.y_-k*point_one.x_;
-                if(b*(k*now_ob.x_+b-now_ob.y_)<0)
-                {
-                    if(fabs(k)>fabs(point_k))
-                    {
-                        ans_k=k, ans_b=b;
-                        ans_point=i;
-                        break;
-                    }
-                }
+                subtargets_pos_.x_=x2, subtargets_pos_.y_=y2;
             }
         }
         else
         {
-            if(fabs(point_one.x_-point_two.x_)<1e-7)
+            if(k1<=k2)//k1
             {
-                continue;
-                //斜率不存在
+                subtargets_pos_.x_=x1, subtargets_pos_.y_=y1;
             }
             else
             {
-                k=(point_one.y_-point_two.y_)/(point_one.x_-point_two.x_);
-                b=point_one.y_-k*point_one.x_;
-                if(b*(k*now_ob.x_+b-now_ob.y_)<0)
-                {
-                    if(k*point_k<0)
-                    {
-                        ans_k=k, ans_b=b;
-                        ans_point=i;
-                        break;
-                    }
-                }
+                subtargets_pos_.x_=x2, subtargets_pos_.y_=y2;
             }
         }
-    }
-    DPoint point_xx=Subtargets::first_point.at(ans_point);
-    ans_line=point_xx.distance(Subtargets::second_point.at(ans_point));
-    if(ans_b!=my_radius)
-    {
-        double theta_ans=atan(ans_k);
-        if(now_ob.x_>=obs_radius+my_radius)
-        {
-            subtargets_pos_.x_=ans_line*cos(theta_ans);
-            subtargets_pos_.y_=ans_line*sin(theta_ans);
-        }
-        else
-        {
-            subtargets_pos_.x_=-ans_line*cos(theta_ans);
-            subtargets_pos_.y_=-ans_line*sin(theta_ans);
-        }
-    }
-    else
-    {
-        if(now_ob.y_>=0)
-        {
-            subtargets_pos_.x_=0.0;
-            subtargets_pos_.y_=ans_line;
-        }
-        else
-        {
-            subtargets_pos_.x_=0.0;
-            subtargets_pos_.y_=-ans_line;
-        }
-    }
-
-    if(subtargets_pos_==tar_now)
-    {
-        subtargets_pos_=target;
-        return;
-    }
-    else
-    {
         //!转回世界坐标
         tran_ob=subtargets_pos_;
         theta_t=-theta_t;
-        ori_x=tran_ob.x_, ori_y=tar_now.y_;
-        tran_ob.x_=ori_x*cos(theta_t)-ori_y*sin(theta_t);
-        tran_ob.y_=ori_x*sin(theta_t)+ori_y*cos(theta_t);
+        tran_ob.x_=tran_ob.x_*cos(theta_t)-tran_ob.y_*sin(theta_t);
+        tran_ob.y_=tran_ob.x_*sin(theta_t)+tran_ob.y_*cos(theta_t);
         tran_ob.x_+=robot_pos_.x_, tran_ob.y_+=robot_pos_.y_;
         subtargets_pos_=tran_ob;
+    }
+    else
+    {
+        subtargets_pos_=target;
     }
 }
 

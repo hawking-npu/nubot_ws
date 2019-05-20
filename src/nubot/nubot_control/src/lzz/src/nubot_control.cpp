@@ -100,10 +100,6 @@ public:
         m_plan_.world_model_ =  & world_model_info_;
         m_plan_.m_subtargets_.world_model_ =  & world_model_info_;
         m_staticpass_.world_model_= & world_model_info_;
-
-/*
-        m_strategy_ = new Strategy(world_model_info_,m_plan_);
-        */
     }
 
     ~NuBotControl()
@@ -189,6 +185,7 @@ public:
 
     /** 球的三维信息,用于守门员角色*/
     void ballInfo3dCallback(const nubot_common::BallInfo3d  &_BallInfo_3d){
+        ROS_INFO("nubotcontrol ballInfo3dCallback");
 
         //m_strategy_->goalie_strategy_.setBallInfo3dRel( _BallInfo_3d );
     }
@@ -205,8 +202,12 @@ public:
         nubot_common::Shoot         shoot;
         nubot_common::BallHandle    dribble;
 
+
+        ///....
+        match_mode_ =14;
         if(match_mode_ == STOPROBOT )
         {
+            ROS_INFO("nubotcontrol loopControl STOPROBT");
             vel.Vx = 0;
             vel.Vy = 0;
             vel.w  = 0;
@@ -232,6 +233,7 @@ public:
 
     void positioning()
     { 
+        ROS_INFO("nubotcontrol positioning");
         switch (match_mode_)
         {
         case OUR_KICKOFF:
@@ -290,7 +292,8 @@ public:
 
     void  OppDefaultReady_()
     {
-         DPoint br = ball_pos_ - robot_pos_;
+        ROS_INFO("nubotcontrol OppDefaultReady_");
+        DPoint br = ball_pos_ - robot_pos_;
         switch(world_model_info_.AgentID_)  // 十分简单的实现，固定的站位，建议动态调整站位，写入staticpass.cpp中
         {                                   // 站位还需要考虑是否犯规，但是现在这个程序没有考虑。
             case 1:
@@ -318,6 +321,7 @@ public:
     }
     void  OurDefaultReady_()
     {
+        ROS_INFO("nubotcontrol OurDefaultReady_");
         DPoint br = ball_pos_ - robot_pos_;
         switch(world_model_info_.AgentID_)  // 十分简单的实现，固定的站位，建议动态调整站位，写入staticpass.cpp中
         {                                   // 站位还需要考虑是否犯规，但是现在这个程序没有考虑。
@@ -347,6 +351,7 @@ public:
 
     void parking()
     {
+        ROS_INFO("nubotcontrol parking");
         static double parking_y=-580.0;
         cout<<"PARKINGROBOT"<<endl;
 
@@ -363,9 +368,16 @@ public:
 
     void normalGame()
     {
-        //if(world_model_info_.AgentID_ != 1 && isNearestRobot())
+        //ROS_INFO("normalGame AgentID_: %d", world_model_info_.AgentID_);
+        //bool xxx=isNearestRobot();
+        //ROS_INFO("normalGame isNearestRobot: %d", (int)xxx);
+        //if(world_model_info_.AgentID_ != 1 /*&& xxx*/)
+        if(world_model_info_.AgentID_ == 1 /*&& xxx*/)
         {
             m_strategy_ = new Strategy(world_model_info_,m_plan_);
+            m_strategy_->m_plan_->robot_pos_=robot_pos_;
+            m_strategy_->m_plan_->robot_ori_=robot_ori_;
+            m_strategy_->m_plan_->ball_pos_=ball_pos_;
             m_strategy_->process();
             static nubot_common::VelCmd        vel;
             vel.Vx = m_plan_.m_behaviour_.app_vx_;
@@ -376,7 +388,7 @@ public:
             m_plan_.m_behaviour_.last_app_w_  = vel.w ;
             motor_cmd_pub_.publish(vel);
 
-            /*
+/*
             nubot_common::BallHandle    dribble;
             DPoint br = ball_pos_ - robot_pos_;
 
@@ -412,20 +424,27 @@ public:
 
     bool isNearestRobot()         //找到距离足球最近的机器人
     {
+        ROS_INFO("nubotcontrol isNearestRobot");
         float distance_min = 2000.0;
         float distance = distance_min;
         int robot_id = -1;
 
+        ///记得改掉OUR_TEAM=5;
         for(int i=1;i<OUR_TEAM;i++)     // 排除守门员
-            if(world_model_info_.RobotInfo_[i].isValid())
+            ///if(world_model_info_.RobotInfo_[i].isValid())//不注释
             {
+                ROS_INFO("xxx1");
                 distance = ball_pos_.distance(world_model_info_.RobotInfo_[i].getLocation());
+                ROS_INFO("distance: %d", distance);
+                ROS_INFO("distance_min: %d", distance_min);
                 if(distance < distance_min)
                 {
+                    ROS_INFO("xxx2");
                     distance_min=distance;
                     robot_id = i;
                 }
             }
+        ROS_INFO("robot_id: %d", robot_id);
         if(robot_id+1 == world_model_info_.AgentID_)
             return true;
         else
@@ -434,6 +453,7 @@ public:
 
     bool move2target(DPoint target, DPoint pos, double distance_thres=10.0)     // 一个十分简单的实现，可以用PID
     {
+        ROS_INFO("nubotcontrol move2target");
         static nubot_common::VelCmd        vel;
         DPoint tmp = target - pos;
         float tar_theta = tmp.angle().radian_;
@@ -458,6 +478,7 @@ public:
 
     bool move2ori(double target, double angle, double angle_thres = 8.0*DEG2RAD)  // 一个十分简单的实现，可以用PID
     {
+        ROS_INFO("nubotcontrol move2ori");
         static nubot_common::VelCmd        vel;
         double tmp = target - angle;
         if(fabs(tmp) > angle_thres)        // 容许误差为5度
@@ -495,7 +516,7 @@ int main(int argc, char **argv)
     // 完成一系列的初始化工作？ 以及相应的报错机制。  只有当所有的传感器信息都已经准备就绪的时候才可以运行
     ros::Time::init();
     ROS_INFO("start control process");
-    nubot::NuBotControl nubotcontrol(argc,argv);
+    nubot::NuBotControl nubotcontrol = nubot::NuBotControl(argc,argv);
     ros::spin();
     return 0;
 }

@@ -9,6 +9,7 @@
 #include "common.hpp"
 
 #include <ros/ros.h>
+#include <nubot_common/VelCmd.h>
 
 #define NB 0
 #define NM 1
@@ -58,7 +59,7 @@ public:
     void rotate2AbsOrienation(float pval, float dval, float orientation, float maxw,const Angle & _robot_ori);
     void rotate2RelOrienation(float pval, float dval, float rel_orientation,float maxw);
     void rotatetowardsSetPoint(DPoint point);
-    void rotatetowardsRelPoint(DPoint rel_point);
+    void rotatetowardsRelPoint(DPoint rel_point,const DPoint  & _robot_pos,const Angle & _robot_ori);
     void clearBehaviorState();
     void setAppvx(double vx);
     void setAppvy(double vy);

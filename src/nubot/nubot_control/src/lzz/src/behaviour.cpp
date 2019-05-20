@@ -63,34 +63,33 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
 
     temp.x_=temp.norm(); temp.y_=0;
 
+
     //前进
     //double delta_val;
     if(temp.norm()>10)
     {
-        setAppvx(temp.norm()*0.7*cos(tar_theta - _robot_ori.radian_));
-        setAppvy(temp.norm()*0.7*sin(tar_theta - _robot_ori.radian_));
-        setAppw(0);
-        /*
-        temp.x_-=v_now*update_T;
-        delta_val=maxvel-v_now;
-        v_now=pval*delta_val+dval*(v_now-v_past)/update_T;
-        setAppvx(v_now);
-        */
-        last_app_vx_=app_vx_;
-        last_app_vy_=app_vy_;
-        last_app_w_ =app_w_ ;
+        app_vx_=temp.norm()*0.7*cos(tar_theta - _robot_ori.radian_);
+        app_vy_=temp.norm()*0.7*sin(tar_theta - _robot_ori.radian_);
+        //accelerateLimit();
+        double a=app_vx_*app_vx_+app_vy_*app_vy_;
+        double b=maxvel*maxvel;
+        if(a > b)
+        {
+            app_vx_=sqrt(b/a)*app_vx_;
+            app_vy_=sqrt(b/a)*app_vy_;
+        }
     }
     else
     {
-        setAppvx(0.0);
-        setAppvy(0.0);
-        setAppw(0);
+        app_vx_=0.0;
+        app_vy_=0.0;
     }
 }
 
 void Behaviour::move2target(float pval, float dval,DPoint target, DPoint realtarvel/*目标速度*/, float maxvel,
                  const DPoint  & _robot_pos,const Angle  & _robot_ori)
 {
+    ROS_INFO("Behaviour move2target");
     DPoint after_target;
     double time=target.norm()*2/maxvel;
     after_target.x_=realtarvel.x_*time, after_target.y_=realtarvel.y_*time;
@@ -108,6 +107,17 @@ void revDecoupleFromVel(float vx,float vy,float &positivemax_rev,float &negative
 // rotate to the target orientation by using PD control
 void Behaviour::rotate2AbsOrienation(float pval, float dval, float orientation,float maxw,const Angle & _robot_ori)//自身坐标系
 {
+    ROS_INFO("Behaviour rotate2AbsOrienation");
+    cout<<orientation<<endl;
+    double tmp = orientation - _robot_ori.radian_;
+    if(fabs(tmp) > 8.0/180.0)        // 容许误差为5度
+    {
+        app_w_ = tmp;
+    }
+    else
+    {
+        app_w_ = 0;
+    }/*
     double temp;
     temp=orientation; temp-=_robot_ori.radian_;
     double delta_w;
@@ -116,21 +126,30 @@ void Behaviour::rotate2AbsOrienation(float pval, float dval, float orientation,f
         temp-=app_w_*update_T;
         delta_w=maxw-app_w_;
         app_w_=pval*delta_w+dval*(app_w_-last_app_w_)/update_T;
-        setAppw(app_w_);
         last_app_vx_=app_vx_;
         last_app_vy_=app_vy_;
         last_app_w_ =app_w_ ;
     }
     else
     {
-        setAppvx(0.0);
-        setAppvy(0.0);
-        setAppw(0);
-    }
+        app_vx_=0.0;
+        app_vy_=0.0;
+        app_w_=0;
+    }*/
 }
 void rotate2RelOrienation(float pval, float dval, float rel_orientation,float maxw);
-void rotatetowardsSetPoint(DPoint point);//自身坐标系
-void rotatetowardsRelPoint(DPoint rel_point);
+void rotatetowardsSetPoint(DPoint point)
+{
+}
+
+void Behaviour::rotatetowardsRelPoint(DPoint rel_point, const DPoint  & _robot_pos,const Angle & _robot_ori)
+{
+    DPoint temp;
+    temp=rel_point-_robot_pos;
+
+    rotate2AbsOrienation(0.7,0.3,temp.angle().radian_,max_w,_robot_ori);
+}
+
 /////////////////
 
 
@@ -154,7 +173,6 @@ void Behaviour::clearBehaviorState()
 
 void Behaviour::accelerateLimit(const double &_acc_thresh/* = 20*/, const bool & use_convected_acc/* = true*/)
 {
-    ROS_INFO("Behaviour 1 accelerateLimit");
     DPoint app_v, last_app_v, _acc;
     app_v.x_=app_vx_, app_v.y_=app_vy_;
     last_app_v.x_=last_app_vx_, last_app_v.y_=last_app_vy_;
