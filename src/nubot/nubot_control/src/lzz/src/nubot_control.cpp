@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include <boost/circular_buffer.hpp>
+
 #define RUN 1
 #define FLY -1
 const double DEG2RAD = 1.0/180.0*SINGLEPI_CONSTANT;     // 角度到弧度的转换
@@ -45,6 +47,10 @@ public:
     ros::Timer       control_timer_;
 
     boost::shared_ptr<ros::NodeHandle> nh_;
+
+    boost::circular_buffer<DPoint> past_ball_vel;
+    boost::circular_buffer<nubot_common::VelCmd> past_robot_vel;
+
 public:
     World_Model_Info world_model_info_;  /** 世界模型中的信息赋值，来源于world_model节点的topic*/
     Strategy  * m_strategy_;
@@ -60,6 +66,7 @@ public:
     Angle  robot_ori_;
     DPoint  ball_pos_;
     DPoint  ball_vel_;
+    DPoint  robot_vel_;
 
 
 
@@ -100,6 +107,9 @@ public:
         m_plan_.world_model_ =  & world_model_info_;
         m_plan_.m_subtargets_.world_model_ =  & world_model_info_;
         m_staticpass_.world_model_= & world_model_info_;
+
+        past_ball_vel=boost::circular_buffer<DPoint>(2);
+        past_robot_vel=boost::circular_buffer<nubot_common::VelCmd>(2);
     }
 
     ~NuBotControl()
@@ -181,6 +191,13 @@ public:
         /** 这个先如此改，之后将所有数据用world_model_进行传递*/
         m_strategy_->goalie_strategy_.robot_info_    = _world_msg.robotinfo[world_model_info_.AgentID_-1];
         m_strategy_->goalie_strategy_.ball_info_2d_  = _world_msg.ballinfo[world_model_info_.AgentID_-1];
+
+        ///
+
+        ball_vel_.x_=m_strategy_->goalie_strategy_.ball_info_2d_.velocity.x;
+        ball_vel_.y_=m_strategy_->goalie_strategy_.ball_info_2d_.velocity.y;
+
+        past_ball_vel.push_back(ball_vel_);
     }
 
     /** 球的三维信息,用于守门员角色*/
@@ -374,6 +391,8 @@ public:
         //if(world_model_info_.AgentID_ != 1 /*&& xxx*/)
         if(world_model_info_.AgentID_ == 1 /*&& xxx*/)
         {
+            m_plan_.m_behaviour_.past_ball_vel=past_ball_vel;
+            m_plan_.m_behaviour_.past_robot_vel=past_robot_vel;
             m_strategy_ = new Strategy(world_model_info_,m_plan_);
             m_strategy_->m_plan_->robot_pos_=robot_pos_;
             m_strategy_->m_plan_->robot_ori_=robot_ori_;
@@ -387,6 +406,7 @@ public:
             m_plan_.m_behaviour_.last_app_vy_ = vel.Vy;
             m_plan_.m_behaviour_.last_app_w_  = vel.w ;
             motor_cmd_pub_.publish(vel);
+            past_robot_vel.push_back(vel);
 
 /*
             nubot_common::BallHandle    dribble;

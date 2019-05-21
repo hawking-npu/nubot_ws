@@ -52,21 +52,18 @@ void Plan::move2Positionwithobs_noball(DPoint target, float maxvel, float maxacc
         m_subtargets_.robot_pos_=robot_pos_;
         m_subtargets_.ball_pos_=ball_pos_;
         m_subtargets_.subtarget(target, robot_pos_, avoid_ball);
-        ROS_INFO("Plan robot: %d %d", robot_pos_.x_,robot_pos_.y_);
-        cout<<robot_pos_.x_<<' '<<robot_pos_.y_<<endl;
-        ROS_INFO("Plan subtarget: %d %d", m_subtargets_.subtargets_pos_.x_,m_subtargets_.subtargets_pos_.y_);
-        cout<<m_subtargets_.subtargets_pos_.x_<<' '<<m_subtargets_.subtargets_pos_.y_<<endl;
-        m_behaviour_.move2Position(0.7,0.3,m_subtargets_.subtargets_pos_,maxvel,robot_pos_,robot_ori_);
+        m_behaviour_.move2Position(0.9,0.1,m_subtargets_.subtargets_pos_,max_vel,robot_pos_,robot_ori_);
     }
     else
     {
         m_behaviour_.setAppvx(0.0);
         m_behaviour_.setAppvy(0.0);
-    }
-    if(fabs(ori.radian_>8.0/180.0))
-        m_behaviour_.rotate2AbsOrienation(0.7,0.3,target.angle().radian_,max_w,robot_ori_);
-    else
         m_behaviour_.setAppw(0);
+    }
+    ROS_INFO("subtargets");
+    cout<<m_subtargets_.subtargets_pos_.x_<<' '<<m_subtargets_.subtargets_pos_.y_<<endl;
+    ROS_INFO("robot pos");
+    cout<<robot_pos_.x_<<' '<<robot_pos_.y_<<endl;
     /*
     target_.clear();
     target_.push_back(m_subtargets_.robot_pos_);
@@ -113,23 +110,27 @@ void   update();
 void Plan::roundfoot()
 {
     m_subtargets_.world_model_=world_model_;
-    Angle ori=ball_pos_.angle()-robot_ori_;
+    DPoint ori=ball_pos_-robot_pos_;
 
-    cout<<fabs(ball_pos_.distance(robot_pos_))<<endl;
-    if(fabs(ball_pos_.distance(robot_pos_))>=50)
+    cout<<"robotori: "<<robot_ori_.radian_<<endl;
+    cout<<"distance: : "<<fabs(ball_pos_.distance(robot_pos_))<<endl;
+    if(fabs(ball_pos_.distance(robot_pos_))>=100)
     {
         m_subtargets_.robot_pos_=robot_pos_;
         m_subtargets_.ball_pos_=ball_pos_;
-        m_subtargets_.subtarget(robot_pos_, robot_pos_, false);
-        m_behaviour_.move2Position(0.7,0.3,m_subtargets_.subtargets_pos_,max_vel,robot_pos_,robot_ori_);
+        m_subtargets_.subtarget(ball_pos_, robot_pos_, false);
+        m_behaviour_.move2Position(0.9,0.1,m_subtargets_.subtargets_pos_,max_vel,robot_pos_,robot_ori_);
     }
     else
     {
-        cout<<"rotate"<<endl;
+        ROS_INFO("roundfoot2");
         m_behaviour_.setAppvx(0.0);
         m_behaviour_.setAppvy(50.0);
-        if(ori.radian_>8.0/180.0)
-        m_behaviour_.rotatetowardsRelPoint(ball_pos_, robot_pos_, robot_ori_);
+        double tmp=ori.angle().radian_-robot_ori_.radian_;
+        cout<<"tmp:"<<tmp<<endl;
+        //cout<<"ori pos: "<<ori.x_<<' '<<ori.y_<<endl;
+        if(fabs(tmp)>8.0/180.0)
+            m_behaviour_.rotate2AbsOrienation(0.9,0.1,ori.angle().radian_,max_w,robot_ori_.radian_);
         else
             m_behaviour_.setAppw(0);
     }

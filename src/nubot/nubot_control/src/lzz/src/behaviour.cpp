@@ -62,21 +62,43 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
     double tar_theta = temp.angle().radian_;
 
     temp.x_=temp.norm(); temp.y_=0;
-
+    DPoint tmp;
 
     //前进
     //double delta_val;
     if(temp.norm()>10)
     {
-        app_vx_=temp.norm()*0.7*cos(tar_theta - _robot_ori.radian_);
-        app_vy_=temp.norm()*0.7*sin(tar_theta - _robot_ori.radian_);
+        tmp.x_=temp.norm()*0.7*cos(tar_theta - _robot_ori.radian_);
+        tmp.y_=temp.norm()*0.7*sin(tar_theta - _robot_ori.radian_);
+        cout<<"want vel: "<<tmp.x_<<' '<<tmp.y_<<endl;
         //accelerateLimit();
-        double a=app_vx_*app_vx_+app_vy_*app_vy_;
+        double a=tmp.x_*tmp.x_+tmp.y_*tmp.y_;
         double b=maxvel*maxvel;
         if(a > b)
         {
-            app_vx_=sqrt(b/a)*app_vx_;
-            app_vy_=sqrt(b/a)*app_vy_;
+            tmp.x_=sqrt(b/a)*tmp.x_;
+            tmp.y_=sqrt(b/a)*tmp.y_;
+        }
+        if(past_robot_vel.size()==0)
+        {
+            app_vx_ = tmp.x_;
+            app_vy_ = tmp.y_;
+        }
+        else if(past_robot_vel.size()==1)
+        {
+            vel1=past_robot_vel.at(0);
+            app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel1.Vx)/update_T;
+            app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel1.Vy)/update_T;
+            cout<<"past vel0: "<<vel1.Vx<<' '<<vel1.Vy<<endl;
+        }
+        else
+        {
+            vel1=past_robot_vel.at(0);
+            vel2=past_robot_vel.at(1);
+            app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel2.Vx*vel2.Vx+vel1.Vx)/(update_T*update_T);
+            app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel2.Vy*vel2.Vy+vel1.Vy)/(update_T*update_T);
+            cout<<"past vel0: "<<vel1.Vx<<' '<<vel1.Vy<<endl;
+            cout<<"past vel1: "<<vel2.Vx<<' '<<vel2.Vy<<endl;
         }
     }
     else
@@ -112,12 +134,28 @@ void Behaviour::rotate2AbsOrienation(float pval, float dval, float orientation,f
     double tmp = orientation - _robot_ori.radian_;
     if(fabs(tmp) > 8.0/180.0)        // 容许误差为5度
     {
-        app_w_ = tmp;
+        if(past_robot_vel.size()==0)
+            app_w_ = tmp;
+        else if(past_robot_vel.size()==1)
+        {
+            vel1=past_robot_vel.at(0);
+            app_w_ = pval*tmp + dval*(tmp-vel1.w)/update_T;
+        }
+        else
+        {
+            vel1=past_robot_vel.at(0);
+            vel2=past_robot_vel.at(1);
+            app_w_ = pval*tmp + dval*(tmp-vel2.w*vel2.w+vel1.w)/(update_T*update_T);
+        }
     }
     else
     {
         app_w_ = 0;
-    }/*
+    }
+    ROS_INFO("app_w");
+    cout<<app_w_<<endl;
+    cout<<tmp<<endl;
+    /*
     double temp;
     temp=orientation; temp-=_robot_ori.radian_;
     double delta_w;
@@ -144,6 +182,7 @@ void rotatetowardsSetPoint(DPoint point)
 
 void Behaviour::rotatetowardsRelPoint(DPoint rel_point, const DPoint  & _robot_pos,const Angle & _robot_ori)
 {
+    ROS_INFO("rotate relpoint");
     DPoint temp;
     temp=rel_point-_robot_pos;
 

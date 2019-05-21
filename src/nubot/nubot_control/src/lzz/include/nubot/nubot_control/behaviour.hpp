@@ -10,6 +10,7 @@
 
 #include <ros/ros.h>
 #include <nubot_common/VelCmd.h>
+#include <boost/circular_buffer.hpp>
 
 #define NB 0
 #define NM 1
@@ -77,6 +78,9 @@ public:
     float last_app_vy_;
     float last_app_w_;
     float last_speed;
+    boost::circular_buffer<DPoint> past_ball_vel;
+    boost::circular_buffer<nubot_common::VelCmd> past_robot_vel;
+    nubot_common::VelCmd        vel1, vel2;
 };
 
 class FuzzyPID

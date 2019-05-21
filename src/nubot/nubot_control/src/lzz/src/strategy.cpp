@@ -56,8 +56,8 @@ void selectRole();
 void selectAction();
 void Strategy::process()
 {
-    DPoint target=DPoint(0,-200);
-    m_plan_->move2Positionwithobs_noball(target,max_vel,max_acc);
+    DPoint target=DPoint(-100,-100);
+    m_plan_->move2Positionwithobs_noball(target,max_vel,max_acc,false);
     //m_plan_->roundfoot();
 }
 
