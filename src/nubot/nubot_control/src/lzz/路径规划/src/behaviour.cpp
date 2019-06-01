@@ -50,6 +50,30 @@ public:
 */
 
 
+float Behaviour::basicPDControl(float pgain,float dgain, float err,//targetval
+                     float err1,//now vel
+                     float maxval)
+{
+    float temp;
+    temp = pgain*err + dgain*(err-err1);
+    if(temp>maxval)
+    {
+        temp=maxval;
+    }
+    return temp;
+}
+
+float Behaviour::basicPDControl2(float pgain, float dgain, float err, float err1, float err2, float maxval)
+{
+    float temp;
+    temp = pgain*err + dgain*(err+err2-2*err1);
+    if(temp>maxval)
+    {
+        temp=maxval;
+    }
+    return temp;
+}
+
 void move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target, float maxvel,
                           const DPoint  & _robot_pos,const Angle  & _robot_ori );
 void move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target0, DPoint target1,
@@ -83,20 +107,27 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
         {
             app_vx_ = tmp.x_;
             app_vy_ = tmp.y_;
+            accelerateLimit();
         }
         else if(past_robot_vel.size()==1)
         {
             vel1=past_robot_vel.at(0);
-            app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel1.Vx)/update_T;
-            app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel1.Vy)/update_T;
+            app_vx_ = basicPDControl(pval,dval,tmp.x_,vel1.Vx,maxvel);
+            app_vy_ = basicPDControl(pval,dval,tmp.y_,vel1.Vy,maxvel);
+            //app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel1.Vx)/update_T;
+            //app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel1.Vy)/update_T;
+            accelerateLimit();
             cout<<"past vel0: "<<vel1.Vx<<' '<<vel1.Vy<<endl;
         }
         else
         {
             vel1=past_robot_vel.at(0);
             vel2=past_robot_vel.at(1);
-            app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel2.Vx*vel2.Vx+vel1.Vx)/(update_T*update_T);
-            app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel2.Vy*vel2.Vy+vel1.Vy)/(update_T*update_T);
+            app_vx_ = basicPDControl2(pval,dval,tmp.x_,vel1.Vx,vel2.Vx,maxvel);
+            app_vy_ = basicPDControl2(pval,dval,tmp.y_,vel1.Vy,vel2.Vy,maxvel);
+            //app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel2.Vx*vel2.Vx+vel1.Vx)/(update_T*update_T);
+            //app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel2.Vy*vel2.Vy+vel1.Vy)/(update_T*update_T);
+            accelerateLimit();
             cout<<"past vel0: "<<vel1.Vx<<' '<<vel1.Vy<<endl;
             cout<<"past vel1: "<<vel2.Vx<<' '<<vel2.Vy<<endl;
         }
@@ -139,13 +170,15 @@ void Behaviour::rotate2AbsOrienation(float pval, float dval, float orientation,f
         else if(past_robot_vel.size()==1)
         {
             vel1=past_robot_vel.at(0);
-            app_w_ = pval*tmp + dval*(tmp-vel1.w)/update_T;
+            app_w_ = basicPDControl(pval,dval,tmp,vel1.w,maxw);
+            //app_w_ = pval*tmp + dval*(tmp-vel1.w)/update_T;
         }
         else
         {
             vel1=past_robot_vel.at(0);
             vel2=past_robot_vel.at(1);
-            app_w_ = pval*tmp + dval*(tmp-vel2.w*vel2.w+vel1.w)/(update_T*update_T);
+            app_w_ = basicPDControl2(pval,dval,tmp,vel1.w,vel2.w,maxw);
+            //app_w_ = pval*tmp + dval*(tmp-vel2.w*vel2.w+vel1.w)/(update_T*update_T);
         }
     }
     else
@@ -304,7 +337,7 @@ void Behaviour::clear()
 
 
 
-float basicPDControl(float pgain,float dgain, float err,float err1, float maxval);
+
 float basicPIDcontrol(float pgain,
                    float igain,
                    float dgain,

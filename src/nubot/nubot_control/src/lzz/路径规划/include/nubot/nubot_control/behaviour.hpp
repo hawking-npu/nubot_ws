@@ -68,6 +68,8 @@ public:
     void setTurn(bool isTurn);
     void accelerateLimit(const double &_acc_thresh = 20, const bool & use_convected_acc = true);
     void clear();
+
+    float basicPDControl2(float pgain, float dgain, float err, float err1, float err2, float maxval);
     
 public:
     float app_vx_;

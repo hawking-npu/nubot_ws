@@ -52,7 +52,7 @@ void Plan::move2Positionwithobs_noball(DPoint target, float maxvel, float maxacc
         m_subtargets_.robot_pos_=robot_pos_;
         m_subtargets_.ball_pos_=ball_pos_;
         m_subtargets_.subtarget(target, robot_pos_, avoid_ball);
-        m_behaviour_.move2Position(0.9,0.1,m_subtargets_.subtargets_pos_,max_vel,robot_pos_,robot_ori_);
+        m_behaviour_.move2Position(1,0.1,m_subtargets_.subtargets_pos_,max_vel,robot_pos_,robot_ori_);
     }
     else
     {
