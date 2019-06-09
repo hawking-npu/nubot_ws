@@ -40,18 +40,19 @@ void RoleAssignment::calculateRoleUtility()//P203
     BallObject ballinfo;
     DPoint robot_pos_;
     DPoint ball_pos_;
-    DPoint opp_goal = DPoint(FIELD_LENGTH/2,0);//敌方球门
-    DPoint our_goal = DPoint(-FIELD_LENGTH/2,0);//己方球门
-    DPoint passive_pos = DPoint(-500,0);//防守位置
-    DPoint assistant_pos = DPoint(-200,0);//助攻位置
+    DPoint opp_goal = DPoint(FIELD_LENGTH/2,0.0);//敌方球门
+    DPoint our_goal = DPoint(-FIELD_LENGTH/2,0.0);//己方球门
+    DPoint passive_pos = DPoint(-500.0,0.0);//防守位置
+    DPoint assistant_pos = DPoint(-200.0,0.0);//助攻位置
 
     DPoint temp1, temp2;
     double cos_theta;
-    double Uakd,Uakt,Uakb,delta_tak;//主攻
-    double Udfd,Udft,delta_tdf,Udfb;//防守
-    double Uad,delta_ta,Uab;//助攻
+    double delta_t;
+    double Ud;
+    double Ut;
+    double Ub;
 
-    for(int robot_id = 1; robot_id<OUR_TEAM; ++i)//排除守门员
+    for(int robot_id = 1; robot_id<OUR_TEAM; ++robot_id)//排除守门员
     {
         robotinfo = world_model_->RobotInfo_[robot_id];
         ballinfo = world_model_->BallInfo_[robot_id];
@@ -59,35 +60,27 @@ void RoleAssignment::calculateRoleUtility()//P203
         ball_pos_ = ballinfo.getGlobalLocation();
 
         //主攻
-        Uakd = ACTIVE_K * robot_pos_.distance(ball_pos_) + ACTIVE_B;
         temp1 = robot_pos_-ball_pos_;//机器人与球连线
-        temp2 = opp_goal - ball_pos_;//机器人与敌方球门连线
+        temp2 = opp_goal - ball_pos_;//敌方球门与球连线
         cos_theta = (temp1.x_*temp2.x_ + temp2.y_*temp2.y_)/(temp1.norm()*temp2.norm());
-        Uakt = ACTIVE_THETA_K * acos(cos_theta);
-        delta_tak = robotinfo.getRolePreserveTime();
-        if(robotinfo.getCurrentRole() == ACTIVE)
-            delta_tak = 0;
-        Uakb = min(ACTIVE_THETA_B, delta_tak);
-        RoleUtilityMatrix_[robot_id][ACTIVE] = Uakd + Uakt + Uakb;
+        delta_t = robotinfo.getRolePreserveTime();
+        if(robotinfo.getCurrentRole() == ACTIVE) { delta_t = 0; }
+        RoleUtilityMatrix_[robot_id][ACTIVE] = ACTIVE_K * robot_pos_.distance(ball_pos_) + ACTIVE_B +
+                ACTIVE_THETA_K * acos(cos_theta) + min(ACTIVE_THETA_B, delta_t);
 
         //防守
-        Udfd = PASSIVE_K * robot_pos_.distance(passive_pos) + PASSIVE_B;
-        temp2 = our_goal - ball_pos_;
+        temp2 = our_goal - ball_pos_;//己方球门与球连线
         cos_theta = (temp1.x_*temp2.x_ + temp2.y_*temp2.y_)/(temp1.norm()*temp2.norm());
-        Udft = PASSIVE_THETA_K * acos(cos_theta);
-        delta_tdf = robotinfo.getRolePreserveTime();
-        if(robotinfo.getCurrentRole() == PASSIVE)
-            delta_tdf = 0;
-        Udfb = min(PASSIVE_THETA_B, delta_tdf);
-        RoleUtilityMatrix_[robot_id][PASSIVE] = Udfd + Udft + Udfb;
+        delta_t = robotinfo.getRolePreserveTime();
+        if(robotinfo.getCurrentRole() == PASSIVE) { delta_t = 0; }
+        RoleUtilityMatrix_[robot_id][PASSIVE] = PASSIVE_K * robot_pos_.distance(passive_pos) + PASSIVE_B +
+                PASSIVE_THETA_K * acos(cos_theta) + min(PASSIVE_THETA_B, delta_t);
 
         //助攻
-        Uad = ASSISTANT_K * robot_pos_.distance(assistant_pos) + ASSISTANT_B;
-        delta_ta = robotinfo.getRolePreserveTime();
-        if(robotinfo.getCurrentRole() == ASSISTANT)
-            delta_ta = 0;
-        Uab = min(PASSIVE_THETA_B, delta_ta);
-        RoleUtilityMatrix_[robot_id][ASSISTANT] = Uad + Uab;
+        delta_t = robotinfo.getRolePreserveTime();
+        if(robotinfo.getCurrentRole() == ASSISTANT) { delta_t = 0; }
+        RoleUtilityMatrix_[robot_id][ASSISTANT] = ASSISTANT_K * robot_pos_.distance(assistant_pos) + ASSISTANT_B +
+                min(PASSIVE_THETA_B, delta_t);
     }
 }
 
@@ -104,7 +97,7 @@ void RoleAssignment::selectRole()
         {
             for(int j=0; j<ROLENUM; ++i)
             {
-                if(RoleUtilityMatrix_[i][j]>maxn)
+                if(RoleUtilityMatrix_[i][j] > maxn)
                 {
                     maxn=RoleUtilityMatrix_[i][j];
                     robot_id=i;
@@ -112,7 +105,7 @@ void RoleAssignment::selectRole()
                 }
             }
         }
-        if(robot_id==-1)
+        if(robot_id == -1)
             break;
         else
         {
@@ -132,4 +125,10 @@ void RoleAssignment::selectRole()
 }
 
 void fixRole();
-int  process();
+int  RoleAssignment::process()
+{
+    memset(RoleUtilityMatrix_, -1, (OUR_TEAM-1)*ROLENUM);
+    calculateRoleUtility();
+    selectRole();
+    //
+}
