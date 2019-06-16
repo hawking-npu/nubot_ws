@@ -5,9 +5,6 @@
 #include<nubot/nubot_control/world_model_info.h>
 #include<ros/ros.h>
 
-#include <nubot/nubot_control/strategy.hpp>
-#include <nubot/nubot_control/mydefine.hpp>
-
 #define PI 3.1415926
 
 const double TAC_DIST_ANTI=330;                      //对方发球时，我方机器人与球之间的距离
@@ -37,8 +34,6 @@ public:
     void    OppkickoffReady_();
     void    DropBallReady_();
 
-    void move2target(DPoint target, DPoint _robot_pos, Angle _robot_ori, double distance_thres=10.0);
-
 public:
 
     World_Model_Info * world_model_;
@@ -55,8 +50,6 @@ public:
     DPoint target_;                              //该机器人的站位点
     DPoint ballPos_;                             //混合后的球坐标
     DPoint backFieldPoint_;                      //后卫点
-
-    Strategy  * m_strategy_;
 };
 
 }

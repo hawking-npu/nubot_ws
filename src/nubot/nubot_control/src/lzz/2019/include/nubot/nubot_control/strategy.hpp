@@ -11,9 +11,6 @@
 #include "nubot/nubot_control/midfieldrole.h"
 #include "nubot/nubot_control/passiverole.h"
 #include "nubot/nubot_control/assistrole.h"
-
-#include <ros/ros.h>
-
 namespace nubot{
 
 class Strategy

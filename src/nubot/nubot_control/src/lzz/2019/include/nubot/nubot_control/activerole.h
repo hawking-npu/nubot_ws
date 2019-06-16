@@ -4,12 +4,6 @@
 #include <nubot/nubot_control/world_model_info.h>
 #include <nubot/nubot_control/fieldinformation.h>
 #include <nubot/nubot_control/plan.h>
-#include <nubot/nubot_control/mydefine.hpp>
-
-#include <ros/ros.h>
-#include <nubot_common/BallHandle.h>
-#include <nubot_common/Shoot.h>
-
 namespace nubot {
 
 class ActiveRole
@@ -64,8 +58,6 @@ public:
     bool   dribble_enable_;      /** 带球状态*/
     float kick_force_;          /** 踢球的力量*/
     DPoint kick_target_;
-
-    FieldInformation fieldinformation_;
 };
 
 }

@@ -7,8 +7,6 @@
 #include "nubot/nubot_control/behaviour.hpp"
 #include "nubot/nubot_control/world_model_info.h"
 
-#include <ros/ros.h>
-
 using namespace std;
 namespace nubot{
 class Plan
@@ -25,11 +23,9 @@ public:
 
         /***********postion*************/
         void positionAvoidObs(DPoint target, float theta, float stopdis, float stoptheta);
-        void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel = max_vel);
+        void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel);
         //void move2Positionwithobs(DPoint target);  // move to the target point with obstacles avoidance
-        void move2Positionwithobs_noball(DPoint target, float maxvel = max_vel, float maxacc = max_acc, bool avoid_ball=false, double distance_thres = 10.0);
-
-        void rotate2Position(DPoint target, double maxw = max_w, double angle_thres = 8.0/180.0);
+        void move2Positionwithobs_noball(DPoint target, float maxvel, float maxacc, bool avoid_ball=false);
 
         /***********PE and PO***********/
         double PECrossBackMIdlleLine(double direction);
@@ -49,10 +45,6 @@ public:
         bool   SearchMinPE4PassThrough(double &direction, double pridictlen, DPoint trap[4], double step, int flg);
 
         void   update();
-
-
-        /*********round with foot************/
-        void roundfoot();
 public:
         World_Model_Info * world_model_;
         Behaviour  m_behaviour_;

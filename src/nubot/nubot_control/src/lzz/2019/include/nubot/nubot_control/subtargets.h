@@ -2,28 +2,26 @@
 #define SUBTARGETS_H
 
 #include <cmath>
-#include <vector>
-#include <algorithm>
 #include "nubot/core/core.hpp"
 #include "nubot/nubot_control/world_model_info.h"
-#include "nubot/nubot_control/mydefine.hpp"
-
-#include <ros/ros.h>
 
 using namespace std;
-
 namespace nubot{
-    class Subtargets
-    {
-    public:
-    Subtargets();
-    int Min_num(int n,double *q);
-    double Min(int n,double *q);
-    int Max_num(int n,double *q);
-    double Max(int n,double *q);
-    void subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball);
+class Subtargets
+{
+public:
+        Subtargets();
 
-    inline double square(double a) { return a*a; }
+	int
+        Min_num(int n,double *q);
+        double
+        Min(int n,double *q);
+        int
+        Max_num(int n,double *q);
+        double
+        Max(int n,double *q);
+        void
+        subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball);
     
 public:
 

@@ -41,7 +41,8 @@ public:
         catch_pt_     = catch_pt;
         time_lock_    = PASSSTATE_TIME_DELAY;
     }
-    void reset(){
+    void
+    reset(){
         is_passing_      = false;
         is_dynamic_pass_ = false;
         is_static_pass_  = false;
@@ -63,8 +64,8 @@ class World_Model_Info
 public:
     std::vector<nubot::Robot>      RobotInfo_; //! 机器人信息
     std::vector<nubot::BallObject> BallInfo_;  //!
-    std::vector<nubot::DPoint>     Obstacles_; //! 障碍物
-    std::vector<nubot::DPoint>     Opponents_; //! 多个机器人障碍物融合信息
+    std::vector<nubot::DPoint>     Obstacles_; //!
+    std::vector<nubot::DPoint>     Opponents_; //!
     PassCommands      pass_cmds_; // 接收到的队友机器人发球的传球命令
     MessageFromCoach  CoachInfo_; // 接收到的COACH信息
     int BallInfoState_;           // 当前看到足球的状态自己、队友或者没有看到足球

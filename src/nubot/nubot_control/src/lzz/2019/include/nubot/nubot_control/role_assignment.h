@@ -6,7 +6,7 @@
 #include<ros/ros.h>
 namespace nubot{
 
-/** 效能值计算的一些参数*/
+/** 效能置计算的一些参数*/
 const double ACTIVE_K = -300.0/MAXDIS_FIELD;//-200.0/MAXDIS_FIELD;                  /** 主攻参数：与足球距离的计算参数*/
 const double ACTIVE_B = 200;
 const double ACTIVE_THETA_K = -20.0/SINGLEPI_CONSTANT;        /** 主攻参数：与足球夹角的计算参数*/
@@ -21,13 +21,13 @@ const double ASSISTANT_K = -220.0/MAXDIS_FIELD;
 const double ASSISTANT_B = 220;
 
 
-const double ASSISTANTLEFT_K = -230.0/MAXDIS_FIELD;  //没用
+const double ASSISTANTLEFT_K = -230.0/MAXDIS_FIELD;
 const double ASSISTANTLEFT_B = 230;
 
-const double ASSISTANTRIGHT_K = -230.0/MAXDIS_FIELD;  //没用
+const double ASSISTANTRIGHT_K = -230.0/MAXDIS_FIELD;
 const double ASSISTANTRIGHT_B = 230;
 
-const double PUREACTIVE_C=200;  //没用//??
+const double PUREACTIVE_C=200;
 const double PUREACTIVE_K=-200.0/MAXDIS_FIELD;
 const double PUREACTIVE_THETA_C=20;
 const double PUREACTIVE_THETA_K=-20/SINGLEPI_CONSTANT;

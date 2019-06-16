@@ -84,62 +84,11 @@ void StaticPass::staticReady_()                    //判断何种站位
 
 void StaticPass::OurDefaultReady_()                   //我方发球默认的站位
 {
-    ROS_INFO("nubotcontrol OurDefaultReady_");
-    DPoint _robot_pos = m_strategy_->m_plan_->robot_pos_;
-    Angle _robot_ori = m_strategy_->m_plan_->robot_ori_;
-    switch(world_model_->AgentID_)  // 十分简单的实现，固定的站位，建议动态调整站位，写入staticpass.cpp中
-    {                                   // 站位还需要考虑是否犯规，但是现在这个程序没有考虑。
-        case 1:
-            target_ = DPoint(-850.0,0.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-        case 2:
-            target_ = ballPos_;
-            move2target(target_,_robot_pos,_robot_ori,100.0);
-        break;
-        case 3:
-            target_ = ballPos_;
-            move2target(target_,_robot_pos,_robot_ori,200.0);
-        break;
-        case 4:
-            target_ = DPoint(-450.0,200.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-        case 5:
-            target_ = DPoint(-450.0,-200.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-    }
 }
 
 void StaticPass::OppDefaultReady_()               //对方发球默认站位
 {
-    ROS_INFO("nubotcontrol OppDefaultReady_");
-    DPoint _robot_pos = m_strategy_->m_plan_->robot_pos_;
-    Angle _robot_ori = m_strategy_->m_plan_->robot_ori_;
-    switch(world_model_->AgentID_)  // 十分简单的实现，固定的站位，建议动态调整站位，写入staticpass.cpp中
-    {                                   // 站位还需要考虑是否犯规，但是现在这个程序没有考虑。
-        case 1:
-            target_ = DPoint(-850.0,0.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-        case 2:
-            target_ = DPoint(-150.0,100.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-        case 3:
-            target_ = DPoint(-150.0,-100.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-        case 4:
-            target_ = DPoint(-450.0,200.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-        case 5:
-            target_ = DPoint(-450.0,-200.0);
-            move2target(target_,_robot_pos,_robot_ori);
-        break;
-    }
+
 }
 
 void StaticPass::OurPenaltyReady_()
@@ -176,23 +125,3 @@ void StaticPass::targetInitialize()
     targetInit_[3]=DPoint(-200,100);
     targetInit_[4]=DPoint(-200,-100);
 }
-
-void StaticPass::move2target(DPoint target, DPoint _robot_pos, Angle _robot_ori, double distance_thres)
-{
-    DPoint br = ballPos_-_robot_pos;
-    if(_robot_pos.distance(target) > distance_thres)
-    {
-        m_strategy_->m_plan_->move2Positionwithobs_noball(target,max_vel,max_acc);
-        //m_strategy_->m_plan_->m_behaviour_.move2Position(1.0,0.1,target,max_vel,_robot_pos,_robot_ori);
-    }
-    else
-    {
-        m_strategy_->m_plan_->m_behaviour_.setAppvx(0.0);
-        m_strategy_->m_plan_->m_behaviour_.setAppvy(0.0);
-        if(br.angle().radian_-_robot_ori.radian_ > 8.0/180.0)
-            m_strategy_->m_plan_->m_behaviour_.rotate2AbsOrienation(1.0,0.1,br.angle().radian_,max_w,_robot_ori.radian_);
-        else
-            m_strategy_->m_plan_->m_behaviour_.setAppw(0);
-    }
-}
-

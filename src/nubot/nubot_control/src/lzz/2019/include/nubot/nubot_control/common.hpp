@@ -571,7 +571,6 @@ inline bool
 IsInReachableZone(DPoint point)
 {
     if(abs(point.x_)<FIELDLENGTH/2.0+100+LOCATIONERROR&&abs(point.y_)<FIELDWIDTH/2.0+100+LOCATIONERROR)
-    //if(fabs(point.x_)<FIELD_LENGTH/2.0+100+LOCATIONERROR&&fabs(point.y_)<FIELD_WIDTH/2.0+100+LOCATIONERROR)//改为使用core.hpp中的而不是define.cpp中的场地长宽
         return true;
     else
         return false;
