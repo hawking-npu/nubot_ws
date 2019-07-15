@@ -2,7 +2,6 @@
 #define STRATEGY_H
 #include <cmath>
 #include"nubot/core/core.hpp"
-//#include "nubot/nubot_control/goaliestrategy.h"
 #include "nubot/nubot_control/role_assignment.h"
 #include "nubot/nubot_control/world_model_info.h"
 #include "nubot/nubot_control/goaliestrategy.h"

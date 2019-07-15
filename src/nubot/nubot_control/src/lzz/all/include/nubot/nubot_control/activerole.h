@@ -2,7 +2,6 @@
 #define _NUBOT_ACTIVEROLE_H
 
 #include <nubot/nubot_control/world_model_info.h>
-#include <nubot/nubot_control/fieldinformation.h>
 #include <nubot/nubot_control/plan.h>
 #include <nubot/nubot_control/mydefine.hpp>
 
@@ -64,8 +63,6 @@ public:
     bool   dribble_enable_;      /** 带球状态*/
     float kick_force_;          /** 踢球的力量*/
     DPoint kick_target_;
-
-    FieldInformation fieldinformation_;
 };
 
 }

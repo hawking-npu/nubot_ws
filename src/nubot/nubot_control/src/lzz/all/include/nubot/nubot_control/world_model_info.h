@@ -237,6 +237,8 @@ public:
         is_dynamic_pass_ = false;
         is_passed_out_   = false;
     }
+
+    //各角色站位计算
     void caculatePassPosition()
     {
         DPoint robot_pos = RobotInfo_[AgentID_-1].getLocation();
@@ -498,8 +500,9 @@ public:
         if(RobotInfo_[AgentID_-1].isValid() && RobotInfo_[AgentID_-1].getCurrentRole() == ASSISTANT)
             middle_pt_ = assist_pt_;
     }
-    double
-    searchMaxSight(double &dest_angle, const DPoint &_point_from, const double &_angle_min, const double &_angle_max, const double &_max_distance)
+
+    //功能：根据与_point_from距离_max_distance以内的障碍物信息，搜索一个视野最佳的方向，可用于传球配合等功能
+    double searchMaxSight(double &dest_angle, const DPoint &_point_from, const double &_angle_min, const double &_angle_max, const double &_max_distance)
     {
     //功能：根据与_point_from距离_max_distance以内的障碍物信息，搜索一个视野最佳的方向，可用于传球配合等功能
     //实现：先计算所有_max_distance范围内障碍物的角度信息，并按从小到大顺序存储；接着计算两两之间角度差，找到其角分线在角度阈值范围内的，最大的角度差；
@@ -659,8 +662,7 @@ public:
     #undef IsInThresh
     }
 
-    void
-    update(const bool & ball_holding)
+    void update(const bool & ball_holding)
     {
         //! 表示正在传球过程中，因此其他机器人必须根据该状态确定角色*/
         if(pass_cmds_.isvalid && pass_cmds_.is_passout)

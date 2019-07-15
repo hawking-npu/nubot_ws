@@ -6,6 +6,7 @@
 #include "nubot/nubot_control/subtargets.h"
 #include "nubot/nubot_control/behaviour.hpp"
 #include "nubot/nubot_control/world_model_info.h"
+#include "nubot/nubot_control/mydefine.hpp"
 
 #include <ros/ros.h>
 
@@ -25,6 +26,7 @@ public:
 
         /***********postion*************/
         void positionAvoidObs(DPoint target, double angle_thres = 8.0/180.0/*float theta, float stopdis, float stoptheta*/);
+        void positionAvoidObs2(double targetangle, double angle_thres = 8.0/180.0);
         void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel = max_vel);
         //void move2Positionwithobs(DPoint target);  // move to the target point with obstacles avoidance
         void move2Positionwithobs_noball(DPoint target, float maxvel = max_vel, float maxacc = max_acc, bool avoid_ball=false, double distance_thres = 10.0);
@@ -38,6 +40,7 @@ public:
 
         /***********check***********/
         bool IsNullInTrap(double direction, double swidth, double lwidth, double len);
+        bool pnpoly(DPoint test, const std::vector<DPoint> & pts, const std::vector<DPoint> & obs_pts);
         /*********find and search*********/
         double FindBstDirectionForAvoid();
         double FindBstDirectionForAvoid2(DPoint target);
@@ -49,8 +52,8 @@ public:
         void   update();
 
 
-        /*********round with foot************/
-        void roundfoot();
+        /*********round with soccer************/
+        void ballRoundTrack();
 public:
         World_Model_Info * world_model_;
         Behaviour  m_behaviour_;
@@ -73,8 +76,6 @@ public:
 
 public:
         bool   isinposition_;
-
-        FieldInformation fieldinformation_;
 };
 }
 #endif //PLAN_H

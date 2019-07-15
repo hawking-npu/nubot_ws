@@ -74,7 +74,7 @@ DPoint ball_pos_;
     DPoint tran_ob;
     std::vector<nubot::DPoint> myObstacles_;//自身坐标下，筛选保留x>0的点
     std::vector<nubot::DPoint> _myObstacles;
-    _myObstacles = world_model_->Obstacles_;
+    _myObstacles = world_model_->Opponents_;
     if(avoid_ball)
         _myObstacles.push_back(ball_pos_);
     //ROS_INFO("Subtargets 1myObstacles_num: %ld", _myObstacles.size());
@@ -82,13 +82,7 @@ DPoint ball_pos_;
     double theta_t;
     DPoint tar_now = target;
     tar_now -= robot_pos_;
-    if(tar_now.x_ == 0)
-    {
-        if(tar_now.y_>0) { theta_t = PI/2; }
-        else if(tar_now.y_<0) { theta_t = -PI/2; }
-        else { theta_t = 0; }
-    }
-    else { theta_t = atan(tar_now.y_/tar_now.x_); }
+    theta_t = atan2(tar_now.y_, tar_now.x_);
     theta_t = -theta_t;
     ori = tar_now;
     tar_now.x_ = ori.x_*cos(theta_t)-ori.y_*sin(theta_t);
@@ -97,7 +91,7 @@ DPoint ball_pos_;
     myObstacles_.clear();
     for(int i=0; i<_myObstacles.size(); ++i)
     {
-        tran_ob = _myObstacles.at(i);
+        tran_ob = _myObstacles[i];
         tran_ob -= robot_pos_;
 
         ori = tran_ob;
@@ -119,7 +113,7 @@ DPoint ball_pos_;
     DPoint now_ob;
     for(int i = 0; i < myObstacles_.size(); ++i)
     {
-        now_ob = myObstacles_.at(i);
+        now_ob = myObstacles_[i];
         if(now_ob.x_ > 0 && now_ob.x_ < target.distance(now_ob))
         {
             if(abs(now_ob.y_) < obs_radius+my_radius)//障碍物i和机器人圆的半径
@@ -132,11 +126,11 @@ DPoint ball_pos_;
     double min_Ob_x_ = INF;
     for(int i=0; i<setB.size(); ++i)
     {
-        now_ob = myObstacles_.at(setB.at(i));
+        now_ob = myObstacles_[setB[i]];
         if(now_ob.x_ < min_Ob_x_)
         {
             min_Ob_x_ = now_ob.x_;
-            first_ob_num = setB.at(i);
+            first_ob_num = setB[i];
         }
     }
     if(first_ob_num==INF)//无障碍物
@@ -151,18 +145,18 @@ DPoint ball_pos_;
         bool used[myObstacles_.size()] = {false};
         for(int i=0; i<setB.size(); ++i)
         {
-            findG_a = myObstacles_.at(setB.at(i));
-            setG.push_back(setB.at(i));
-            used[setB.at(i)] = true;
+            findG_a = myObstacles_[setB[i]];
+            setG.push_back(setB[i]);
+            used[setB[i]] = true;
             for(int j=i+1; j<myObstacles_.size(); ++j)
             {
-                findG_b = myObstacles_.at(j);
+                findG_b = myObstacles_[j];
                 if(findG_a.distance(findG_b) < 2*my_radius)
                 {
-                    if(!used[setB.at(i)])
+                    if(!used[setB[i]])
                     {
-                        used[setB.at(i)] = true;
-                        setG.push_back(setB.at(i));
+                        used[setB[i]] = true;
+                        setG.push_back(setB[i]);
                     }
                     if(!used[j])
                     {
@@ -179,13 +173,13 @@ DPoint ball_pos_;
     int min_Ob_num = INF;
     for(int i=0; i<setG.size(); ++i)
     {
-        now_ob = myObstacles_.at(setG.at(i));
+        now_ob = myObstacles_[setG[i]];
         //if(abs(now_ob.y_)<min_Ob_y_)
         if(now_ob.norm() < min_Ob_y_)
         {
             //min_Ob_y_=abs(now_ob.y_);
             min_Ob_y_ = now_ob.norm();
-            min_Ob_num = setG.at(i);
+            min_Ob_num = setG[i];
         }
     }
     if(min_Ob_num == INF)//无障碍物
@@ -197,20 +191,20 @@ DPoint ball_pos_;
     double max_angle = -INF;
     double max_angle_num;
     int flag_sub_edge = 0;
-    now_ob = myObstacles_.at(min_Ob_num);
+    now_ob = myObstacles_[min_Ob_num];
     if(now_ob.y_ >= 0)
     {
         flag_sub_edge = 1;
         for(int i=0; i<setG.size(); ++i)
         {
-            now_ob = myObstacles_.at(setG.at(i));
+            now_ob = myObstacles_[setG[i]];
             if(now_ob.y_ >= 0)
             {
                 now_ob_angle = fabs(now_ob.y_)*1.0/now_ob.x_;//x won't be 0;
                 if(now_ob_angle > max_angle)
                 {
                     max_angle = now_ob_angle;
-                    max_angle_num = setG.at(i);
+                    max_angle_num = setG[i];
                 }
             }
         }
@@ -220,14 +214,14 @@ DPoint ball_pos_;
         flag_sub_edge = -1;
         for(int i=0; i<setG.size(); ++i)
         {
-            now_ob = myObstacles_.at(setG.at(i));
+            now_ob = myObstacles_[setG[i]];
             if(now_ob.y_ < 0)
             {
                 now_ob_angle = fabs(now_ob.y_)*1.0/now_ob.x_;//x won't be 0;
                 if(now_ob_angle > max_angle)
                 {
                     max_angle = now_ob_angle;
-                    max_angle_num = setG.at(i);
+                    max_angle_num = setG[i];
                 }
             }
         }
@@ -239,7 +233,7 @@ DPoint ball_pos_;
     //double a=now_ob.y_*now_ob.y_+(my_radius+obs_radius)*(my_radius+obs_radius);
     //double b=2*now_ob.x_*now_ob.y_;
     //double c=now_ob.x_*now_ob.x_+(my_radius+obs_radius)*(my_radius+obs_radius);
-    now_ob = myObstacles_.at(max_angle_num);
+    now_ob = myObstacles_[max_angle_num];
     double a = square(now_ob.x_)-square(my_radius+obs_radius);
     double b = -2*now_ob.x_*now_ob.y_;
     double c = square(now_ob.y_)-square(my_radius+obs_radius);
@@ -281,7 +275,7 @@ DPoint ball_pos_;
     else { subtargets_pos_ = target; }
 
     /*
-    now_ob=myObstacles_.at(max_angle_num);
+    now_ob=myObstacles_[max_angle_num];
     //圆心连线
     //y=nowob.y/nowob.x *x;
     //k=nowob.y/nowob.x;=y1/x1;
@@ -350,8 +344,8 @@ DPoint ball_pos_;
     int ans_point;
     for(int i=0; i<line_num; ++i)
     {
-        point_one=Subtargets::first_point.at(i);
-        point_two=Subtargets::second_point.at(i);
+        point_one=Subtargets::first_point[i];
+        point_two=Subtargets::second_point[i];
         if(point_two.y_*now_ob.y_<0)
             continue;
         //两个圆在切线两侧
@@ -402,8 +396,8 @@ DPoint ball_pos_;
             }
         }
     }
-    DPoint point_xx=Subtargets::first_point.at(ans_point);
-    ans_line=point_xx.distance(Subtargets::second_point.at(ans_point));
+    DPoint point_xx=Subtargets::first_point[ans_point];
+    ans_line=point_xx.distance(Subtargets::second_point[ans_point]);
     if(ans_b!=my_radius)
     {
         double theta_ans=atan(ans_k);

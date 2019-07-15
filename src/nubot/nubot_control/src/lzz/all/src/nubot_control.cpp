@@ -99,7 +99,7 @@ public:
         std::string  service1 = "Shoot";
         shoot_client_ = nh_->serviceClient<nubot_common::Shoot>(service1);
         worldmodelinfo_sub_ = nh_->subscribe("worldmodel/worldmodelinfo", 1, &NuBotControl::update_world_model_info,this);
-        //ballinfo3d_sub1_    = nh_->subscribe("kinect/ballinfo",1, &NuBotControl::ballInfo3dCallback, this);
+        ballinfo3d_sub1_    = nh_->subscribe("kinect/ballinfo",1, &NuBotControl::ballInfo3dCallback, this); ////原本注释掉了
         control_timer_      = nh_->createTimer(ros::Duration(0.015),&NuBotControl::loopControl,this);
 
         world_model_info_.AgentID_ = atoi(environment); /** 机器人标号*/
@@ -154,7 +154,7 @@ public:
         world_model_info_.Obstacles_.clear();
         for(nubot_common::Point2d point : _world_msg.obstacleinfo.pos )
             world_model_info_.Obstacles_.push_back(DPoint(point.x,point.y));
-            world_model_info_.Opponents_.clear();
+        world_model_info_.Opponents_.clear();
         for(nubot_common::Point2d point : _world_msg.oppinfo.pos )
             world_model_info_.Opponents_.push_back(DPoint(point.x,point.y));
         /** 更新足球物信息*/
@@ -204,7 +204,7 @@ public:
     void ballInfo3dCallback(const nubot_common::BallInfo3d  &_BallInfo_3d){
         ROS_INFO("nubotcontrol ballInfo3dCallback");
 
-        //m_strategy_->goalie_strategy_.setBallInfo3dRel( _BallInfo_3d );
+        m_strategy_->goalie_strategy_.setBallInfo3dRel( _BallInfo_3d );
     }
     /** 主要的控制框架位于这里*/
     void loopControl(const ros::TimerEvent& event)
@@ -395,9 +395,13 @@ public:
         //bool xxx=isNearestRobot();
         //ROS_INFO("normalGame isNearestRobot: %d", (int)xxx);
         //if(world_model_info_.AgentID_ != 1 /*&& xxx*/)
-        if(world_model_info_.AgentID_ == 1 /*&& xxx*/)
+        if(world_model_info_.AgentID_ == 1)//Goalie
         {
-            Robot robotinfo = world_model_info_.RobotInfo_[world_model_info_.AgentID_];
+            m_strategy_->process();
+        }
+        if(world_model_info_.AgentID_ != 1 /*&& xxx*/)
+        {
+            Robot robotinfo = ;
             m_plan_.m_behaviour_.past_ball_vel=past_ball_vel;
             m_plan_.m_behaviour_.past_robot_vel=past_robot_vel;
             m_strategy_ = new Strategy(world_model_info_,m_plan_);
@@ -405,12 +409,12 @@ public:
             m_strategy_->m_plan_->robot_ori_=robot_ori_;
             m_strategy_->m_plan_->ball_pos_=ball_pos_;
             m_strategy_->process();
-            m_plan_->move2Positionwithobs_noball(robotinfo.getTarget());
-            m_plan_->positionAvoidObs(robotinfo.getTarget());
+            m_plan_.move2Positionwithobs_noball(world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getTarget());
+            m_plan_.positionAvoidObs(world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getTarget());
 
             //运动
-            move2target(robotinfo.getTarget(), robot_pos_);
-            DPoint br = robotinfo.getTarget() - robot_pos_;
+            move2target(world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getTarget(), robot_pos_);
+            DPoint br = world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getTarget() - robot_pos_;
             move2ori(br.angle().radian_, robot_ori_.radian_);
             /*static nubot_common::VelCmd        vel;
             vel.Vx = m_plan_.m_behaviour_.app_vx_;
@@ -443,7 +447,7 @@ public:
                         {
                             if(m_strategy_->ActiveRole_.kick_enable_)
                             {
-                                DPoint dirc = m_strategy_->ActiveRole_.kick_target_ - robotinfo.getTarget();         // 对准 (900.0 ,0.0)
+                                DPoint dirc = m_strategy_->ActiveRole_.kick_target_ - robot_pos_;         // 对准 (900.0 ,0.0)
                                 if(move2target(robotinfo.getTarget(), robot_pos_) &&
                                    move2ori(dirc.angle().radian_, robot_ori_.radian_, 5.0*DEG2RAD))  // 跑到位以及转到位
                                 {
@@ -571,7 +575,7 @@ public:
 
     bool move2ori(double target, double angle, double angle_thres = 8.0*DEG2RAD)  // 一个十分简单的实现，可以用PID
     {
-        m_plan_.positionAvoidObs(target);
+        m_plan_.positionAvoidObs2(target);
         static nubot_common::VelCmd        vel;
         double tmp = target - angle;
         if(fabs(tmp) > angle_thres)        // 容许误差为5度

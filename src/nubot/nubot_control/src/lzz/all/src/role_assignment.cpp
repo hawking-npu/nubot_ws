@@ -91,6 +91,8 @@ void RoleAssignment::adjustRole(){}
 
 void RoleAssignment::selectRole()  //选择角色
 {
+    double selected[OUR_TEAM-1] = {-1};
+    Robot robotinfo;
     while(1)
     {
         double maxn=-1;
@@ -112,12 +114,20 @@ void RoleAssignment::selectRole()  //选择角色
             break;
         else
         {
-            Robot robotinfo=world_model_->RobotInfo_[robot_id];
-            robotinfo.setCurrentRole((char)role_id);///需根据core.hpp中的role进行修改
-            world_model_->RobotInfo_[robot_id]=robotinfo;
+            if(selected[robot_id] < maxn)
+            {
+                robotinfo = world_model_->RobotInfo_[robot_id];
+                robotinfo.setCurrentRole((char)role_id);///需根据core.hpp中的role进行修改
+                selected[robot_id] = maxn;
+                world_model_->RobotInfo_[robot_id] = robotinfo;
+            }
+            else
+            {
+                continue;
+            }
         }
-        for(int i=0; i<OUR_TEAM-1; ++i) { RoleUtilityMatrix_[i][role_id]=-1; }
-        for(int j=0; j<ROLENUM; ++j) { RoleUtilityMatrix_[robot_id][j]=-1; }
+        for(int i=0; i<OUR_TEAM-1; ++i) { RoleUtilityMatrix_[i][role_id]  = -1; }
+        for(int j=0; j<ROLENUM;    ++j) { RoleUtilityMatrix_[robot_id][j] = -1; }
     }
 }
 

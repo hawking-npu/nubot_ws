@@ -103,15 +103,15 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
             tmp.x_=sqrt(b/a)*tmp.x_;
             tmp.y_=sqrt(b/a)*tmp.y_;
         }
-        if(past_robot_vel.size()==0)
+        if(past_robot_vel.size() == 0)
         {
             app_vx_ = tmp.x_;
             app_vy_ = tmp.y_;
             accelerateLimit();
         }
-        else if(past_robot_vel.size()==1)
+        else if(past_robot_vel.size() == 1)
         {
-            vel1=past_robot_vel.at(0);
+            vel1=past_robot_vel[0];
             app_vx_ = basicPDControl(pval,dval,tmp.x_,vel1.Vx,maxvel);
             app_vy_ = basicPDControl(pval,dval,tmp.y_,vel1.Vy,maxvel);
             //app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel1.Vx)/update_T;
@@ -121,8 +121,8 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
         }
         else
         {
-            vel1=past_robot_vel.at(0);
-            vel2=past_robot_vel.at(1);
+            vel1=past_robot_vel[0];
+            vel2=past_robot_vel[1];
             app_vx_ = basicPDControl2(pval,dval,tmp.x_,vel1.Vx,vel2.Vx,maxvel);
             app_vy_ = basicPDControl2(pval,dval,tmp.y_,vel1.Vy,vel2.Vy,maxvel);
             //app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel2.Vx*vel2.Vx+vel1.Vx)/(update_T*update_T);
@@ -169,14 +169,14 @@ void Behaviour::rotate2AbsOrienation(float pval, float dval, float orientation,f
             app_w_ = tmp;
         else if(past_robot_vel.size()==1)
         {
-            vel1=past_robot_vel.at(0);
+            vel1=past_robot_vel[0];
             app_w_ = basicPDControl(pval,dval,tmp,vel1.w,maxw);
             //app_w_ = pval*tmp + dval*(tmp-vel1.w)/update_T;
         }
         else
         {
-            vel1=past_robot_vel.at(0);
-            vel2=past_robot_vel.at(1);
+            vel1=past_robot_vel[0];
+            vel2=past_robot_vel[1];
             app_w_ = basicPDControl2(pval,dval,tmp,vel1.w,vel2.w,maxw);
             //app_w_ = pval*tmp + dval*(tmp-vel2.w*vel2.w+vel1.w)/(update_T*update_T);
         }

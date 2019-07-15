@@ -16,6 +16,7 @@ ActiveRole::ActiveRole()
     catch_in_ourfeild_ = false;
     kick_enable_ = false;
 }
+
 ActiveRole:: ~ActiveRole()
 {
 }
@@ -25,7 +26,7 @@ World_Model_Info * world_model_;
 Plan  * m_plan_;
 bool stuckflg_ ;             // 机器人当前是否堵转
 int  stucktime_ ;            // 机器人堵转周期记录
-bool NeedEvaluat ;           // 射门的ROS服务，于底层控制节点通信
+bool NeedEvaluat ;           // 射门的ROS服务，于底层控制节点通信  评估
 bool dynamic_shoot_state_ ;  // 动态射门的状态
 int  dynamic_shoot_count_ ;  // 动态射门的
 bool quick_shoot_state_ ;    // 快速射门状态
@@ -40,8 +41,6 @@ bool   kick_enable_;         // 准备踢球
 bool   dribble_enable_;      // 带球状态
 float kick_force_;           // 踢球的力量
 DPoint kick_target_;
-
-FieldInformation fieldinformation_;
 */
 
 void ActiveRole::process()
@@ -56,7 +55,10 @@ void ActiveRole::process()
 
     activeDecisionMaking();///
 }
-bool ActiveRole::checkPass(){}
+
+bool ActiveRole::checkPass()
+{}
+
 void ActiveRole::clearActiveState()  //清空状态
 {
     stuckflg_ = false;
@@ -71,54 +73,54 @@ void ActiveRole::clearActiveState()  //清空状态
     catch_in_ourfeild_ =false;
     kick_enable_ =false;
 }
+
 bool ActiveRole::isNullInTrap(const std::vector<DPoint> & obs_info,const DPoint & robot_pos, const Angle & direction,//周围是否有障碍物
             double back_width, double front_width, double back_len, double front_len)
 {
     std::vector<DPoint> pts, obs_pts;
     pts.clear(); //front
     obs_pts.clear(); //back
+/*
+    DPoint pnt[4];//pnt转为世界坐标
+    pnt[0] = DPoint( front_len,  front_width/2);
+    pnt[1] = DPoint( front_len, -front_width/2);
+    pnt[2] = DPoint(-front_len,  front_width/2);
+    pnt[3] = DPoint(-front_len, -front_width/2);
+    DPoint result_pnt[4];
+    double theta = direction.radian_;
 
-    DPoint pnt[4];
-    pnt[0] = DPoint(front_len, front_width/2);
-    DPoint tmp;
-    double theta;
     for(int i=0; i<4; ++i)
     {
-        tmp = pnt[i];
-        theta = atan(tmp);
-    }
-    //坐标转换
-    //robot_pos_
+        result_pnt[i].x_ = pnt[i].y_*cos(theta) + pnt[i].x_*sin(theta);
+        result_pnt[i].y_ = pnt[i].y_*sin(theta) - pnt[i].x_*cos(theta);
 
-    DPoint ori;
-    double theta_t;
-    DPoint tar_now = target;
-    tar_now -= robot_pos_;
-    if(tar_now.x_ == 0)
+        pnt[i] = result_pnt[i];
+    }
+*/
+    //obs转换为自身坐标 判断前后
+    DPoint tmp, now_tmp;
+    double theta = -direction.radian_;
+    for(int i=0; i<obs_info.size(); ++i)
     {
-        if(tar_now.y_>0) { theta_t = PI/2; }
-        else if(tar_now.y_<0) { theta_t = -PI/2; }
-        else { theta_t = 0; }
+        now_tmp = obs_info[i];
+        tmp.x_ = now_tmp.y_*cos(theta) + now_tmp.x_*sin(theta);
+        tmp.y_ = now_tmp.y_*sin(theta) - now_tmp.x_*cos(theta);
+        if(tmp.y_ > 0)
+        {
+            if(fabs(tmp.y_) > front_len || fabs(tmp.x_) > front_width)
+                continue;
+            pts.push_back(now_tmp);
+        }
+        else
+        {
+            if(fabs(tmp.y_) > back_len || fabs(tmp.x_) > back_width)
+                continue;
+            obs_pts.push_back(now_tmp);
+        }
     }
-    else { theta_t = atan(tar_now.y_/tar_now.x_); }
-    theta_t = -theta_t;
-    ori = tar_now;
-    tar_now.x_ = ori.x_*cos(theta_t)-ori.y_*sin(theta_t);
-    tar_now.y_ = ori.x_*sin(theta_t)+ori.y_*cos(theta_t);
-
-        //!转回世界坐标
-        ori = subtargets_pos_;
-        theta_t = -theta_t;
-        tran_ob.x_ = ori.x_*cos(theta_t)-ori.y_*sin(theta_t);
-        tran_ob.y_ = ori.x_*sin(theta_t)+ori.y_*cos(theta_t);
-        tran_ob += robot_pos_;
-        subtargets_pos_ = tran_ob;
-    }
-
-
-    for(int i=0; i<obs_info.size(); ++i){}
     return pnpoly(robot_pos, pts, obs_pts);
 }
+
 bool ActiveRole::pnpoly(DPoint test, const std::vector<DPoint> & pts, const std::vector<DPoint> & obs_pts)  //判断一个坐标点是否在不规则多边形内部
 {
     bool flag = false;
@@ -133,7 +135,7 @@ bool ActiveRole::pnpoly(DPoint test, const std::vector<DPoint> & pts, const std:
     DPoint tmp;
     for(int i=0; i<pts.size(); ++i)
     {
-        tmp = pts.at(i);
+        tmp = pts[i];
         pt.push_back(tmp);
         if(tmp.x_ > max_pt.x_) max_pt.x_ = tmp.x_;
         if(tmp.y_ > max_pt.y_) max_pt.y_ = tmp.y_;
@@ -142,7 +144,7 @@ bool ActiveRole::pnpoly(DPoint test, const std::vector<DPoint> & pts, const std:
     }
     for(int i=0; i<obs_pts.size(); ++i)
     {
-        tmp = obs_pts.at(i);
+        tmp = obs_pts[i];
         pt.push_back(tmp);
         if(tmp.x_ > max_pt.x_) max_pt.x_ = tmp.x_;
         if(tmp.y_ > max_pt.y_) max_pt.y_ = tmp.y_;
@@ -156,14 +158,15 @@ bool ActiveRole::pnpoly(DPoint test, const std::vector<DPoint> & pts, const std:
     DPoint tmpi, tmpj;
     for(int i=0, j=pt.size()-1; i<pt.size(); j=i, ++i)
     {
-        tmpi = pt.at(i);
-        tmpj = pt.at(j);
+        tmpi = pt[i];
+        tmpj = pt[j];
         if( ((tmpi.y_>test.y_) != (tmpj.y_>test.y_)) &&
                 (test.x_ < (tmpj.x_-tmpi.x_) * (test.y_-tmpi.y_) / (tmpj.y_-tmpi.y_) + tmpi.x_) )
             flag = !flag;
     }
     return flag;
 }
+
 void ActiveRole::activeDecisionMaking()
 {
 }
@@ -190,13 +193,14 @@ void ActiveRole::selectCurrentState()
     };
     */
 }
+
 void ActiveRole::selectCurrentAction(unsigned char state)
 {
     double avoid_energy,energy;
     bool isNullFrontRobot;
     int label;
-    caculateDribblingEnergy(avoid_energy,isNullFrontRobot);
-    caculatePassEnergy(energy,label);
+    caculateDribblingEnergy(avoid_energy,isNullFrontRobot); //直接更改avoid_energy
+    caculatePassEnergy(energy,label);  //直接更改energy
     if(avoid_energy > energy)
     {
         currentstate_ = AvoidObs;
@@ -206,35 +210,72 @@ void ActiveRole::selectCurrentAction(unsigned char state)
         currentstate_ = StaticPass;
     }
 }
-bool ActiveRole::evaluateKick(DPoint & kick_target,Angle & leftdelta,Angle &rightdelta){}
+
+bool ActiveRole::evaluateKick(DPoint & kick_target,Angle & leftdelta,Angle &rightdelta)
+{}
+
 void ActiveRole::caculatePassEnergy(double & energy, int & label)
 {
 }
+
 void ActiveRole::caculateDribblingEnergy(double & avoid_enegy,bool isNullFrontRobot)
 {
 }
-void ActiveRole::selectDribblingOrPassing(bool isNullFrontRobot){}
-void ActiveRole::findBall(){}
-void ActiveRole::turn4Shoot(DPoint kicktarget){}
-void ActiveRole::NewAvoidObs(){}
-void ActiveRole::NewAvoidObsForPass(){}
-void ActiveRole::activeCatchBall()
+
+void ActiveRole::selectDribblingOrPassing(bool isNullFrontRobot)
 {
-    m_plan_->move2Positionwithobs_noball(m_plan_->ball_pos_,max_vel,max_acc);
+    if(isNullFrontRobot)
+    {
+        currentstate_ = SeeNotDribbleBall;
+    }
+    else
+    {
+        currentstate_ = TurnToPass;
+    }
 }
+
+void ActiveRole::findBall()
+{
+}
+
+void ActiveRole::turn4Shoot(DPoint kicktarget)  //转向到射击目标
+{
+    m_plan_->positionAvoidObs(kicktarget);
+}
+
+void ActiveRole::NewAvoidObs()
+{}
+
+void ActiveRole::NewAvoidObsForPass()
+{}
+
+void ActiveRole::activeCatchBall()  //主动抓球
+{
+    m_plan_->move2Positionwithobs_noball(m_plan_->ball_pos_);
+    m_plan_->catchBall();
+}
+
 void ActiveRole::triggerShoot(DPoint target)
 {
 }
+
 void ActiveRole::stuckProcess()
 {
     stuckflg_ = true;
     stucktime_++;
     currentstate_ = Stucked;
 }
-void ActiveRole::kickball4Coop(DPoint target){}
-bool ActiveRole::IsLocationInOppGoalArea(DPoint location) { return fieldinformation_.isOppGoal(location); }   // 是否在对方小禁区
-bool ActiveRole::IsLocationInField(DPoint location) { return fieldinformation_.isInInterField2(location); }   // 是否在场地内
-bool ActiveRole::IsLocationInOppPenalty(DPoint location) { return fieldinformation_.isOppPenalty(location); } // 是否在对方大禁区
-bool ActiveRole::IsLocationInOurPenalty(DPoint location) { return fieldinformation_.isOurPenalty(location); } // 是否在我方大禁区
-bool ActiveRole::IsLocationInOppField(DPoint location) { return fieldinformation_.isOppField(location); }     // 是否在对方半场
-bool ActiveRole::IsLocationInOurField(DPoint location) { return fieldinformation_.isOurField(location); }     // 是否在己方半场
+
+void ActiveRole::kickball4Coop(DPoint target)   //传球
+{
+    DPoint robot_pos_ = world_model_->RobotInfo_[world_model_->AgentID_-1].getLocation();
+    kick_target_ = target;
+    kick_force_ = kick_target_.distance(robot_pos_) * KICK_RATIO; //转为int型自动向下取整
+}
+
+bool ActiveRole::IsLocationInOppGoalArea(DPoint location) { return world_model_->field_info_.isOppGoal(location); }   // 是否在对方小禁区
+bool ActiveRole::IsLocationInField(DPoint location) { return world_model_->field_info_.isInInterField2(location); }   // 是否在场地内
+bool ActiveRole::IsLocationInOppPenalty(DPoint location) { return world_model_->field_info_.isOppPenalty(location); } // 是否在对方大禁区
+bool ActiveRole::IsLocationInOurPenalty(DPoint location) { return world_model_->field_info_.isOurPenalty(location); } // 是否在我方大禁区
+bool ActiveRole::IsLocationInOppField(DPoint location) { return world_model_->field_info_.isOppField(location); }     // 是否在对方半场
+bool ActiveRole::IsLocationInOurField(DPoint location) { return world_model_->field_info_.isOurField(location); }     // 是否在己方半场

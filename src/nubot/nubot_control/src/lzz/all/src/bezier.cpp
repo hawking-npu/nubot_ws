@@ -45,8 +45,7 @@ void Bezier::FromPath2Trajectory(double &s,double &rtheta ,double vr,double wr,d
 bool Bezier::BezierTrajectoryTracking(boost::ptr_list<DPoint> &controlpoint,double v0,double a)//轨迹跟踪
 {//判断速度和加速度能否满足
     DPoint now_point, next_point;
-    Robot now_robot=world_model_->RobotInfo_.at(world_model_->AgentID_);
-    now_point=now_robot.getLocation();
+    now_point = world_model_->RobotInfo_[world_model_->AgentID_-1].getLocation();
     if(controlpoint.empty())
         return true;
     next_point=controlpoint.front();

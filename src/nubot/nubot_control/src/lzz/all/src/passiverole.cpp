@@ -21,7 +21,20 @@ bool IsOurDribble_;
 DPoint defence_pos_;
 Angle  defence_ori_;
 */
-void PassiveRole::process(){}
-void PassiveRole::passiveCalculate(){}                                //新的站位点计算
-void PassiveRole::findPointOut(Angle ang_goal2ball){}                  //找到这个方向上出禁区的点
-void PassiveRole::awayFromActive(){}
+void PassiveRole::process()
+{
+    isInOurfeild_ = plan_->inourfield_;
+    IsOurDribble_ = world_model_->IsOurDribble_;
+}
+
+void PassiveRole::passiveCalculate()                                //新的站位点计算
+{
+    world_model_->caculatePassPosition();
+    defence_pos_ = world_model_->passive_pt_;
+}
+
+void PassiveRole::findPointOut(Angle ang_goal2ball)                  //找到这个方向上出禁区的点
+{}
+
+void PassiveRole::awayFromActive()
+{}
