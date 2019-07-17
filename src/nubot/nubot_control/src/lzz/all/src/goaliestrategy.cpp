@@ -64,6 +64,8 @@ private:
 void GoalieStrategy::setBallInfo3dRel(const nubot_common::BallInfo3d &_robot_info_3d_rel)//you can set ball_info_3d_ using global info, or call setBallInfo3dRel() using relative info
 {
     ball_info_3d_ = _robot_info_3d_rel;
+    parabola_fitter_.flyCheckAndAddData(ball_info_3d_.pos.z,
+                                        DPoint(ball_info_3d_.pos.x,ball_info_3d_.pos.y), time_now_);
 }
 
 bool GoalieStrategy::ballTrack(const int THRESH_GROUND_VEL, const bool use_parabola_fitter_)//used in "mainCallBack()", and make a prediction if ball could goal
@@ -72,8 +74,6 @@ bool GoalieStrategy::ballTrack(const int THRESH_GROUND_VEL, const bool use_parab
     time_now_ = ros::Time::now().sec;
     predicted_3d_ = ball_info_3d_.pos_known_3d;
     predicted_2d_ = ball_info_3d_.pos_known_2d;
-    parabola_fitter_.flyCheckAndAddData(ball_info_3d_.pos.z,
-                                        DPoint(ball_info_3d_.pos.x,ball_info_3d_.pos.y), time_now_);
     if(parabola_fitter_.n_ >= 3)
     {
         parabola_fitter_.fitting();
@@ -109,7 +109,7 @@ void GoalieStrategy::strategy()//used in "mainCallBack()", make decision using p
     DPoint ball2d_pos = DPoint(ball_info_3d_.pos.x,ball_info_3d_.pos.y);
     DPoint tmp = ball2d_pos - dest_point_;
     dest_angle_ = atan2(tmp.x_, tmp.y_);
-    if(fabs(time_now_ - time_) < EPS)//////
+    if(fabs(time_now_ - time_) < 1.0)//////
     {
         state_ = CatchBall;
     }

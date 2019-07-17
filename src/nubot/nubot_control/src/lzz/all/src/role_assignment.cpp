@@ -37,7 +37,6 @@ RoleAssignment::~RoleAssignment()
 void RoleAssignment::calculateRoleUtility()  //计算角色效用值 P203
 {
     Robot robotinfo;
-    BallObject ballinfo;
     DPoint robot_pos_;
     DPoint ball_pos_;
     DPoint opp_goal = DPoint(FIELD_LENGTH/2,0.0);//敌方球门
@@ -53,9 +52,8 @@ void RoleAssignment::calculateRoleUtility()  //计算角色效用值 P203
     for(int robot_id = 1; robot_id<OUR_TEAM; ++robot_id)//排除守门员
     {
         robotinfo = world_model_->RobotInfo_[robot_id];
-        ballinfo = world_model_->BallInfo_[robot_id];
         robot_pos_ = robotinfo.getLocation();
-        ball_pos_ = ballinfo.getGlobalLocation();
+        ball_pos_ = world_model_->BallInfo_[robot_id].getGlobalLocation();
 
         //主攻
         temp1 = robot_pos_-ball_pos_;//机器人与球连线
@@ -89,14 +87,13 @@ void RoleAssignment::calculateRoleUtility()  //计算角色效用值 P203
 
 void RoleAssignment::adjustRole(){}
 
-void RoleAssignment::selectRole()  //选择角色
+int RoleAssignment::selectRole()  //选择角色
 {
     double selected[OUR_TEAM-1] = {-1};
-    Robot robotinfo;
     while(1)
     {
         double maxn=-1;
-        int robot_id=-1;//result +1 = agent id
+        int robot_id=-1;//robot_id +1 = Agent_id
         int role_id=-1;
         for(int i=0; i<OUR_TEAM-1; ++i)
         {
@@ -116,10 +113,11 @@ void RoleAssignment::selectRole()  //选择角色
         {
             if(selected[robot_id] < maxn)
             {
-                robotinfo = world_model_->RobotInfo_[robot_id];
-                robotinfo.setCurrentRole((char)role_id);///需根据core.hpp中的role进行修改
+                if(world_model_->AgentID_-1 == robot_id)
+                {
+                    return role_id;
+                }
                 selected[robot_id] = maxn;
-                world_model_->RobotInfo_[robot_id] = robotinfo;
             }
             else
             {
@@ -136,6 +134,6 @@ int  RoleAssignment::process()
 {
     memset(RoleUtilityMatrix_, -1, (OUR_TEAM-1)*ROLENUM);
     calculateRoleUtility();
-    selectRole();
+    return selectRole();
     //
 }

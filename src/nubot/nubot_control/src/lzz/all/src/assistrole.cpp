@@ -30,7 +30,6 @@ void AssistRole::process()     //根据当前状态选择需要执行的动作,�
 
 void AssistRole::assistCalculate()
 {
-    world_model_->caculatePassPosition();///
     ///catch_sight 2 ball
     /////world_model_->assist_pt_;
     if(IsOurDribble_)

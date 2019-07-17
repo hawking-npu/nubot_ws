@@ -282,13 +282,15 @@ bool FieldInformation::isOurGoal(DPoint world_pt)
     }
     else if(inourarea)
     {
-        if(world_pt.x_ < (our_goalarea_[1].x_ +simLOCATIONERROR) && world_pt.x_ > (our_goalarea_[0].x_ -simLOCATIONERROR) &&
+        if(world_pt.x_ < (our_goalarea_[1].x_+simLOCATIONERROR) && world_pt.x_ > (our_goalarea_[0].x_ -simLOCATIONERROR) &&
            world_pt.y_ > (our_goalarea_[2].y_-simLOCATIONERROR) &&  world_pt.y_ < (our_goalarea_[1].y_+simLOCATIONERROR))
         {
             inourarea = true;
         }
         else
+        {
             inourarea = false;
+        }
     }
 
     rtvl =  inourarea;

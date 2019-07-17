@@ -49,7 +49,7 @@ public:
 public:
     void calculateRoleUtility();
     void adjustRole();
-    void selectRole();
+    int  selectRole();//void
     void fixRole();
     int  process();
 };

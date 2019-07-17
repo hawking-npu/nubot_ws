@@ -25,8 +25,10 @@ MidfieldRole::~MidfieldRole()
 void MidfieldRole::asAssist()
 {
     //接球
-    plan_->move2Positionwithobs_noball(midfield_pos_);
-    plan_->positionAvoidObs2(midfield_ori_.radian_);
+    if(!isBestPass(plan_->robot_pos_))
+    {
+        plan_->move2Positionwithobs_noball(midfield_pos_);
+    }
 }
 
 void MidfieldRole::asPassiver()
@@ -40,13 +42,14 @@ void MidfieldRole::asPassiver()
     //        plan_->positionAvoidObs2(midfield_ori_.radian_);
     //    }
     //}
-    plan_->move2Positionwithobs_noball(midfield_pos_);
-    plan_->positionAvoidObs2(midfield_ori_.radian_);
+    if(!isObsOpp(plan_->robot_pos_))
+    {
+        plan_->move2Positionwithobs_noball(midfield_pos_);
+    }
 }
 
 void MidfieldRole::process()
 {
-    world_model_->caculatePassPosition();
     midfield_pos_ = world_model_->middle_pt_;
     midfield_ori_ = world_model_->RobotInfo_[world_model_->AgentID_-1].getHead();
     if(world_model_->RobotInfo_[world_model_->AgentID_-1].getCurrentRole() == ASSISTANT)
@@ -58,6 +61,11 @@ void MidfieldRole::process()
         asPassiver();
     }
     else return;
+
+    if(world_model_->field_info_.isOppField(world_model_->pass_pt_) && isObsActiver(plan_->robot_pos_))
+    {
+        plan_->move2Positionwithobs_noball(midfield_pos_);
+    }
 }
 
 bool MidfieldRole::findOppRobot()     //盯人防守，要找到对方机器人的位置

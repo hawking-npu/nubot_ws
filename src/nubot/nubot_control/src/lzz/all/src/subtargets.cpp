@@ -65,8 +65,6 @@ DPoint robot_pos_;
 DPoint ball_pos_;
     //此处为世界坐标系*/
 
-    BallObject ballinfo = world_model_->BallInfo_[world_model_->AgentID_-1];
-    ball_pos_ = ballinfo.getGlobalLocation();
 
     //坐标转换
     //robot_pos_

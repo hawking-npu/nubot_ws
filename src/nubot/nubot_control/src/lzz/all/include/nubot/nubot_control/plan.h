@@ -8,6 +8,8 @@
 #include "nubot/nubot_control/world_model_info.h"
 #include "nubot/nubot_control/mydefine.hpp"
 
+#include "nubot_common/RobotInfo.h"
+
 #include <ros/ros.h>
 
 using namespace std;
@@ -25,8 +27,8 @@ public:
         void catchMotionlessBall();
 
         /***********postion*************/
-        void positionAvoidObs(DPoint target, double angle_thres = 8.0/180.0/*float theta, float stopdis, float stoptheta*/);
-        void positionAvoidObs2(double targetangle, double angle_thres = 8.0/180.0);
+        void positionAvoidObs(DPoint target, double angle_thres = 5.0/180.0/*float theta, float stopdis, float stoptheta*/);
+        void positionAvoidObs2(double targetangle, double angle_thres = 5.0/180.0);
         void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel = max_vel);
         //void move2Positionwithobs(DPoint target);  // move to the target point with obstacles avoidance
         void move2Positionwithobs_noball(DPoint target, float maxvel = max_vel, float maxacc = max_acc, bool avoid_ball=false, double distance_thres = 10.0);
@@ -54,6 +56,7 @@ public:
 
         /*********round with soccer************/
         void ballRoundTrack();
+
 public:
         World_Model_Info * world_model_;
         Behaviour  m_behaviour_;

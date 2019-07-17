@@ -53,7 +53,11 @@ void ActiveRole::process()
     selectCurrentAction(currentstate_);
 
 
-    activeDecisionMaking();///
+    dribble_enable_ = 1;
+    if(world_model_->IsOurDribble_)
+    {
+        selectDribblingOrPassing(evaluateKick(kick_target_, Angle(PI/12), Angle(PI/12)));
+    }
 }
 
 bool ActiveRole::checkPass()
@@ -173,7 +177,7 @@ void ActiveRole::activeDecisionMaking()
 
 void ActiveRole::selectCurrentState()
 {
-    currentstate_ = CanNotSeeBall;///
+    currentstate_ = world_model_->RobotInfo_[world_model_->pass_ID_].getCurrentAction();///
     /*
     enum Actions
     {
@@ -196,46 +200,62 @@ void ActiveRole::selectCurrentState()
 
 void ActiveRole::selectCurrentAction(unsigned char state)
 {
-    double avoid_energy,energy;
-    bool isNullFrontRobot;
-    int label;
-    caculateDribblingEnergy(avoid_energy,isNullFrontRobot); //直接更改avoid_energy
-    caculatePassEnergy(energy,label);  //直接更改energy
-    if(avoid_energy > energy)
-    {
-        currentstate_ = AvoidObs;
-    }
-    else
-    {
-        currentstate_ = StaticPass;
-    }
 }
 
-bool ActiveRole::evaluateKick(DPoint & kick_target,Angle & leftdelta,Angle &rightdelta)
-{}
+bool ActiveRole::evaluateKick(DPoint & kick_target,Angle & leftdelta,Angle &rightdelta)  //判断范围内有没有敌方机器人
+{
+    DPoint robot_pos_ = m_plan_->robot_pos_;
+    DPoint tmp;
+    double dist_pos2tar = robot_pos_.distance(kick_target);
+    double rad_pos2tar = (kick_target - robot_pos_).angle().radian_;
+    for(int i=0; i<OUR_TEAM; ++i)
+    {
+        tmp = world_model_->Opponents_[i];
+        if(tmp.distance(robot_pos_) <= dist_pos2tar)
+        {
+            if(rad_pos2tar+leftdelta.radian_ >= (tmp-robot_pos_).angle().radian_
+                    || rad_pos2tar0-rightdelta.radian_ <= (tmp-robot_pos_).angle().radian_)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 void ActiveRole::caculatePassEnergy(double & energy, int & label)
 {
+    energy = m_plan_->robot_pos_.distance(world_model_->pass_cmds_.catch_pt);
 }
 
 void ActiveRole::caculateDribblingEnergy(double & avoid_enegy,bool isNullFrontRobot)
 {
+    if(isNullFrontRobot)
+    {
+        avoid_enegy = INF;
+    }
+    else
+    {
+        avoid_enegy = m_plan_->robot_pos_.distance(kick_target_);
+    }
 }
 
 void ActiveRole::selectDribblingOrPassing(bool isNullFrontRobot)
 {
     if(isNullFrontRobot)
     {
-        currentstate_ = SeeNotDribbleBall;
+        dribble_enable_ = true;
     }
     else
     {
-        currentstate_ = TurnToPass;
+        kick_enable_ = true;
+        kickball4Coop(world_model_->pass_cmds_.catch_pt);
     }
 }
 
 void ActiveRole::findBall()
 {
+    m_plan_->catchBall();
 }
 
 void ActiveRole::turn4Shoot(DPoint kicktarget)  //转向到射击目标
@@ -251,11 +271,15 @@ void ActiveRole::NewAvoidObsForPass()
 
 void ActiveRole::activeCatchBall()  //主动抓球
 {
-    m_plan_->move2Positionwithobs_noball(m_plan_->ball_pos_);
+    if(m_plan_->ball_pos_ < 0)
+    {
+        catch_in_ourfeild_ = true;
+    }
     m_plan_->catchBall();
+    dribble_enable_ = true;
 }
 
-void ActiveRole::triggerShoot(DPoint target)
+void ActiveRole::triggerShoot(DPoint target) //触发
 {
 }
 
@@ -270,7 +294,7 @@ void ActiveRole::kickball4Coop(DPoint target)   //传球
 {
     DPoint robot_pos_ = world_model_->RobotInfo_[world_model_->AgentID_-1].getLocation();
     kick_target_ = target;
-    kick_force_ = kick_target_.distance(robot_pos_) * KICK_RATIO; //转为int型自动向下取整
+    kick_force_ = kick_target_.distance(robot_pos_);
 }
 
 bool ActiveRole::IsLocationInOppGoalArea(DPoint location) { return world_model_->field_info_.isOppGoal(location); }   // 是否在对方小禁区

@@ -20,11 +20,9 @@ public:
         */
 Bezier::Bezier(double s,boost::ptr_list<DPoint> &controlpoint,double &p ,double &q, double &diffp,double &diffq,double &double_diffp, double &double_diffq)
 {
-    ////已用
 }
 Bezier::Bezier(double s,boost::ptr_list<DPoint> &controlpoint,double &p ,double &q, double &diffp,double &diffq)
 {
-    ////已用
 }
 
 double CalculatediffS(double &s, double &rho,double &phid,double v0,   double c, double alpha,double p,double q,double diffp,double diffq);

@@ -46,26 +46,29 @@ void Plan::catchBall()  //
         catchMovingBall();
     }
 }
-void Plan::catchBallForCoop(){}
+
+void Plan::catchBallForCoop()
+{
+    catchBallSlowly();
+}
+
 void Plan::catchBallSlowly()  //缓慢向球移动，等球接近
 {
-    move2Positionwithobs_noball(world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getTarget(),10.0);
-    world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].setDribbleState(true);
+    positionAvoidObs(ball_pos_);
+    if(fabs(robot_ori_.radian_ - (ball_pos_-robot_pos_).angle().radian_) < 5.0/180.0)
+    {
+        move2Positionwithobs_noball(ball_pos_,10.0);
+    }
 }
+
 void Plan::catchMovingBall()  //抓住移动的球
 {
-    double distance_robot2ball = robot_pos_.distance(ball_pos_);
-    double time_robot2ball = distance_robot2ball/max_vel;
-
-    world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].setTarget(DPoint(ball_pos_.x_+ball_vec_.x_*time_robot2ball, ball_pos_.y_+ball_vec_.y_*time_robot2ball));
-    move2Positionwithobs_noball(world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getTarget());
-    world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].setDribbleState(true);
+    double time_robot2ball = robot_pos_.distance(ball_pos_)/max_vel;
+    move2Positionwithobs_noball(DPoint(ball_pos_.x_+ball_vec_.x_*time_robot2ball, ball_pos_.y_+ball_vec_.y_*time_robot2ball));
 }
 void Plan::catchMotionlessBall()  //抓住静止的球
 {
-    world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].setTarget(ball_pos_);
     move2Positionwithobs_noball(ball_pos_);
-    world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].setDribbleState(true);
 }
 
 /***********postion*************/
