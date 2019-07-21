@@ -2,7 +2,7 @@
 <launch>
  <include file="$(find tis_camera)/launch/$(env AGENT)/generic.launch"></include>
 
- <node name="omni_vision_node" pkg="omni_vision" type="omni_vision_node">
+ <node name="omni_vision_node" pkg="omni_vision" type="omni_vision_node" output="screen">
     <param name="ball"         type="bool"    value="false" />
     <param name="white"        type="bool"    value="false" />
     <param name="obstacle"     type="bool"    value="false" />

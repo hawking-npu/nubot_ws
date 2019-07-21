@@ -4,7 +4,7 @@
 
 <launch>
   <!-- GigE Camera Needed -->
-  <include file="$(find omni_vision)/launch/omni_vision.launch"> </include>
+<!--  <include file="$(find omni_vision)/launch/omni_vision.launch"> </include>-->
 
   <!-- UVC Camera Needed -->
 <!--  <include file="$(find front_vision)/launch/front_vision.launch"> </include>-->

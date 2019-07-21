@@ -30,7 +30,7 @@
 
 #define SELF 3333
 
-#define CONFIG_FILE  "/home/nubot9/nubot_ws/src/nubot/world_model/config/rtdb.ini"
+#define CONFIG_FILE  "/home/jensen/nubot_ws/src/nubot/world_model/config/rtdb.ini"
 
 #define SHMEM_KEY 0x2000
 #define SHMEM_SECOND_TEAM_KEY 0x3000
@@ -38,7 +38,7 @@
 // definicoes hard-coded
 // alterar de acordo com a utilizacao pretendida
 
-#define MAX_AGENTS 10	// numero maximo de agentes
+#define MAX_AGENTS 6	// numero maximo de agentes
 #define MAX_RECS 100	// numero maximo de 'variaveis' (shared + local)
 
 // fim das definicoes hard-coded

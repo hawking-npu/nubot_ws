@@ -30,9 +30,10 @@ public:
     double Vx,Vy,w;
 
 private:
-    ros::Publisher vel_pub;
     ros::Subscriber joy_sub;
-    ros::Subscriber ball_sub;
+    ros::Publisher vel_pub;
+    ros::Timer vel_publish_timer_;
+//    ros::Subscriber ball_sub;
 
     nubot_common::VelCmd cmd;
     bool CatchEnable;
@@ -40,14 +41,17 @@ private:
     double deadzone_;
 
     void joyCallback(const sensor_msgs::Joy::ConstPtr& joy);
-    void ballCallback(const nubot_common::OminiVisionInfo::ConstPtr& ball);
+//    void ballCallback(const nubot_common::OminiVisionInfo::ConstPtr& ball);
+    void publish(const ros::TimerEvent &);
 };
 
 TeleopNubot::TeleopNubot()
     :Vx(0),Vy(0),w(0),ball_angle(0),CatchEnable(false)
 {
-    vel_pub = n.advertise<nubot_common::VelCmd>("/nubotcontrol/velcmd", 10);
     joy_sub = n.subscribe<sensor_msgs::Joy>("joy", 2, &TeleopNubot::joyCallback, this);
+    vel_pub = n.advertise<nubot_common::VelCmd>("/nubotcontrol/velcmd", 10);
+    vel_publish_timer_ = n.createTimer(ros::Duration(0.03),&TeleopNubot::publish,this);
+
 //    ball_sub= n.subscribe<nubot_common::OminiVisionInfo>("/omnivision/OminiVisionInfo", 2, &TeleopNubot::ballCallback, this);
     ballhandle_client_ =  n.serviceClient<nubot_common::BallHandle>("BallHandle");
     shoot_client_ = n.serviceClient<nubot_common::Shoot>("Shoot");
@@ -110,7 +114,12 @@ void TeleopNubot::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     cmd.Vx = - joy->axes[linearVel_X]*2000;
     cmd.Vy = joy->axes[linearVel_Y]*2000;
     cmd.w  = - joy->axes[angularVel]*1500;
-    vel_pub.publish(cmd);
+//    vel_pub.publish(cmd);
+}
+
+void TeleopNubot::publish(const ros::TimerEvent &)
+{
+   vel_pub.publish(cmd);
 }
 
 //void TeleopNubot::ballCallback(const nubot_common::OminiVisionInfo::ConstPtr& ball)

@@ -80,11 +80,11 @@ bool
 Globallocalization::process(const std::vector<double> & _weights,const std::vector<PPoint> & _white_pt,DPoint & _robotloction, Angle & _angle)
 {
 	CV_Assert(_weights.size()==_white_pt.size());
-    std::vector< DPoint > real_white;
-    real_white.resize(_white_pt.size());
-    for(int j = 0 ; j <_white_pt.size(); j++)
-        real_white[j] = DPoint(_white_pt[j]);
-    _angle = Angle(0);
+  std::vector< DPoint > real_white;
+  real_white.resize(_white_pt.size());
+  for(int j = 0 ; j <_white_pt.size(); j++)
+      real_white[j] = DPoint(_white_pt[j]);
+  _angle = Angle(0);
 	static int times(0);
 	static std::vector<location_err> tmpRecord(3);
 

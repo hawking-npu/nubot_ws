@@ -8,9 +8,15 @@
 
 //Macro definition for color segmentation
 #define VISION_COLORSEGMENT_YELLOW	0	//Yellow represent for football
-#define VISION_COLORSEGMENT_BLACK	1	//green represent for ground
-#define VISION_COLORSEGMENT_GREEN	2	//green represent for ground
+#define VISION_COLORSEGMENT_BLACK	1	//black represent for obstacles
+#define VISION_COLORSEGMENT_GREEN	2	//green represent field
 #define VISION_COLORSEGMENT_UNKNOWCOLOR	3	//Unknown color
+//#define VISION_COLORSEGMENT_RED	2	//red represent for red cone
+//#define VISION_COLORSEGMENT_WHITE	3	//white represent for white cone
+//#define VISION_COLORSEGMENT_BLUE	4	//blue represent for blue cone
+//#define VISION_COLORSEGMENT_GREEN	5	//green represent for green cone
+//#define VISION_COLORSEGMENT_UNKNOWCOLOR	6	//Unknown color
+
 
 namespace nubot
 { 
@@ -46,7 +52,7 @@ public:
                       const int &_threshold_combination=1, unsigned char _target_color=VISION_COLORSEGMENT_YELLOW);
 
     void showBall(cv::Mat & _img);
-    void showBall(cv::Mat &  _img,DPoint _robot_loc, Angle _angle, int filed_length =1920,int filed_width=1314);
+    void showBall(cv::Mat &  _img,DPoint _robot_loc, Angle _angle, int filed_length =640,int filed_width=430);
 
 
 private:

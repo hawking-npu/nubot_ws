@@ -4,6 +4,7 @@
 #include "errortable.h"
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 Dialog::Dialog(image_subscribe & _image,QWidget *parent) :
     QDialog(parent),
@@ -998,8 +999,11 @@ void Dialog::on_save_whits_Btn_clicked()
 {
     std::string str=calibration_result_dir_+"/"+"whites.txt";
     std::ofstream whites_write(str.c_str());
-    for(std::size_t i = 0; i < white_pts_.size();i++)
+    ROS_INFO("%d", white_pts_.size());
+    for(std::size_t i = 0; i < white_pts_.size();i++){
+         std::cout<<white_pts_[i].x_<<" "<<white_pts_[i].y_<<" \n";
          whites_write<<white_pts_[i].x_<<" "<<white_pts_[i].y_<<" \n";
+    }
      whites_write.close();
 
 }

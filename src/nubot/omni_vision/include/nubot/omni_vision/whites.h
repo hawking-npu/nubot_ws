@@ -47,7 +47,7 @@ public:
 	
     void showWhitePoints(cv::Mat & _img);
 
-    void showWhitePoints(cv::Mat &  _img,DPoint _robot_loc, Angle _angle, int filed_length =1920,int filed_width=1314);
+    void showWhitePoints(cv::Mat &  _img,DPoint _robot_loc, Angle _angle, int filed_length =640,int filed_width=430);
 
     ScanPoints   * scanpts_;
     Transfer     * transfer_;
