@@ -9,10 +9,8 @@
 #define Agent1	1
 #define Agent2	2
 #define Agent3	3
-#define Agent4	4
-#define Agent5	5
 
-#define N_AGENTS	6
+#define N_AGENTS	4
 
 /* items section */
 

@@ -34,10 +34,10 @@
            ->    YUV空间
            ->    找到机器人，查看颜色，限定范围
            ->    result_save
-  #  8.标定场地：
-           ->    HIV空间
-           ->    找到场地（长方形）
-           ->    result_save
+     8.标定cones(explicite for passing challenge)：
+           ->    YUV空间
+           ->    找到cones，查看颜色，限定范围
+           ->    result_save+
      10.检测标定结果：
            ->    segment_show
            ->    segment_result

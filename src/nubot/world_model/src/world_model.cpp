@@ -61,11 +61,12 @@ nubot::World_Model::World_Model(int argc,char** argv,const char * name)
     omni_update_time_   = ros::Time::now();     // 机器人信息的更新时间，用于计算lifetime判断机器人信息的有效性；
     front_update_time_  = ros::Time::now();     // 足球信息的更新时间，用于计算lifetime判断足球信息的有效性；
     kinect_update_time_ = ros::Time::now();     // 障碍物信息的更新时间，用于计算lifetime判断障碍物信息的有效性；
-    /** 当前仅仅传输五个机器人信息*/
+    /** 当前仅仅传输3个机器人信息*/
     world_model_info_.robotinfo.resize(OUR_TEAM);
     receive_coach_count_ = ros::Time::now();;
     coach2robot_.MatchMode = STOPROBOT;
     coach2robot_.MatchType  = STOPROBOT;
+//    ROS_INFO("Hello world!");
 }
 nubot::World_Model::~World_Model(){
 #ifndef SIMULATION
@@ -144,8 +145,8 @@ nubot::World_Model::updateStrategyinfo(const nubot_common::StrategyInfo &strateg
 
     teammatesinfo_[AgentID_-1].robot_info_.setTargetNum(1,strategyinfo.targetNum1);
     teammatesinfo_[AgentID_-1].robot_info_.setTargetNum(2,strategyinfo.targetNum2);
-    teammatesinfo_[AgentID_-1].robot_info_.setTargetNum(3,strategyinfo.targetNum3);
-    teammatesinfo_[AgentID_-1].robot_info_.setTargetNum(4,strategyinfo.targetNum4);
+//    teammatesinfo_[AgentID_-1].robot_info_.setTargetNum(3,strategyinfo.targetNum3);
+//    teammatesinfo_[AgentID_-1].robot_info_.setTargetNum(4,strategyinfo.targetNum4);
 
     teammatesinfo_[AgentID_-1].robot_info_.setcatchNum(strategyinfo.staticcatchNum);
     teammatesinfo_[AgentID_-1].robot_info_.setpassNum(strategyinfo.staticpassNum);
@@ -360,7 +361,7 @@ nubot::World_Model::update(const ros::TimerEvent & )
     /** 更新所有机器人信息，判断其有效性，采用RTDB时间戳,自身采用的是ROS::Time记录*/
     Robot & robot_info = teammatesinfo_[AgentID_-1].robot_info_;
     if(streaming_cout == 0 )
-        updateInfo();
+       updateInfo();
     /** 更新足球的信息*/
     if(teammateIDforBallSelected != -1)
     {
@@ -424,8 +425,8 @@ nubot::World_Model::publish()
 
         world_model_info_.robotinfo[i].targetNum1=robot_info.getTargetNum(1);
         world_model_info_.robotinfo[i].targetNum2=robot_info.getTargetNum(2);
-        world_model_info_.robotinfo[i].targetNum3=robot_info.getTargetNum(3);
-        world_model_info_.robotinfo[i].targetNum4=robot_info.getTargetNum(4);
+//        world_model_info_.robotinfo[i].targetNum3=robot_info.getTargetNum(3);
+//        world_model_info_.robotinfo[i].targetNum4=robot_info.getTargetNum(4);
         world_model_info_.robotinfo[i].staticpassNum=robot_info.getpassNum();
         world_model_info_.robotinfo[i].staticcatchNum=robot_info.getcatchNum();
 
@@ -543,7 +544,7 @@ nubot::World_Model::updateInfo()            // if the simulation flag is set, th
         if( AgentID_ != i+1 )
         {
             int ltime = DB_get(i+1, TEAMMATESINFO, &teammatesinfo_[i]);
-            //接收到的队友信息，并记录其间隔时间，可能表示信息无效；
+            /**接收到的队友信息，并记录其间隔时间，可能表示信息无效；*/
             teammatesinfo_[i].robot_info_.setlifetime(ltime);
             teammatesinfo_[i].ball_info_.setlifetime(ltime);
             teammatesinfo_[i].robot_info_.update();

@@ -6,8 +6,9 @@ Whites::Whites(ScanPoints & _scanpts,Transfer & _coor_transfer)
    scanpts_   = &_scanpts;
    transfer_ =&_coor_transfer;
   
-   img_white_.reserve(1000);
-   
+   //img_white_.reserve(1000);
+   img_white_.reserve(333);
+
    h_low_=45;
    h_high_=120;
    nums_pts_line_=5;

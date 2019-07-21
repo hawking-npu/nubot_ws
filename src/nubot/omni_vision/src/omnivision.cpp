@@ -141,17 +141,17 @@ public:
         is_show_ball_=false;
         is_show_obstacles_=false;
         is_show_whites_=false;
-        is_show_scan_points=true;
+        is_show_scan_points=false;
         is_show_result_=false;
         is_robot_stuck_ = false;
 
         robot.isglobal_=true;
         is_restart_=false;
         is_power_off_=false;
-        if(WIDTH_RATIO<1)
-            field_image_ = cv::imread(calibration_path+"/"+ss.str()+"/field_mine.bmp");
-        else
-            field_image_ = cv::imread(calibration_path+"/"+ss.str()+"/field.bmp");
+//        if(WIDTH_RATIO<1)
+//            field_image_ = cv::imread(calibration_path+"/"+ss.str()+"/field_mine.bmp");
+//        else
+        field_image_ = cv::imread(calibration_path+"/"+ss.str()+"/field.bmp");
 
         ros::NodeHandle nh;
         image_transport::ImageTransport image_transport_(nh);
@@ -306,13 +306,13 @@ public:
                 ROS_INFO("Field.bmp is empty");
             cv::Mat image  = field_image_.clone();
             cv::Mat orgnal = imginfo_->getBGRImage().clone();
-            static double length = 1920;
-            static double width  = 1314;
-            if(WIDTH_RATIO<1)
-            {
-                length = 1920;
-                width  = 882;
-            }
+            static double length = 640;
+            static double width  = 430;
+//            if(WIDTH_RATIO<1)
+//            {
+//                length = 1920;
+//                width  = 882;
+//            }
             if(is_show_scan_points)
                 scanpts_->showScanPoints();
 
@@ -366,15 +366,15 @@ public:
     odometryupdate(const nubot_common::OdoInfo & _odoinfo_msg)
     {
         static std::vector<double> motor_data(nubot::MOTOR_NUMS_CONST,0);
-        static int gyro_data;
+        static double gyro_data;
         static ros::Time time_before = _odoinfo_msg.header.stamp;
         ros::Time time_update = _odoinfo_msg.header.stamp;
         motor_data[0]=(double)_odoinfo_msg.Vx;
         motor_data[1]=(double)_odoinfo_msg.Vy;
         motor_data[2]=(double)_odoinfo_msg.w;
-        is_power_off_   = _odoinfo_msg.PowerState;
+        gyro_data =(double)_odoinfo_msg.angle;
+        is_power_off_   = !_odoinfo_msg.PowerState; // 0-off 1-on
         is_robot_stuck_ = _odoinfo_msg.RobotStuck;
-        gyro_data = _odoinfo_msg.angle;
         ros::Duration duration= time_update-time_before;
         time_before = time_update ;
         double secs=duration.toSec();

@@ -2,7 +2,8 @@ Header  header
 float32 Vx
 float32 Vy
 float32 w
-bool    PowerState
-bool    RobotStuck
+float32 angle
 bool    BallIsHolding
-int32     angle
+bool    RobotStuck
+bool    PowerState
+

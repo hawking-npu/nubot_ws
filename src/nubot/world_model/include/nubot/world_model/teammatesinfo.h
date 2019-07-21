@@ -16,8 +16,8 @@ class PassCommands //is_pass = true,准备接球，每个机器人都收到，�
         is_dynamic_pass = false;
         is_static_pass  = false;
         is_passout =false;
-        pass_pt = DPoint(900,0);
-        catch_pt = DPoint(900,0);
+        pass_pt = DPoint(300,0);
+        catch_pt = DPoint(300,0);
         isvalid = false;
     }
 public:

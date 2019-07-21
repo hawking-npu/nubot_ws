@@ -10,9 +10,14 @@
 
 //Macro definition for color segmentation
 #define VISION_COLORSEGMENT_YELLOW	0	//Yellow represent for football
-#define VISION_COLORSEGMENT_BLACK	1	//green represent for ground
-#define VISION_COLORSEGMENT_GREEN	2	//green represent for ground
+#define VISION_COLORSEGMENT_BLACK	1	//black represent for obstacles
+#define VISION_COLORSEGMENT_GREEN	2	//green represent field
 #define VISION_COLORSEGMENT_UNKNOWCOLOR	3	//Unknown color
+//#define VISION_COLORSEGMENT_RED	2	//red represent for red cone
+//#define VISION_COLORSEGMENT_WHITE	3	//white represent for white cone
+//#define VISION_COLORSEGMENT_BLUE	4	//blue represent for blue cone
+//#define VISION_COLORSEGMENT_GREEN	5	//green represent for green cone
+//#define VISION_COLORSEGMENT_UNKNOWCOLOR	6	//Unknown color
 
 namespace nubot
 { 
@@ -21,7 +26,7 @@ const int    OBS_MINDARKNESS_CONST  = 50;
 const double OBS_WEIGHT_THRES_CONST = 0.04;
 const double OBS_RADIUS_CONST       = 40;
 const double OBS_PARTITION_CONST    = 35;
-const int    OBS_MAXDISTANCE_CONST  = 1000;
+const int    OBS_MAXDISTANCE_CONST  = 333; //1000;
 const int    OBS_NUMBER_CONST       = 50;
 const int    OBS_VALUABLE_NUMBER    = 12;
 
@@ -42,7 +47,8 @@ public:
     void transferCoordinate(DPoint & _robot_loc,Angle & _robot_head);
 
     void showObstacles(cv::Mat & _img);
-    void showObstacles(cv::Mat & _img,DPoint _robot_loc, Angle _angle, int filed_length =1920,int filed_width=1314);
+    void showObstacles(cv::Mat & _img,DPoint _robot_loc, Angle _angle, int filed_length =640,int filed_width=430);
+
 public:
     ScanPoints  * scanpts_;
     Transfer    * transfer_;

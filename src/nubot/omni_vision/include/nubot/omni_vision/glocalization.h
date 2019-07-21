@@ -24,13 +24,13 @@ public:
     Globallocalization(Optimise & _optimise);
 
     void rankErrorsforSamples(const std::vector<double> & _weights,const std::vector<DPoint> &  _white_pt, Angle & _angle,int _times);
-	bool process(const std::vector<double> & _weights,const std::vector<PPoint> &  _white_pt,DPoint & _robotloction, Angle & _angle);
+    bool process(const std::vector<double> & _weights,const std::vector<PPoint> &  _white_pt,DPoint & _robotloction, Angle & _angle);
 
-	void showWhitePoints(const std::vector<double> & _weights,const std::vector<PPoint> &  _white_pt,DPoint & _robotloction, Angle & _angle);
+    void showWhitePoints(const std::vector<double> & _weights,const std::vector<PPoint> &  _white_pt,DPoint & _robotloction, Angle & _angle);
 	
     Optimise * opti_;
     FieldInformation fildinfo_;
-	std::vector<location_err> samples_;
+    std::vector<location_err> samples_;
 	
 };
 

@@ -71,20 +71,20 @@ void Nubot_HWController::SerialWrite(const nubot_common::VelCmd::ConstPtr& cmd)
   serial.write(write_stream.data);
 }
 
-void Nubot_HWController::SerialWrite(const float ShootPower, const int ShootDep)
+void Nubot_HWController::SerialWrite(const int ShootPower)
 {
   std::stringstream write_stream_;
-  write_stream_ << "A\t" << ShootPower << "\t" << ShootDep<< "\n";
+  write_stream_ << "A\t" << ShootPower << "\n";
   std_msgs::String write_stream;
   write_stream.data = write_stream_.str();
   serial.write(write_stream.data);
 }
 
-void Nubot_HWController::SerialWrite(const bool BallHandleEnable)
+void Nubot_HWController::SerialWrite(const bool PowerSwitch)
 {
 //  ROS_INFO("write msgs");
   std::stringstream write_stream_;
-  write_stream_ << "X\t" << BallHandleEnable << "\n";
+  write_stream_ << "X\t" << PowerSwitch << "\n";
   std_msgs::String write_stream;
   write_stream.data = write_stream_.str();
   serial.write(write_stream.data);
@@ -98,24 +98,25 @@ void Nubot_HWController::SerialRead()
       std_msgs::String read_stream;
       read_stream.data = serial.read(serial.available());
       std::istringstream read_stream_(read_stream.data);
-      string tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7;
-      read_stream_ >> tmp1 >> tmp2 >> tmp3 >> tmp4  >> tmp5 >> tmp6 >> tmp7;
+      string tmp1,tmp2,tmp3,tmp4,tmp5,tmp6;
+      read_stream_ >> tmp1 >> tmp2 >> tmp3 >> tmp4  >> tmp5 >> tmp6;
       Real_Vx = stringToNum<double>(tmp1);
       Real_Vy = stringToNum<double>(tmp2);
       Real_w = stringToNum<double>(tmp3);
-      PowerState = stringToNum<bool>(tmp4);
-      RobotStuck = stringToNum<bool>(tmp5);
-      BallIsHolding = stringToNum<bool>(tmp6);
-      Real_angle = stringToNum<bool>(tmp7);
+      Real_angle = stringToNum<double>(tmp4);
+      BallIsHolding = stringToNum<bool>(tmp5);
+      PowerState = stringToNum<bool>(tmp6);
+      RobotStuck = false; // not controlled by the upper computer
 
       OdoInfo_pub->msg_.header.stamp = ros::Time::now();
       OdoInfo_pub->msg_.Vx=Real_Vx;
       OdoInfo_pub->msg_.Vy=Real_Vy;
       OdoInfo_pub->msg_.w =Real_w;
-      OdoInfo_pub->msg_.PowerState =PowerState;
-      OdoInfo_pub->msg_.RobotStuck = RobotStuck;
-      OdoInfo_pub->msg_.BallIsHolding = BallIsHolding;
       OdoInfo_pub->msg_.angle=Real_angle;
+      OdoInfo_pub->msg_.BallIsHolding = BallIsHolding;
+      OdoInfo_pub->msg_.RobotStuck =RobotStuck;
+      OdoInfo_pub->msg_.PowerState =PowerState;
+
       OdoInfo_pub->unlockAndPublish();
   }
 }
@@ -125,9 +126,12 @@ bool Nubot_HWController::BallHandleControlService(nubot_common::BallHandle::Requ
 {
 //   if(BallHandleEnable!=req.enable)
 //       Ballhandle_Enable(req.enable);
-   BallHandleEnable=req.enable;
-   SerialWrite(BallHandleEnable);
-   res.BallIsHolding = BallIsHolding;
+//   BallHandleEnable=req.enable;
+//   SerialWrite(BallHandleEnable);
+//   res.BallIsHolding = BallIsHolding;
+
+   PowerSwitch=req.enable;
+   SerialWrite(PowerSwitch);
 
    return true;
 }
@@ -140,14 +144,14 @@ bool Nubot_HWController::ShootControlServive(nubot_common::Shoot::Request  &req,
    {
        // Adjust the shooter rod only
        ShootPower = req.strength;
-       ShootDep   = req.ShootPos;
+//       ShootDep   = req.ShootPos;
        res.ShootIsDone = 0;
    }
    else
    {
        ShootPower = req.strength;
-       ShootDep   = req.ShootPos;
-       SerialWrite(ShootPower, ShootDep);
+//       ShootDep   = req.ShootPos;
+       SerialWrite(ShootPower);
        res.ShootIsDone = 1;
    }
    return true;

@@ -36,16 +36,21 @@ BallFinder::Process(cv::Mat &_image,const DPoint & _location, const Angle & _ang
           DPoint2i ball_pos(ball_area_.area_center_.x, ball_area_.area_center_.y);
           transfer_->calculateRealCoordinates(ball_pos,ball_real_loc_,false);
           //the coordinate of the ball don't touch the filed,so we coorect the location;
-          int ball_pix_height = -0.0348*ball_real_loc_.radius_+35.6921;//这是估计出的 足球像素高度与其距离的关系，其中距离为第一次观测距离（而不是实际距离）
+          //这是估计出的 足球像素高度与其距离的关系，其中距离为第一次观测距离（而不是实际距离）
+          // 0.0324 = 68(camera height) / 2100(farest seeable distance)
+//          int ball_pix_height = -0.0348*ball_real_loc_.radius_+35.6921;//这是估计出的 足球像素高度与其距离的关系，其中距离为第一次观测距离（而不是实际距离）
+          int ball_pix_height = -0.0324*ball_real_loc_.radius_+35.6921;
           PPoint calib_pixels(ball_real_loc_.angle_.radian_,ball_pix_height/4);//假设只颜色分割出了足球的一半，则需要校正这些像素
           ball_pos = ball_pos - DPoint2i(calib_pixels);
           transfer_->calculateRealCoordinates(ball_pos,ball_real_loc_,false);
-          ball_real_loc_.radius_ = ball_real_loc_.radius_*(78.0-11.0)/78.0;//由于识别的是足球的质心，所以要进行校正，得到足球着地点(其中78是镜面高度，11是足球半径)(之所以不在颜色识别阶段就直接校正到着地点，是因为，理论上是看不到着地点的)
+          ball_real_loc_.radius_ = ball_real_loc_.radius_*(68.0-11.0)/68.0;//由于识别的是足球的质心，所以要进行校正，得到足球着地点(其中68是镜面高度，11是足球半径)(之所以不在颜色识别阶段就直接校正到着地点，是因为，理论上是看不到着地点的)
           DPoint pt =DPoint(ball_real_loc_);
           transfer_->correct_offset(pt);
           ball_real_loc_ = PPoint(pt);
           transfer_->calculateWorldCoordinates(ball_real_loc_ , _location,_angle, ball_global_loc_);
           double ball2robot  = ball_pos.distance(transfer_->omni_img_->getBigROI().center_);
+
+          // filter noisy balls
           bool is_ball=true;
           if(ball2robot<120 && ball_area_.area_size_<70)
                  is_ball=false;

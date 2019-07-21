@@ -26,10 +26,10 @@ const double WIDTHRATIO4FIELD = 1;
 const double WIDTH_RATIO= 1 ;
 //using namespace nubot;
 const int NOT_DATAUPDATE = 300; //数据没有更新的阈值，比如通信过程中时间大于300ms为更新数据，默认为失效
-const int OUR_TEAM = 5;//5 ;        //自己机器人个数
-const int OPP_TEAM = 7;//7 ;        //对方的机器人个数
+const int OUR_TEAM = 3;//5       //自己机器人个数
+const int OPP_TEAM = 3;//7       //对方的机器人个数
 
-const int ROLENUM = 7;//7;
+const int ROLENUM = 7;
 
 /** 一些常用的场地参数 */
 const int FIELD_LENGTH= 600;//1800;    //场地参数，长度

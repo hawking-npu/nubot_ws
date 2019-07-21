@@ -2,10 +2,10 @@
 
 # Define where is the rtdb_user.h
 
-set(AGENT_CURRENT nubot$ENV{AGENT})
-SET(RTDB_USER_H_FILE   /home/${AGENT_CURRENT}/nubot_ws/src/nubot/world_model/include/nubot/rtdb/rtdb_user.h)
-SET(RTDB_INI_FILE      /home/${AGENT_CURRENT}/nubot_ws/src/nubot/world_model/config/rtdb.ini )
-SET(RTDB_Config_FILE   /home/${AGENT_CURRENT}/nubot_ws/src/nubot/world_model/config/rtdb.config )
+set(HOME_CURRENT nubot$ENV{HOME})
+SET(RTDB_USER_H_FILE   ${HOME_CURRENT}/nubot_ws/src/nubot/world_model/include/nubot/rtdb/rtdb_user.h)
+SET(RTDB_INI_FILE      ${HOME_CURRENT}/nubot_ws/src/nubot/world_model/config/rtdb.ini )
+SET(RTDB_Config_FILE   ${HOME_CURRENT}/nubot_ws/src/nubot/world_model/config/rtdb.config )
 
 include_directories(${world_model_includes})
 
@@ -37,7 +37,6 @@ SET( rtdbparser_SRC
 	rtdb_functions.c
 	rtdb_user_creator.c
 	rtdb_ini_creator.c
-	
 	xrtdb.tab.c
 )
 

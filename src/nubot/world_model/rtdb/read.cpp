@@ -83,7 +83,7 @@ int main(int argc, char **argv)
     while(end == 0)
 	{
         printf("\n\n\n");
-                lifetime = DB_get(Agent0,MESSAGEFROMCOACHINFO, &coach2robot);
+                lifetime = DB_get(Agent0, MESSAGEFROMCOACHINFO, &coach2robot);
         printf("%d",coach2robot.MatchMode);
 
         sleep(0.5);
