@@ -104,7 +104,7 @@ public:
         shoot_client_ = nh_->serviceClient<nubot_common::Shoot>(service1);
         worldmodelinfo_sub_ = nh_->subscribe("worldmodel/worldmodelinfo", 1, &NuBotControl::update_world_model_info,this);
         //ballinfo3d_sub1_    = nh_->subscribe("kinect/ballinfo",1, &NuBotControl::ballInfo3dCallback, this);
-        control_timer_      = nh_->createTimer(ros::Duration(0.015),&NuBotControl::loopControl,this);
+        control_timer_      = nh_->createTimer(ros::Duration(0.030),&NuBotControl::loopControl,this);
 
         dynamic_reconfigure::Server<nubot_control::nubotcontrolConfig> reconfigureServer_;
         reconfigureServer_.setCallback(boost::bind(&NuBotControl::configure, this, _1, _2));
@@ -274,9 +274,9 @@ public:
         m_plan_.ball_pos_=ball_pos_;
         m_plan_.m_behaviour_.past_ball_vel=past_ball_vel;
         m_plan_.m_behaviour_.past_robot_vel=past_robot_vel;
-        //cout<<"ball :("<<ball_pos_.x_<<","<<ball_pos_.y_<<")"<<endl;
-        //cout<<"robot :("<<robot_pos_.x_<<","<<robot_pos_.y_<<")"<<endl;
-        //cout<<"obs :("<<opp_robot_.x_<<","<<opp_robot_.y_<<")"<<endl;
+        cout<<"ball :("<<ball_pos_.x_<<","<<ball_pos_.y_<<")"<<endl;
+        cout<<"robot :("<<robot_pos_.x_<<","<<robot_pos_.y_<<")"<<endl;
+        cout<<"obs :("<<opp_robot_.x_<<","<<opp_robot_.y_<<")"<<endl;
 
         if(robot_pos_.x_==0.0 && robot_pos_.y_==0.0 && ball_pos_.x_==0.0 && ball_pos_.y_==0.0)
         {
@@ -286,12 +286,12 @@ public:
         {
             m_strategy_->selected_action_ = CanNotSeeBall;
         }
-        else if(ball_pos_.x_ < 0.0)
+        else if(ball_pos_.x_ < 0)
         {
             if(ball_pos_.distance(opp_robot_) < 60.0 && ball_pos_.distance(opp_robot_) < ball_pos_.distance(robot_pos_)) //对方带球
             {
-                m_strategy_->selected_action_ = CanNotSeeBall;
-                if(opp_robot_.x_+FIELD_LENGTH*1.0/2 < dist_KICKGoal1)
+                //m_strategy_->selected_action_ = CanNotSeeBall;
+                //if(opp_robot_.x_+FIELD_LENGTH*1.0/2 < dist_KICKGoal1)
                 {
                     m_strategy_->selected_action_ = Positioned_Static;
                 }
@@ -376,27 +376,27 @@ public:
         {
             ROS_INFO("Catch_Positioned");
             br = ball_pos_ - robot_pos_;
+            m_plan_.positionAvoidObs2(br.angle().radian_);
             if(fabs(br.angle().radian_ - robot_ori_.radian_) < 15.0*DEG2RAD)
             {
                 m_plan_.move2Positionwithobs_noball(ball_pos_, ConstDribbleDisFirst);
-            }
-            m_plan_.positionAvoidObs2(br.angle().radian_);
-            if(fabs(br.angle().radian_ - robot_ori_.radian_) < 15.0*DEG2RAD && ball_pos_.distance(robot_pos_) < ConstDribbleDisFirst)
-            {
-                if(fabs(br.angle().radian_ - robot_ori_.radian_) < 5.0*DEG2RAD)
+                if(ball_pos_.distance(robot_pos_) < ConstDribbleDisFirst)
                 {
-                    dribble.request.enable = 1;
-                    ballhandle_client_.call(dribble);
-                    if(dribble.response.BallIsHolding != true)
+                    m_plan_.positionAvoidObs2(br.angle().radian_);
+                    if(fabs(br.angle().radian_ - robot_ori_.radian_) < 5.0*DEG2RAD)
                     {
-                        m_plan_.move2Positionwithobs_noball(ball_pos_, ConstDribbleDisSecond);
-                    }
-                    else
-                    {
-                        m_strategy_->selected_action_ = Positioned;
+                        dribble.request.enable = 1;
+                        ballhandle_client_.call(dribble);
+                        if(dribble.response.BallIsHolding != true)
+                        {
+                            m_plan_.move2Positionwithobs_noball(ball_pos_, ConstDribbleDisSecond);
+                        }
+                        else
+                        {
+                            m_strategy_->selected_action_ = Positioned;
+                        }
                     }
                 }
-                m_plan_.positionAvoidObs2(br.angle().radian_);
             }
         }
         if(m_strategy_->selected_action_ == Positioned) //移动到目标位置 move to position 射门位置
@@ -411,7 +411,7 @@ public:
             }
             else
             {
-                m_plan_.m_behaviour_.app_w_;
+                m_plan_.m_behaviour_.app_w_ = 0.0;
                 target = DPoint(FIELD_LENGTH*1.0/2, 0.0);
                 br = target - robot_pos_;
                 if(br.angle().radian_ > 60*DEG2RAD)
