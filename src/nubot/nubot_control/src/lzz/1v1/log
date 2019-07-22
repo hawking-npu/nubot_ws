@@ -1,3 +1,0 @@
-有关参数（球门、球场长宽、机器人半径等）尚未调整。（位于include/mydefine.hpp中）
-仅包括nubot_control，即nubot/simatch可改名为nubot_control后放入相应工程中。
-需修改nubot/core/core.hpp中的OUR_TEAM以及OPP_TEAM为1。

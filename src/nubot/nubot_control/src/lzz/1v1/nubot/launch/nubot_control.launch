@@ -1,3 +1,0 @@
-<launch>
-<node name="nubot_control_node" pkg="nubot_control" type="nubot_control_node"/>
-</launch>

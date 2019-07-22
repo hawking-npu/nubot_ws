@@ -73,3 +73,5 @@ target_link_libraries(nubot_control_node
  )
 
 
+file(GLOB_RECURSE SOURCES ${SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/*") ####
+add_library(whatever STATIC ${SOURCES}) ####

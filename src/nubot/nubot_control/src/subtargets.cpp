@@ -64,6 +64,29 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     if(avoid_ball)
         _myObstacles.push_back(ball_pos_);
     //ROS_INFO("Subtargets 1myObstacles_num: %ld", _myObstacles.size());
+
+
+    //if target == opp
+    int equal_num = -1;
+    for(int i=0; i<_myObstacles.size(); ++i)
+    {
+        if(target.distance(_myObstacles[i]) < RADIUS + OBLE_RADIUS - 20.0)
+        {
+            equal_num = i;
+            break;
+        }
+    }
+    if(equal_num != -1)
+    {
+        DPoint delta_point_;
+        delta_point_ = _myObstacles[equal_num] - target;
+        delta_point_.x_ /= 10.0/delta_point_.norm();
+        delta_point_.y_ /= 10.0/delta_point_.norm();
+        subtarget(target-delta_point_, robot_pos_, avoid_ball);
+        return;
+    }
+
+
     DPoint ori;
     double theta_t;
     DPoint tar_now = target;

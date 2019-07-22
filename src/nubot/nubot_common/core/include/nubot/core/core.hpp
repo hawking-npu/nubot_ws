@@ -8,7 +8,7 @@
 #include "PPoint.hpp"
 #include "Line.hpp"
 
-#define  SIMULATION
+//#define  SIMULATION
 //#define THREEPLAYER
 #define  NET_TYPE "wlp3s0"
 
@@ -87,7 +87,7 @@ const double EPS = 0.1;
 const double INF = 0x3f3f3f;
 
 ////可能需要修改
-const double update_T = 30;//30ms更新一次
+const double update_T = 50;//30ms更新一次
 const double LENGTH_FIX = 0.3;
 const nubot::DPoint oppGoalPosr = nubot::DPoint( 890*LENGTH_FIX, -100*LENGTH_FIX);
 const nubot::DPoint oppGoalPosl = nubot::DPoint( 890*LENGTH_FIX,  100*LENGTH_FIX);

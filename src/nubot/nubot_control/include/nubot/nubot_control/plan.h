@@ -54,7 +54,7 @@ public:
 
 
         int oppneartargetid(DPoint target);
-        int ourneartargetid(DPoint target);
+        int ourneartargetid(DPoint target, int avoidid = 0);
 
 public:
         World_Model_Info * world_model_;

@@ -59,7 +59,7 @@ const double          FRICONRATIO      = 0.85;
 
 const double          RADIUS = 30;
 const double          GEARREDUCTIONRATIO = 21.3571;
-const double          MAXVEL   =    500;//500;
+const double          MAXVEL   =    100;//500;
 const double          MAXW     =    12;//15;
 const double          Max_ObsVision = 10;
 const double          OBLE_RADIUS   = 30;

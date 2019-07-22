@@ -144,29 +144,24 @@ void   Plan::update()
 /*********round with soccer************/
 void Plan::ballRoundTrack()
 {
-    DPoint ori=ball_pos_-robot_pos_;
+    DPoint br=ball_pos_-robot_pos_;
 
-    //cout<<"robotori: "<<robot_ori_.radian_<<endl;
-    //cout<<"distance: : "<<fabs(ball_pos_.distance(robot_pos_))<<endl;
-    if(fabs(ball_pos_.distance(robot_pos_))>=100)
-    {
-        m_subtargets_.robot_pos_=robot_pos_;
-        m_subtargets_.ball_pos_=ball_pos_;
-        m_subtargets_.subtarget(ball_pos_, robot_pos_, false);
-        m_behaviour_.move2Position(KA_MOVE,KB_MOVE,m_subtargets_.subtargets_pos_,MAXVEL,robot_pos_,robot_ori_);
-    }
-    else
+    move2Positionwithobs_noball(ball_pos_);
+    ROS_INFO("roundfoot1");
+    cout<<"robot pos: "<<robot_pos_.x_<<' '<<robot_pos_.y_<<endl;
+    cout<<"ball pos: "<<ball_pos_.x_<<' '<<ball_pos_.y_<<endl;
+    cout<<"robot vel: "<<m_behaviour_.app_vx_<<' '<<m_behaviour_.app_vy_<<' '<<m_behaviour_.app_w_<<' '<<endl;
+    if(ball_pos_.distance(robot_pos_) < 100.0)
     {
         ROS_INFO("roundfoot2");
+        positionAvoidObs2(br.angle().radian_);
+        if(fabs(br.angle().radian_ - robot_ori_.radian_) < 8.0/180.0*SINGLEPI_CONSTANT)
+        {
+            ROS_INFO("roundfoot3");
+            m_behaviour_.setAppw(0.0);
+        }
         m_behaviour_.setAppvx(0.0);
         m_behaviour_.setAppvy(50.0);
-        double tmp=ori.angle().radian_-robot_ori_.radian_;
-        //cout<<"tmp:"<<tmp<<endl;
-        //cout<<"ori pos: "<<ori.x_<<' '<<ori.y_<<endl;
-        if(fabs(tmp)>8.0/180.0*SINGLEPI_CONSTANT)
-            m_behaviour_.rotate2AbsOrienation(KA_MOVE,KB_MOVE,ori.angle().radian_,MAXW,robot_ori_.radian_);
-        else
-            m_behaviour_.setAppw(0);
     }
 }
 
@@ -176,7 +171,7 @@ int Plan::oppneartargetid(DPoint target)
     int max_id = 1;
     for(int i=0; i<OPP_TEAM; ++i)
     {
-        if(target.distance(world_model_->Opponents_[i]) < EPS)
+        if(target.distance(world_model_->Opponents_[i]) < OBLE_RADIUS/2)
         {
             continue;
         }
@@ -189,13 +184,22 @@ int Plan::oppneartargetid(DPoint target)
     return max_id;
 }
 
-int Plan::ourneartargetid(DPoint target)
+int Plan::ourneartargetid(DPoint target, int avoidid)
 {
+    DPoint avoid_pt = DPoint(10000.0, 10000.0);
+    if(avoidid != 0)
+    {
+        avoid_pt = world_model_->RobotInfo_[avoidid-1].getLocation();
+    }
     double max_dist = INF;
     int max_id = 1;
     for(int i=0; i<OUR_TEAM; ++i)
     {
-        if(target.distance(world_model_->RobotInfo_[i].getLocation()) < EPS)
+        if(target.distance(world_model_->RobotInfo_[i].getLocation()) < RADIUS/2)
+        {
+            continue;
+        }
+        if(avoid_pt.distance(world_model_->RobotInfo_[i].getLocation()) < RADIUS/2)
         {
             continue;
         }
