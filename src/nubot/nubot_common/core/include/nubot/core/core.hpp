@@ -9,6 +9,7 @@
 #include "Line.hpp"
 
 //#define  SIMULATION
+//#define THREEPLAYER
 #define  NET_TYPE "wlp3s0"
 
 //#define using_openmp
@@ -26,8 +27,13 @@ const double WIDTHRATIO4FIELD = 1;
 const double WIDTH_RATIO= 1 ;
 //using namespace nubot;
 const int NOT_DATAUPDATE = 300; //数据没有更新的阈值，比如通信过程中时间大于300ms为更新数据，默认为失效
-const int OUR_TEAM = 3;//5       //自己机器人个数
-const int OPP_TEAM = 3;//7       //对方的机器人个数
+#ifdef THREEPLAYER
+const int OUR_TEAM = 3 ;        //自己机器人个数 5
+const int OPP_TEAM = 3 ;        //对方的机器人个数 7
+#else
+const int OUR_TEAM = 1 ;        //自己机器人个数 5
+const int OPP_TEAM = 1 ;        //对方的机器人个数 7
+#endif
 
 const int ROLENUM = 7;
 
@@ -55,6 +61,29 @@ const int FIELD_YLINE6 = -200; // -600
 const int FIELD_CENTER_RADIUS = 60; // 150;
 const int FIELD_POST_RADIUS = 0;
 const int LOCATIONERROR = 10; // 30
+
+///========================================================
+const double EPS = 0.1;
+const double INF = 0x3f3f3f;
+
+////可能需要修改
+const double update_T = 30;//30ms更新一次
+const double LENGTH_FIX = 0.3;
+const nubot::DPoint oppGoalPosr = nubot::DPoint( 890*LENGTH_FIX, -100*LENGTH_FIX);
+const nubot::DPoint oppGoalPosl = nubot::DPoint( 890*LENGTH_FIX,  100*LENGTH_FIX);
+const nubot::DPoint ourGoalPosr = nubot::DPoint(-890*LENGTH_FIX, -100*LENGTH_FIX);
+const nubot::DPoint ourGoalPosl = nubot::DPoint(-890*LENGTH_FIX,  100*LENGTH_FIX);
+const nubot::DPoint parking_point[3] = {nubot::DPoint(-800*LENGTH_FIX, 0.0), nubot::DPoint(-200*LENGTH_FIX, -100*LENGTH_FIX), nubot::DPoint(-200*LENGTH_FIX, 100*LENGTH_FIX)};
+
+////需要修改
+const double max_wacc = 3.0;//rad/s
+const double max_acc = 50.0;//cm2/s
+const double dist_KICKGoal1 = 300.0; //踢球最远距离
+const double dist_KICKGoal2 = 70.0;
+const double KA_MOVE = 1.0;
+const double KB_MOVE = 0.01;
+///========================================================
+
 /** 比赛模式的一些定义，*/
 enum Roles{GOALIE = 0 ,
            ACTIVE = 1,

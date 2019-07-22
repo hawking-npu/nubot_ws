@@ -5,6 +5,8 @@
 #include "nubot/core/core.hpp"
 #include "nubot/nubot_control/world_model_info.h"
 
+#include "nubot/nubot_control/define.hpp"
+
 using namespace std;
 namespace nubot{
 class Subtargets
@@ -22,6 +24,8 @@ public:
         Max(int n,double *q);
         void
         subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball);
+
+        inline double square(double a) { return a*a; }
     
 public:
 

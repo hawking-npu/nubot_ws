@@ -5,8 +5,11 @@
 #include <stdio.h>
 #include <cmath>
 #include <string.h>
-#include"nubot/core/core.hpp"
+#include "nubot/core/core.hpp"
 #include "common.hpp"
+
+#include <nubot_common/VelCmd.h>
+#include <boost/circular_buffer.hpp>
 
 #define NB 0
 #define NM 1
@@ -30,15 +33,11 @@ public:
     ~ Behaviour();
 
     float basicPDControl(float pgain,float dgain, float err,float err1, float maxval);
-    float basicPIDcontrol(float pgain,
-                       float igain,
-                       float dgain,
-                       float currval,
-                       float targetval,
-                       float imaxlimiter,
-                       float iminlimiter,
-                       float& dstate,
-                       float& istate );
+    float basicPDControl2(float pgain, float dgain, float err, float err1, float err2, float maxval);
+    float basicPIDcontrol(float pgain, float igain, float dgain,
+                       float currval, float targetval,
+                       float imaxlimiter, float iminlimiter,
+                       float& dstate, float& istate );
     void fuzzyPIDcontrol(float &deltakp, float &deltaki,float &deltakd, float err,float err1);
 
     void move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target, float maxvel,
@@ -53,10 +52,10 @@ public:
     void traceTarget();
     void revDecoupleFromVel(float vx,float vy,float &positivemax_rev,float &negativemax_rev);
     /** rotate to the target orientation by using PD control*/
-    void rotate2AbsOrienation(float pval, float dval, float orientation,float maxw,const Angle & _robot_ori);
+    void rotate2AbsOrienation(float pval, float dval, float orientation, float maxw, const Angle & _robot_ori, double angle_thres = 8.0/180.0);
     void rotate2RelOrienation(float pval, float dval, float rel_orientation,float maxw);
     void rotatetowardsSetPoint(DPoint point);
-    void rotatetowardsRelPoint(DPoint rel_point);
+    void rotatetowardsRelPoint(DPoint rel_point,const DPoint  & _robot_pos,const Angle & _robot_ori);
     void clearBehaviorState();
     void setAppvx(double vx);
     void setAppvy(double vy);
@@ -64,6 +63,7 @@ public:
     void setTurn(bool isTurn);
     void accelerateLimit(const double &_acc_thresh = 20, const bool & use_convected_acc = true);
     void clear();
+
 public:
     float app_vx_;
     float app_vy_;
@@ -73,6 +73,9 @@ public:
     float last_app_vy_;
     float last_app_w_;
     float last_speed;
+    boost::circular_buffer<DPoint> past_ball_vel;
+    boost::circular_buffer<nubot_common::VelCmd> past_robot_vel;
+    nubot_common::VelCmd        vel1, vel2;
  };
 }
 

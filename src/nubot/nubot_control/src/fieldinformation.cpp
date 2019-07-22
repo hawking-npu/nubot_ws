@@ -2,6 +2,8 @@
 
 using namespace nubot;
 
+const int simLOCATIONERROR = 0;
+
 FieldInformation::FieldInformation()
 {
      xline_.push_back(FIELD_XLINE1);  /** 900，0*/
@@ -87,3 +89,49 @@ FieldInformation::FieldInformation()
 
 FieldInformation::FieldInformation(string infopath)
 {}
+
+/* 是否在对方半场 */
+bool FieldInformation::isOppField(DPoint world_pt)
+{
+    bool rtvl = false;
+    static bool inoppfield = false;
+
+    if(!inoppfield && world_pt.x_ > 0)
+    {
+        inoppfield  =  true;
+    }
+    else if(inoppfield && world_pt.x_ >  -simLOCATIONERROR)
+    {
+        inoppfield =  true;
+    }
+    else
+    {
+        inoppfield =  false;
+    }
+    rtvl = inoppfield;
+
+    return rtvl;
+}
+
+/* 是否在己方半场*/
+bool FieldInformation::isOurField(DPoint world_pt)
+{
+    bool rtvl = false;
+    static bool inourfield = false;
+
+    if(!inourfield && world_pt.x_ < 0)
+    {
+        inourfield  =  true;
+    }
+    else if(inourfield && world_pt.x_ < simLOCATIONERROR)
+    {
+        inourfield =  true;
+    }
+    else
+    {
+        inourfield =  false;
+    }
+    rtvl =  inourfield;
+
+    return rtvl;
+}

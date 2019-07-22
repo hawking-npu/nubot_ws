@@ -22,10 +22,11 @@ public:
         void catchMotionlessBall();
 
         /***********postion*************/
-        void positionAvoidObs(DPoint target, float theta, float stopdis, float stoptheta);
-        void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel);
+        void positionAvoidObs(DPoint target, double angle_thres = 5.0/180.0/*float theta, float stopdis, float stoptheta*/);
+        void positionAvoidObs2(double targetangle, double angle_thres = 5.0/180.0);
+        void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel = MAXVEL);
         //void move2Positionwithobs(DPoint target);  // move to the target point with obstacles avoidance
-        void move2Positionwithobs_noball(DPoint target, float maxvel, float maxacc, bool avoid_ball=false);
+        void move2Positionwithobs_noball(DPoint target, double distance_thres = 10.0, float maxvel = MAXVEL, float maxacc = max_acc, bool avoid_ball=false);
 
         /***********PE and PO***********/
         double PECrossBackMIdlleLine(double direction);
@@ -36,6 +37,7 @@ public:
 
         /***********check***********/
         bool IsNullInTrap(double direction, double swidth, double lwidth, double len);
+        bool pnpoly(const std::vector<DPoint> & pts, const DPoint & test_pt);
         /*********find and search*********/
         double FindBstDirectionForAvoid();
         double FindBstDirectionForAvoid2(DPoint target);
@@ -45,6 +47,15 @@ public:
         bool   SearchMinPE4PassThrough(double &direction, double pridictlen, DPoint trap[4], double step, int flg);
 
         void   update();
+
+
+        /*********round with soccer************/
+        void ballRoundTrack();
+
+
+        int oppneartargetid(DPoint target);
+        int ourneartargetid(DPoint target);
+
 public:
         World_Model_Info * world_model_;
         Behaviour  m_behaviour_;
