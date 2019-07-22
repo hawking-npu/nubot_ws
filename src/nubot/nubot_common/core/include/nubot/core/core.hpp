@@ -8,7 +8,7 @@
 #include "PPoint.hpp"
 #include "Line.hpp"
 
-//#define  SIMULATION
+#define  SIMULATION
 //#define THREEPLAYER
 #define  NET_TYPE "wlp3s0"
 
@@ -40,7 +40,7 @@ const int ROLENUM = 7;
 /** 一些常用的场地参数 */
 #ifdef SIMULATION
 const int FIELD_LENGTH= 1800;
-cosnt int FIELD_WIDTH = 400;
+const int FIELD_WIDTH = 400;
 #else
 const int FIELD_LENGTH= 600;//1800;    //场地参数，长度
 const int FIELD_WIDTH = 400;//1200;     //场地参度，长度
