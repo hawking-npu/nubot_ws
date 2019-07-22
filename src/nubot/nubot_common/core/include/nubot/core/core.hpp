@@ -1,4 +1,4 @@
-﻿#ifndef __NUBOT_CORE_HPP__
+#ifndef __NUBOT_CORE_HPP__
 #define __NUBOT_CORE_HPP__
 
 
@@ -23,8 +23,8 @@ const double ConstDribbleDisFirst  = 40;
 const double ConstDribbleDisSecond = 35;
 #endif
 
-const double WIDTHRATIO4FIELD = 1;
-const double WIDTH_RATIO= 1 ;
+const double WIDTHRATIO4FIELD = 1.0;
+const double WIDTH_RATIO= 1.0;
 //using namespace nubot;
 const int NOT_DATAUPDATE = 300; //数据没有更新的阈值，比如通信过程中时间大于300ms为更新数据，默认为失效
 #ifdef THREEPLAYER
@@ -38,11 +38,31 @@ const int OPP_TEAM = 1 ;        //对方的机器人个数 7
 const int ROLENUM = 7;
 
 /** 一些常用的场地参数 */
+#ifdef SIMULATION
+const int FIELD_LENGTH= 1800;
+cosnt int FIELD_WIDTH = 400;
+#else
 const int FIELD_LENGTH= 600;//1800;    //场地参数，长度
 const int FIELD_WIDTH = 400;//1200;     //场地参度，长度
+#endif
 const double MAXDIS_FIELD = sqrt(FIELD_LENGTH*FIELD_LENGTH+FIELD_WIDTH*FIELD_WIDTH); //对角线长度
 
 /** 场地上的几条水平和垂直线,，其他的信息都可以通过场地信息得到*/
+#ifdef SIMULATION
+const int FIELD_XLINE1 = 900;
+const int FIELD_XLINE2 = 825;
+const int FIELD_XLINE3 = 675;
+const int FIELD_XLINE4 = 0;
+const int FIELD_XLINE5 = -675;
+const int FIELD_XLINE6 = -825;
+const int FIELD_XLINE7 = -900;
+const int FIELD_YLINE1 =  600;
+const int FIELD_YLINE2 =  325;
+const int FIELD_YLINE3 =  175;
+const int FIELD_YLINE4 =  -175;
+const int FIELD_YLINE5 =  -325;
+const int FIELD_YLINE6 =  -600;
+#else
 const int FIELD_XLINE1 = 300;//900;
 const int FIELD_XLINE2 = 260;//825;
 const int FIELD_XLINE3 = 235;//675;
@@ -57,7 +77,7 @@ const int FIELD_YLINE3 = 80;  // 175
 const int FIELD_YLINE4 = -80; // -175
 const int FIELD_YLINE5 = -100; // -325
 const int FIELD_YLINE6 = -200; // -600
-
+#endif
 const int FIELD_CENTER_RADIUS = 60; // 150;
 const int FIELD_POST_RADIUS = 0;
 const int LOCATIONERROR = 10; // 30
@@ -151,3 +171,4 @@ struct obs_info
 
 
 #endif 
+
