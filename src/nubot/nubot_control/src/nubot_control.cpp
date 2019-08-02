@@ -8,8 +8,9 @@
 #include <nubot_common/StrategyInfo.h>
 #include <nubot_common/TargetInfo.h>
 #include <nubot_common/OdoInfo.h>
-
+#ifndef SIMULATION
 #include <nubot_control/nubotcontrolConfig.h>
+#endif
 #include <dynamic_reconfigure/server.h>
 #include <std_msgs/Header.h>
 #include <std_msgs/String.h>
@@ -25,12 +26,14 @@
 #include <opencv2/opencv.hpp>
 
 #include <boost/circular_buffer.hpp>
+#include <nubot/nubot_control/location.h>
+#include <nubot/nubot_control/avoidance.h>
+#include <nubot/nubot_control/passing.h>
+#include <nubot/nubot_control/dribblestate.hpp>
 
-#define RUN 1
-#define FLY -1
-//shoot在FLY模式下，strength不重要,只要非零就行
-const double DEG2RAD = 1.0/180.0*SINGLEPI_CONSTANT;     // 角度到弧度的转换
-const int ROLEMAXTIME = 500;     // 角度到弧度的转换
+const int ROLEMAXTIME = 500;
+const int maxknowtime = 1.0*1000/update_T;
+const int MODE = LOCATION;
 
 using namespace std;
 namespace nubot{
@@ -71,10 +74,20 @@ public:
     DPoint  ball_pos_;
     DPoint  ball_vel_;
     DPoint  robot_vel_;
+    DPoint  past_ball_pos_;
     DPoint  opp_robot_;
-    bool isdribble[OUR_TEAM];
+    bool isdribble[10];
     int roletime;
     int defender_ID_;
+    int flag;
+    bool past_ball_known;
+    int known_time;
+
+    DribbleState m_dribble_;
+    /// Challenge
+    Location * m_location_;
+    Avoidance * m_avoidance_;
+    Passing * m_passing_;
 
 
 public:
@@ -100,7 +113,7 @@ public:
         }
 #endif
 
-        motor_cmd_pub_ = nh_->advertise<nubot_common::VelCmd>("nubotcontrol/velcmd",1);
+        motor_cmd_pub_ = nh_->advertise<nubot_common::VelCmd>("nubotcontrol/velcmd",10);//1
         strategy_info_pub_ =  nh_->advertise<nubot_common::StrategyInfo>("nubotcontrol/strategy",10);
         ballhandle_client_ =  nh_->serviceClient<nubot_common::BallHandle>("BallHandle");
         shoot_client_ = nh_->serviceClient<nubot_common::Shoot>("Shoot");
@@ -109,33 +122,45 @@ public:
         odoinfo_sub_        = nh_->subscribe("nubotdriver/odoinfo", update_T/1000, &NuBotControl::update_my_dribble_info,this);
 #endif
         worldmodelinfo_sub_ = nh_->subscribe("worldmodel/worldmodelinfo", 1, &NuBotControl::update_world_model_info,this);
-        control_timer_      = nh_->createTimer(ros::Duration(update_T/100),&NuBotControl::loopControl,this);
+        control_timer_      = nh_->createTimer(ros::Duration(update_T/1000),&NuBotControl::loopControl,this);
+#ifndef SIMULATION
         dynamic_reconfigure::Server<nubot_control::nubotcontrolConfig> reconfigureServer_;
         reconfigureServer_.setCallback(boost::bind(&NuBotControl::configure, this, _1, _2));
+#endif
         world_model_info_.AgentID_ = atoi(environment); /** 机器人标号*/
         world_model_info_.CoachInfo_.MatchMode = STOPROBOT;
         m_plan_.world_model_ =  & world_model_info_;
         m_plan_.m_subtargets_.world_model_ =  & world_model_info_;
+        m_plan_.m_dribble_ = & m_dribble_;
         m_staticpass_.world_model_= & world_model_info_;
         m_strategy_ = new Strategy(world_model_info_,m_plan_);
 
         past_ball_vel=boost::circular_buffer<DPoint>(2);
         past_robot_vel=boost::circular_buffer<nubot_common::VelCmd>(2);
+
+        past_ball_known = true;
+        past_ball_pos_ = ball_pos_;
+        known_time = 0;
+
 #ifdef THREEPLAYER
         roletime = 0;
 #endif
+
+
+        /// Challenge
+        m_location_ = new Location(world_model_info_,m_plan_,m_dribble_);
+        m_avoidance_ = new Avoidance(world_model_info_,m_plan_,m_dribble_);
+        m_passing_ = new Passing(world_model_info_,m_plan_,m_dribble_);
     }
 
     ~NuBotControl()
     {
-        m_plan_.m_behaviour_.app_vx_ = 0;
-        m_plan_.m_behaviour_.app_vy_ = 0;
-        m_plan_.m_behaviour_.app_w_  = 0;
+        m_plan_.m_behaviour_.clearBehaviorState();
         setEthercatCommond();
     }
 
-    void
-    configure(const nubot_control::nubotcontrolConfig & config, uint32_t level)
+#ifndef SIMULATION
+    void configure(const nubot_control::nubotcontrolConfig & config, uint32_t level)
     {/*
        kp_ = config.kp;
        kalpha_ = config.kalpha;
@@ -148,11 +173,17 @@ public:
 
     void update_my_dribble_info(const nubot_common::OdoInfo & _my_msg)
     {
-        isdribble[world_model_info_.AgentID_] = _my_msg.BallIsHolding;
+        isdribble[world_model_info_.AgentID_-1] = _my_msg.BallIsHolding;
+        world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].setDribbleState(_my_msg.BallIsHolding);
+        if(isBallHandle(world_model_info_.AgentID_))
+        {
+            world_model_info_.BallInfo_[world_model_info_.AgentID_-1].setLocationKnown(true);
+            ball_pos_ = robot_pos_;
+        }
+        m_dribble_.is_dribble_ = isBallHandle(world_model_info_.AgentID_);
     }
-
-    void
-    update_world_model_info(const nubot_common::WorldModelInfo & _world_msg)
+#endif
+    void update_world_model_info(const nubot_common::WorldModelInfo & _world_msg)
     {
         /** 更新PathPlan自身与队友的信息，自身的策略信息记住最好不要更新，因为本身策略是从此传过去的*/
         for(std::size_t i = 0 ; i < OUR_TEAM ; i++)
@@ -204,6 +235,7 @@ public:
             world_model_info_.BallInfo_[i].setValid(_world_msg.ballinfo[i].pos_known);
         }
         world_model_info_.BallInfoState_ = _world_msg.ballinfo[world_model_info_.AgentID_-1].ballinfostate;
+        /*
 #ifdef THREEPLAYER
         world_model_info_.IsOurDribble_ = false;
         for(int i=0; i<OUR_TEAM; ++i)
@@ -216,6 +248,7 @@ public:
             }
         }
 #endif
+*/
         /** 更新的COACH信息*/
         world_model_info_.CoachInfo_.MatchMode =_world_msg.coachinfo.MatchMode;
         world_model_info_.CoachInfo_.MatchType =_world_msg.coachinfo.MatchType;
@@ -225,14 +258,12 @@ public:
     }
 
     /** 球的三维信息,用于守门员角色*/
-    void
-    ballInfo3dCallback(const nubot_common::BallInfo3d  &_BallInfo_3d){
+    void ballInfo3dCallback(const nubot_common::BallInfo3d  &_BallInfo_3d){
 
         //m_strategy_->goalie_strategy_.setBallInfo3dRel( _BallInfo_3d );
     }
     /** 主要的控制框架位于这里*/
-    void
-    loopControl(const ros::TimerEvent& event)
+    void loopControl(const ros::TimerEvent& event)
     {
         match_mode_ = world_model_info_.CoachInfo_.MatchMode;               //! 当前比赛模式
         pre_match_mode_ = world_model_info_.CoachInfo_.MatchType;           //! 上一个比赛模式
@@ -240,56 +271,130 @@ public:
         robot_ori_  = world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getHead();
         ball_pos_   = world_model_info_.BallInfo_[world_model_info_.AgentID_-1].getGlobalLocation();
         ball_vel_   = world_model_info_.BallInfo_[world_model_info_.AgentID_-1].getVelocity();
+        if(world_model_info_.BallInfo_[world_model_info_.AgentID_-1].isLocationKnown() == false)
+        {
+            if(known_time < maxknowtime)
+            {
+                ball_pos_ = past_ball_pos_;
+                world_model_info_.BallInfo_[world_model_info_.AgentID_-1].setLocationKnown(true);
+                known_time++;
+            }
+        }
+        else
+        {
+            past_ball_pos_ = ball_pos_;
+            known_time = 0;
+        }
 
         ///....
-        //match_mode_ = STARTROBOT;
-        match_mode_ = DROPBALL;
-        if(match_mode_ == STOPROBOT )
+        match_mode_ = MODE;
+        if(match_mode_ == STOPROBOT)
         {
             ROS_INFO("nubotcontrol loopControl STOPROBT");
-            m_plan_.m_behaviour_.app_vx_ = 0;
-            m_plan_.m_behaviour_.app_vy_ = 0;
-            m_plan_.m_behaviour_.app_w_  = 0;
-            setShoot();
+            m_plan_.m_behaviour_.clearBehaviorState();
+            if(m_dribble_.is_dribble_)
+            ROS_INFO("ballhandle = true");
+            else
+                ROS_INFO("ballhandle = false");
+            //setShoot();
         }
         /** 机器人在开始之前的跑位. 开始静态传接球的目标点计算*/
         else if(match_mode_ == PARKINGROBOT)
         {
             DPoint br = DPoint(0.0, 0.0) - robot_pos_;
             m_plan_.move2Positionwithobs_noball(parking_point[world_model_info_.AgentID_-1]);
-            if(robot_pos_.distance(parking_point[world_model_info_.AgentID_-1]) < 10.0)
+            m_plan_.positionAvoidObs2(br.angle().radian_);
+        }
+        else if(match_mode_ == OUR_KICKOFF)
+        {
+            if(isBallHandle(world_model_info_.AgentID_))
             {
+                setShoot(5.0);
+            }
+        }
+        else if(match_mode_ == DROPBALL)
+        {
+            DPoint target, br;
+            if(flag == 0)
+            {
+                target = DPoint(0.0,0.0);
+                br = target-robot_pos_;
+                m_plan_.move2Positionwithobs_noball(target);
                 m_plan_.positionAvoidObs2(br.angle().radian_);
+                if(robot_pos_.distance(target)<10.0 && fabs(robot_ori_.radian_ - br.angle().radian_) < 5.0*DEG2RAD)
+                {
+                    flag=1;
+                }
+            }
+            if(flag == 1)
+            {
+                target = DPoint(260.0,60.0);
+                br = target-robot_pos_;
+                m_plan_.move2Positionwithobs_noball(target);
+                m_plan_.positionAvoidObs2(br.angle().radian_);
+                if(robot_pos_.distance(target)<10.0 && fabs(robot_ori_.radian_ - br.angle().radian_) < 5.0*DEG2RAD)
+                {
+                    flag=2;
+                }
+            }
+            if(flag == 2)
+            {
+                target = DPoint(260.0,-60.0);
+                br = target-robot_pos_;
+                m_plan_.move2Positionwithobs_noball(target);
+                m_plan_.positionAvoidObs2(br.angle().radian_);
+                if(robot_pos_.distance(target)<10.0 && fabs(robot_ori_.radian_ - br.angle().radian_) < 5.0*DEG2RAD)
+                {
+                    flag=0;
+                }
             }
         }
         else if(match_mode_ == STARTROBOT)// 机器人正式比赛了，进入start之后的机器人状态
         {
             normalGame();
         } // start部分结束
-        else if(match_mode_ == BALLAROUND)
+        /// Challenge
+        else if(match_mode_ == LOCATION) //找框
         {
-            m_plan_.ballRoundTrack();
+//            int n = 22;
+//            int usednum[n] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22};
+            int n=5;
+            int usednum[n] = {5,8,19,21,12};
+            m_location_->update();
+            m_location_->process(n, usednum);
+            //m_plan_.m_behaviour_.app_w_ = SINGLEPI_CONSTANT*2.0/7.0;
+            //m_plan_.m_behaviour_.app_vx_ = -10.0;
         }
-        else if(match_mode_ == DROPBALL)
+        else if(match_mode_ == AVOIDANCE) //避障
         {
-            //m_plan_.move2Positionwithobs_noball(DPoint(0.0, 0.0), 100.0, 10.0);
-            m_plan_.m_behaviour_.setAppvy(0.0);
-            m_plan_.m_behaviour_.setAppvx(0.0);
-            m_plan_.m_behaviour_.setAppw(10.0);
+            m_avoidance_->update();
+            m_avoidance_->process();
         }
-        setEthercatCommond();
+        else if(match_mode_ == PASSING) //踢坛子
+        {
+            m_passing_->level = 1;
+            m_passing_->update();
+            m_passing_->process();
+            if(m_passing_->kick_enable_ == true)
+            {
+                setShoot();
+                m_passing_->kick_enable_ = false;
+            }
+        }
 
+        setEthercatCommond();
+/*
 #ifdef THREEPLAYER
         pubStrategyInfo();  // 发送策略消息让其他机器人看到，这一部分一般用于多机器人之间的协同
 #endif
-
+*/
     }
 
 
     void normalGame()
     {
         DPoint br, target;
-        ROS_INFO("robot%d normalGame", world_model_info_.AgentID_);
+//        ROS_INFO("robot%d normalGame", world_model_info_.AgentID_);
         m_plan_.m_subtargets_.ball_pos_ = ball_pos_;
         m_plan_.m_subtargets_.robot_pos_ = robot_pos_;
         m_plan_.robot_pos_=robot_pos_;
@@ -297,21 +402,22 @@ public:
         m_plan_.ball_pos_=ball_pos_;
         m_plan_.m_behaviour_.past_ball_vel=past_ball_vel;
         m_plan_.m_behaviour_.past_robot_vel=past_robot_vel;
-        cout<<"ball :("<<ball_pos_.x_<<","<<ball_pos_.y_<<")"<<endl;
-        cout<<"robot :("<<robot_pos_.x_<<","<<robot_pos_.y_<<")"<<endl;
-        cout<<"obs :("<<opp_robot_.x_<<","<<opp_robot_.y_<<")"<<endl;
 
         if(robot_pos_.x_==0.0 && robot_pos_.y_==0.0 && ball_pos_.x_==0.0 && ball_pos_.y_==0.0)
         {
             m_strategy_->selected_action_ = No_Action;
-            world_model_info_.Opponents_.push_back(DPoint(0.0,0.0));
 #ifdef THREEPLAYER
-            world_model_info_.Opponents_.push_back(DPoint(0.0,0.0));
-            world_model_info_.Opponents_.push_back(DPoint(0.0,0.0));
             roletime = 0;
 #endif
         }
-
+        if(world_model_info_.Opponents_.size() == 0)
+        {
+            world_model_info_.Opponents_.push_back(DPoint(0.0,0.0));
+        }
+//        ROS_INFO("ball: (%f, %f)", ball_pos_.x_, ball_pos_.y_);
+//        ROS_INFO("robot: (%f, %f)", robot_pos_.x_, robot_pos_.y_);
+//        ROS_INFO("obs: (%f, %f)", opp_robot_.x_, opp_robot_.y_);
+/*
 #ifdef THREEPLAYER
         if(roletime == 0)
         {
@@ -325,16 +431,32 @@ public:
         }
         roletime--;
 #else
+*/
         opp_robot_ = world_model_info_.Opponents_[0];
-#endif
+//#endif
+
+        if(isBallHandle(world_model_info_.AgentID_))
+        {
+            world_model_info_.BallInfo_[world_model_info_.AgentID_-1].setLocationKnown(true);
+            ball_pos_ = robot_pos_;
+        }
 
 #ifdef THREEPLAYER
-        if(world_model_info_.pass_ID_ == world_model_info_.AgentID_) //Active
-        {
+#ifdef SIMULATION
+        if(world_model_info_.AgentID_ == 2) m_strategy_->selected_role_ = ACTIVE;
+        else if(world_model_info_.AgentID_ == 1) m_strategy_->selected_role_ = GOALIE;//defender
+#else
+        if(world_model_info_.AgentID_ == 2) m_strategy_->selected_role_ = ACTIVE;
+        else if(world_model_info_.AgentID_ == 3) m_strategy_->selected_role_ = GOALIE;
+        //m_strategy_->selected_role_ = 3;//defender
 #endif
+        //if(world_model_info_.pass_ID_ == world_model_info_.AgentID_) //Active
+        if(m_strategy_->selected_role_ == ACTIVE)
+#endif
+        {
             if(world_model_info_.BallInfo_[world_model_info_.AgentID_-1].isLocationKnown() == false)
             {
-                m_strategy_->selected_action_ = CanNotSeeBall;
+                m_strategy_->selected_action_ = CanNotSeeBall;//Cannotseeball  No_Action
             }
             else if(ball_pos_.distance(opp_robot_) < LIMITDRIBLLEDIS && ball_pos_.distance(opp_robot_) < ball_pos_.distance(robot_pos_)) //对方带球
             {
@@ -364,96 +486,73 @@ public:
 #endif
                 target = DPoint((-FIELD_LENGTH*1.0/2+opp_robot_.x_)/2,opp_robot_.y_/2);
                 br = opp_robot_ - robot_pos_;
-                ROS_INFO("CanNotSeeBall1");
                 m_plan_.move2Positionwithobs_noball(target);
-                ROS_INFO("CanNotSeeBall2");
-                if(robot_pos_.distance(target) < 10.0)
-                {
-                    m_plan_.positionAvoidObs2(br.angle().radian_);
-                }
+                m_plan_.positionAvoidObs2(br.angle().radian_);
             }
             if(m_strategy_->selected_action_ == TurnForShoot) // Active 踢球准备
             {
                 ROS_INFO("TurnForShoot");
-                if(isBallHandle(world_model_info_.AgentID_) != true)
+                if(isBallHandle(world_model_info_.AgentID_) == false)
                 {
                     m_strategy_->selected_action_ = Catch_Positioned;
                 }
                 else
                 {
-#ifdef THREEPLAYER
-                    if(m_plan_.pnpoly(world_model_info_.Opponents_, robot_pos_) == false)
-#endif
+//#ifdef THREEPLAYER
+//                    if(m_plan_.pnpoly(world_model_info_.Opponents_, robot_pos_) == false)
+//#endif
                     {
                         target = DPoint(FIELD_LENGTH*1.0/2, 0.0);
                         br = target - robot_pos_;
-#ifdef THREEPLAYER
-                        opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(DPoint(FIELD_LENGTH*1.0/2, 0.0))]; //对方守门员
-#endif
-                        if(robot_pos_.distance(target) < dist_KICKGoal1)
-                        {
-                            m_strategy_->selected_action_ = Actions::StaticPass;
-                        }
-                        else
-                        {
-                            m_strategy_->selected_action_ = Positioned;
-                        }
+//#ifdef THREEPLAYER
+//                        opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(DPoint(FIELD_LENGTH*1.0/2, 0.0))]; //对方守门员
+//#endif
+                        m_strategy_->selected_action_ = Positioned;
                     }
-#ifdef THREEPLAYER
-                    else //传球
-                    {
-                        br = world_model_info_.RobotInfo_[world_model_info_.catch_ID_-1].getLocation() - robot_pos_;
-                        DPoint br2;
-                        bool flag222 = false;
-                        for(int i=0; i<OPP_TEAM; ++i)
-                        {
-                            br2 = world_model_info_.Opponents_[i]-robot_pos_;
-                            if(fabs(br.angle().radian_-br2.angle().radian_) < 30*DEG2RAD)
-                            {
-                                if(robot_pos_.distance(world_model_info_.Opponents_[i]) < robot_pos_.distance(world_model_info_.RobotInfo_[world_model_info_.catch_ID_-1].getLocation()))
-                                {
-                                    flag222 = true;
-                                }
-                            }
-                        }
-                        if(flag222)
-                        {
-                            m_plan_.move2Positionwithobs_noball(world_model_info_.RobotInfo_[world_model_info_.catch_ID_-1].getLocation());
-                        }
-                        else
-                        {
-                            m_plan_.positionAvoidObs2(br.angle().radian_);
-                            if(fabs(robot_ori_.radian_-br.angle().radian_) < 5*DEG2RAD)
-                            {
-                                m_strategy_->selected_action_ = AtShootSituation;
-                            }
-                        }
-                    }
-#endif
+//#ifdef THREEPLAYER
+//                    else //传球
+//                    {
+//                        br = world_model_info_.RobotInfo_[world_model_info_.catch_ID_-1].getLocation() - robot_pos_;
+//                        DPoint br2;
+//                        bool flag222 = false;
+//                        for(int i=0; i<world_model_info_.Opponents_.size(); ++i)
+//                        {
+//                            br2 = world_model_info_.Opponents_[i]-robot_pos_;
+//                            if(fabs(br.angle().radian_-br2.angle().radian_) < 30*DEG2RAD)
+//                            {
+//                                if(robot_pos_.distance(world_model_info_.Opponents_[i]) < robot_pos_.distance(world_model_info_.RobotInfo_[world_model_info_.catch_ID_-1].getLocation()))
+//                                {
+//                                    flag222 = true;
+//                                }
+//                            }
+//                        }
+//                        if(flag222)
+//                        {
+//                            m_plan_.move2Positionwithobs_noball(world_model_info_.RobotInfo_[world_model_info_.catch_ID_-1].getLocation());
+//                        }
+//                        else
+//                        {
+//                            m_plan_.positionAvoidObs2(br.angle().radian_);
+//                            if(fabs(robot_ori_.radian_-br.angle().radian_) < 5*DEG2RAD)
+//                            {
+//                                m_strategy_->selected_action_ = AtShootSituation;
+//                            }
+//                        }
+//                    }
+//#endif
                 }
             }
 #ifndef THREEPLAYER
             if(m_strategy_->selected_action_ == Positioned_Static) //移动到防守位置
             {
                 ROS_INFO("robot%d Positioned_Static", world_model_info_.AgentID_);
-#ifdef THREEPLAYER
-                opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(ball_pos_)-1];//对方距球最近的机器人位置
-#endif
-                target = DPoint(ourGoalPosl.x_,opp_robot_.y_);
-                if(opp_robot_.y_ > 0.0)
-                {
-                    target.y_ += opp_robot_.y_*(ourGoalPosl.x_-opp_robot_.x_)/(opp_robot_.x_-FIELD_LENGTH*1.0/2);
-                }
-                if(robot_pos_.distance(target) < 10.0)
-                {
-                    m_plan_.positionAvoidObs(ball_pos_);
-                }
-                else
-                {
-                    m_plan_.move2Positionwithobs_noball(target);
-                }
 
-                if(opp_robot_.distance(ball_pos_) > robot_pos_.distance(ball_pos_) || opp_robot_.distance(ball_pos_) > LIMITDRIBLLEDIS)
+                double time_robot2ball = robot_pos_.distance(ball_pos_)/MAXVEL;
+                target = DPoint(ball_pos_.x_+ball_vel_.x_*time_robot2ball, ball_pos_.y_+ball_vel_.y_*time_robot2ball);
+                m_plan_.move2Positionwithobs_noball(DPoint(ourGoalPosl.x_-RADIUS, target.y_));
+                m_plan_.positionAvoidObs(ball_pos_);
+
+                if(opp_robot_.distance(ball_pos_) > robot_pos_.distance(ball_pos_))
                 {
                     m_strategy_->selected_action_ = Catch_Positioned;
                 }
@@ -462,88 +561,96 @@ public:
             if(m_strategy_->selected_action_ == Catch_Positioned) //走到球的位置并完成抓球
             {
                 ROS_INFO("robot%d Catch_Positioned", world_model_info_.AgentID_);
+//                double time_robot2ball = robot_pos_.distance(ball_pos_)/MAXVEL;
+//                target = DPoint(ball_pos_.x_+ball_vel_.x_*time_robot2ball, ball_pos_.y_+ball_vel_.y_*time_robot2ball);
+                target = ball_pos_;
                 br = ball_pos_ - robot_pos_;
-                m_plan_.move2Positionwithobs_noball(ball_pos_, ConstDribbleDisFirst+50.0);
-                if(ball_pos_.distance(robot_pos_) < ConstDribbleDisFirst+50.0)
+                m_plan_.positionAvoidObs2(br.angle().radian_, MAXW, 3*DEG2RAD);
+                if(robot_pos_.distance(ball_pos_) < LIMITDRIBLLEDIS + 20.0)
                 {
-                    m_plan_.positionAvoidObs2(br.angle().radian_);
-                    if(fabs(br.angle().radian_ - robot_ori_.radian_) < 30.0*DEG2RAD)
+                    if(fabs(br.angle().radian_-robot_ori_.radian_)<3*DEG2RAD)
                     {
-                        if(fabs(br.angle().radian_ - robot_ori_.radian_) < 5.0*DEG2RAD)
+                        m_plan_.move2Positionwithobs_noball(ball_pos_);
+                        if(isBallHandle(world_model_info_.AgentID_) != true)
                         {
-                            if(isBallHandle(world_model_info_.AgentID_) != true)
-                            {
-                                m_plan_.move2Positionwithobs_noball(ball_pos_, ConstDribbleDisSecond);
-                            }
-                            else
-                            {
-                                m_strategy_->selected_action_ = Positioned;
-                            }
+                            m_plan_.move2Positionwithobs_noball(ball_pos_);
+                        }
+                        else
+                        {
+                            m_strategy_->selected_action_ = Positioned;
                         }
                     }
+                }
+                else
+                {
+                    m_plan_.move2Positionwithobs_noball(target);
                 }
             }
             if(m_strategy_->selected_action_ == Positioned) //移动到目标位置 move to position 射门位置
             {
                 ROS_INFO("robot%d Positioned", world_model_info_.AgentID_);
-
-#ifdef THREEPLAYER
-                opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(ball_pos_)-1];//对方距球最近的机器人位置
-#endif
-                br = -opp_robot_ - robot_pos_;
-                if(robot_pos_.distance(opp_robot_)<100.0 && fabs(fabs(br.angle().radian_)-fabs(robot_ori_.radian_))>90*DEG2RAD)
+                //m_plan_.move2Positionwithobs_noball(target);
+//#ifdef THREEPLAYER
+//                opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(ball_pos_)-1];//对方距球最近的机器人位置
+//#endif
+                //br = opp_robot_ - robot_pos_;
+                //if(robot_pos_.distance(opp_robot_)<100.0 && fabs(br.angle().radian_-robot_ori_.radian_)<90*DEG2RAD)
+                //{
+                    //br = DPoint(0.0,0.0)-br;
+                    //m_plan_.positionAvoidObs2(robot_ori_.radian_*2-br.angle().radian_);
+//                    if(fabs(fabs(br.angle().radian_)-fabs(robot_ori_.radian_))>60*DEG2RAD)
+//                    {
+//                        m_plan_.move2Positionwithobs_noball(DPoint(robot_pos_.x_>0?robot_pos_.x_-20.0:robot_pos_.x_+20.0, robot_pos_.y_>0?robot_pos_.y_-20.0:robot_pos_.y_+20.0));
+//                    }
+                //}
+                target = DPoint(FIELD_LENGTH*1.0/2, 0.0);
+                br = target - robot_pos_;
+//                m_plan_.move2Positionwithobs_noball(DPoint(target.x_/2.0,0.0));
+//                    if(br.angle().radian_ > 60*DEG2RAD)
+//                    {
+//                        m_plan_.move2Positionwithobs_noball(DPoint(robot_pos_.x_,robot_pos_.y_+20.0));
+//                    }
+//                    else if(br.angle().radian_ < -60*DEG2RAD)
+//                    {
+//                        m_plan_.move2Positionwithobs_noball(DPoint(robot_pos_.x_,robot_pos_.y_-20.0));
+//                    }
+//                    else
+                m_plan_.positionAvoidObs2(br.angle().radian_);
+                m_plan_.m_behaviour_.app_vx_ = 10.0;
+                if(robot_ori_.radian_ < (oppGoalPosl-robot_pos_).angle().radian_ && robot_ori_.radian_ > (oppGoalPosr-robot_pos_).angle().radian_)
                 {
-                    br = -opp_robot_ - robot_pos_;
-                    m_plan_.positionAvoidObs2(br.angle().radian_, 20.0*DEG2RAD);
-                    /*
-                    if(fabs(fabs(br.angle().radian_)-fabs(robot_ori_.radian_))>60*DEG2RAD)
-                    {
-                        m_plan_.move2Positionwithobs_noball(DPoint(robot_pos_.x_>0?robot_pos_.x_-20.0:robot_pos_.x_+20.0, robot_pos_.y_>0?robot_pos_.y_-20.0:robot_pos_.y_+20.0));
-                    }*/
+                    ROS_INFO("radian: oppr-pos=%f, robot_ori_=%f, oppl-pos=%f", (oppGoalPosr-robot_pos_).angle().radian_, robot_ori_.radian_, (oppGoalPosl-robot_pos_).angle().radian_);
+                    m_plan_.move2Positionwithobs_noball(target);
                 }
-                else
+                if(robot_pos_.distance(target) < (dist_KICKGoal1+dist_KICKGoal2)/2)
                 {
-                    m_plan_.m_behaviour_.app_w_ = 0.0;
-                    target = DPoint(FIELD_LENGTH*1.0/2, 0.0);
-                    br = target - robot_pos_;
-                    if(br.angle().radian_ > 60*DEG2RAD)
-                    {
-                        m_plan_.move2Positionwithobs_noball(DPoint(robot_pos_.x_,robot_pos_.y_+20.0));
-                    }
-                    else if(br.angle().radian_ < -60*DEG2RAD)
-                    {
-                        m_plan_.move2Positionwithobs_noball(DPoint(robot_pos_.x_,robot_pos_.y_-20.0));
-                    }
-                    else
-                    {
-                        if(robot_pos_.distance(target) < dist_KICKGoal1)
-                        {
-                            m_strategy_->selected_action_ = Actions::StaticPass;
-                            if(fabs(br.angle().radian_-robot_ori_.radian_) < 5.0*DEG2RAD)
-                            {
-                                m_plan_.move2Positionwithobs_noball(target, dist_KICKGoal2);
-                            }
-                            else
-                            {
-                                m_plan_.positionAvoidObs2(br.angle().radian_);
-                            }
-                        }
-                        else
-                        {
-                            m_plan_.move2Positionwithobs_noball(target, dist_KICKGoal1);
-                        }
-                    }
+                    m_strategy_->selected_action_ = Actions::StaticPass;
                 }
             }
             if(m_strategy_->selected_action_ == Actions::StaticPass) //到射门位置 如果对方机器人堵住门就转向
             {
                 ROS_INFO("robot%d StaticPass", world_model_info_.AgentID_);
-#ifdef THREEPLAYER
-                opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(DPoint(FIELD_LENGTH*1.0/2, 0.0))]; //对方守门员
-#endif
+
+//#ifdef THREEPLAYER
+//                opp_robot_ = world_model_info_.Opponents_[m_plan_.oppneartargetid(DPoint(FIELD_LENGTH*1.0/2, 0.0))]; //对方守门员
+//#endif
+
                 if(opp_robot_.x_<robot_pos_.x_ || opp_robot_.y_>oppGoalPosl.y_ || opp_robot_.y_<oppGoalPosr.y_)
                 {
-                    m_strategy_->selected_action_ = AtShootSituation;
+                    br = DPoint(FIELD_LENGTH*1.0/2, 0.0) - robot_pos_;
+                    m_plan_.positionAvoidObs2(br.angle().radian_);
+                    if(robot_pos_.x_ > FIELD_LENGTH*1.0/2-70.0 && robot_pos_.y_ < fabs(oppGoalPosl.y_))
+                    {
+                        m_plan_.move2Positionwithobs_noball(robot_pos_);
+                    }
+                    else
+                    {
+                        m_plan_.move2Positionwithobs_noball(DPoint(FIELD_LENGTH*1.0/2-100.0, 0.0));
+                    }
+                    if(fabs(br.angle().radian_-robot_ori_.radian_) < 5.0*DEG2RAD)
+                    {
+                        m_strategy_->selected_action_ = AtShootSituation;
+                    }
                 }
                 else
                 {
@@ -567,6 +674,8 @@ public:
                     }
                 }
             }
+        }
+            /*
 #ifdef THREEPLAYER
         }
         else if(world_model_info_.AgentID_ == world_model_info_.catch_ID_) //assist
@@ -578,7 +687,7 @@ public:
             else
             {
                 double mindist=10000.0;
-                for(int i=0; i<OPP_TEAM; ++i)
+                for(int i=0; i<world_model_info_.Opponents_.size(); ++i)
                 {
                     if(ball_pos_.distance(world_model_info_.Opponents_[i]) < mindist)
                     {
@@ -607,7 +716,7 @@ public:
             {
                 ROS_INFO("CanNotSeeBall");
                 double mindis = 10000.0;
-                for(int i=0; i<OPP_TEAM; ++i)
+                for(int i=0; i<world_model_info_.Opponents_.size(); ++i)
                 {
                     if(world_model_info_.Opponents_[i].distance(DPoint(-FIELD_LENGTH*1.0/2, 0.0)) < mindis)
                     {
@@ -632,7 +741,7 @@ public:
                 double min_dist = INF;
                 double dist_opp2oppgoal;
                 double dist_our2oppgoal = DPoint(FIELD_LENGTH*1.0/2, 0.0).distance(world_model_info_.RobotInfo_[world_model_info_.pass_ID_-1].getLocation());
-                for(int i=0; i<OPP_TEAM; ++i)
+                for(int i=0; i<world_model_info_.Opponents_.size(); ++i)
                 {
                     dist_opp2oppgoal = world_model_info_.Opponents_[i].distance(DPoint(FIELD_LENGTH*1.0/2, 0.0));
                     if(dist_opp2oppgoal > dist_our2oppgoal && dist_opp2oppgoal < min_dist)
@@ -747,6 +856,75 @@ public:
             }
         }
 #endif
+*/
+#ifdef THREEPLAYER
+        else if(m_strategy_->selected_role_ == GOALIE)
+        {
+            if(world_model_info_.BallInfo_[world_model_info_.AgentID_-1].isLocationKnown() == false) //找不到球
+            {
+                bool flag_oppinourfield = false;
+                for(int i=0; i<world_model_info_.Opponents_.size(); ++i)
+                {
+                    if(world_model_info_.Opponents_[i].x_<0.0) //有一个敌方机器人在我方半场
+                    {
+                        m_strategy_->selected_action_ = Catch_Positioned; //预测球可能到达的位置，提前等到位置进行防守
+                        flag_oppinourfield = true;
+                        break;
+                    }
+                }
+                if(flag_oppinourfield == false) //敌方机器人均在对方半场
+                {
+                    m_strategy_->selected_action_ = CanNotSeeBall;
+                }
+            }
+            else if(isBallHandle(world_model_info_.AgentID_))
+            {
+                m_strategy_->selected_action_ = Positioned_Static;
+            }
+            else
+            {
+                m_strategy_->selected_action_ = Catch_Positioned;
+            }
+
+            if(m_strategy_->selected_action_ == CanNotSeeBall) //看不到球，移动到中间
+            {
+                ROS_INFO("robot%d CanNotSeeBall", world_model_info_.AgentID_);
+                target = DPoint(-FIELD_LENGTH*1.0/2+RADIUS, 0.0);
+                m_plan_.positionAvoidObs(DPoint(0.0, 0.0));
+                m_plan_.move2Positionwithobs_noball(target);
+            }
+            if(m_strategy_->selected_action_ == Catch_Positioned) //防守，对方将要射门
+            {
+                ROS_INFO("robot%d Opp will kick", world_model_info_.AgentID_);
+
+                double time_robot2ball = robot_pos_.distance(ball_pos_)/MAXVEL;
+                target = DPoint(-FIELD_LENGTH*1.0/2+RADIUS, ball_pos_.y_+ball_vel_.y_*time_robot2ball);
+                if(fabs(target.y_) > fabs(ourGoalPosl.y_))
+                {
+                    if(target.y_ > 0)
+                    {
+                        target.y_ = fabs(ourGoalPosl.y_);
+                    }
+                    else
+                    {
+                        target.y_ = -fabs(ourGoalPosl.y_);
+                    }
+                }
+                m_plan_.move2Positionwithobs_noball(target);
+                m_plan_.positionAvoidObs(ball_pos_);
+            }
+            if(m_strategy_->selected_action_ == Positioned_Static) //自己持球，传给主攻
+            {
+                ROS_INFO("robot%d Kick to Active", world_model_info_.AgentID_);
+                br = DPoint(0.0,0.0)-robot_pos_;
+                m_plan_.positionAvoidObs2(br.angle().radian_);
+                if(fabs(br.angle().radian_-robot_ori_.radian_) < 5.0*DEG2RAD)
+                {
+                    m_strategy_->selected_action_ = AtShootSituation;
+                }
+            }
+        }
+#endif
         if(m_strategy_->selected_action_ == AtShootSituation) //踢球
         {
             ROS_INFO("AtShootSituation");
@@ -756,29 +934,58 @@ public:
         if(m_strategy_->selected_action_ == No_Action)
         {
             ROS_INFO("No_Action");
-            m_plan_.m_behaviour_.app_vx_ = 0.0;
-            m_plan_.m_behaviour_.app_vy_ = 0.0;
-            m_plan_.m_behaviour_.app_w_  = 0.0;
+            m_plan_.move2Positionwithobs_noball(robot_pos_);
         }
     }
-
 
     void setEthercatCommond()
     {
         nubot_common::VelCmd command;  // 最后是解算出来的结果
         float vx,vy,w;
-        vx = m_plan_.m_behaviour_.app_vx_;
-        vy = m_plan_.m_behaviour_.app_vy_;
-        w  = m_plan_.m_behaviour_.app_w_;
-        m_plan_.m_behaviour_.last_app_vx_ = m_plan_.m_behaviour_.app_vx_;
-        m_plan_.m_behaviour_.last_app_vy_ = m_plan_.m_behaviour_.app_vy_;
-        m_plan_.m_behaviour_.last_app_w_  = m_plan_.m_behaviour_.app_w_;
-        m_plan_.m_behaviour_.app_vx_ = 0;
-        m_plan_.m_behaviour_.app_vy_ = 0;
-        m_plan_.m_behaviour_.app_w_  = 0;
-        command.Vx = vx ;
-        command.Vy = vy ;
-        command.w  = w  ;
+//        vx = m_plan_.m_behaviour_.app_vx_;
+//        vy = m_plan_.m_behaviour_.app_vy_;
+//        w  = m_plan_.m_behaviour_.app_w_;
+//        m_plan_.m_behaviour_.last_app_vx_ = m_plan_.m_behaviour_.app_vx_;
+//        m_plan_.m_behaviour_.last_app_vy_ = m_plan_.m_behaviour_.app_vy_;
+//        m_plan_.m_behaviour_.last_app_w_  = m_plan_.m_behaviour_.app_w_;
+        vx = (m_plan_.m_behaviour_.app_vx_+m_plan_.m_behaviour_.last_app_vx_)/2;
+        vy = (m_plan_.m_behaviour_.app_vy_+m_plan_.m_behaviour_.last_app_vy_)/2;
+        w  = (m_plan_.m_behaviour_.app_w_+m_plan_.m_behaviour_.last_app_w_)/2;
+
+//        if(m_plan_.m_behaviour_.app_w_ > 0 && m_plan_.m_behaviour_.app_w_ < MINW)
+//        {
+//          m_plan_.m_behaviour_.app_w_ = MINW;
+//        }
+//        if(m_plan_.m_behaviour_.app_w_ < 0 && m_plan_.m_behaviour_.app_w_ > -MINW)
+//        {
+//          m_plan_.m_behaviour_.app_w_ = -MINW;
+//        }
+
+        double sqare2 = vx*vx + vy*vy;
+        if(sqare2 > MAXVEL*MAXVEL)
+        {
+            vx = vx*MAXVEL/sqrt(sqare2);
+            vy = vy*MAXVEL/sqrt(sqare2);
+        }
+        m_plan_.m_behaviour_.last_app_vx_ = vx;
+        m_plan_.m_behaviour_.last_app_vy_ = vy;
+        m_plan_.m_behaviour_.last_app_w_  = w;
+        m_plan_.m_behaviour_.clearBehaviorState();
+#ifdef SIMULATION
+        command.Vx = vx;
+        command.Vy = vy;
+        command.w  = w;
+#else
+        command.Vx = -vy * 20;
+        command.Vy = vx * 20;
+        command.w  = w * 1400;
+#endif
+        if(command.Vx==0 && command.Vy==0 && command.w==0)
+        {
+            command.stop_ = true;
+        }
+        ROS_INFO("V: %d, %d, %d", command.Vx, command.Vy, command.w);
+        ROS_INFO("pos: %f, %f", robot_pos_.x_, robot_pos_.y_);
         motor_cmd_pub_.publish(command);
 
         //(60*vx*16)/(12.7*PI);
@@ -789,11 +996,19 @@ public:
     {
         nubot_common::Shoot shoot;
         nubot_common::BallHandle dribble;
+#ifdef SIMULATION
         shoot.request.strength = strength;
+#else
+        shoot.request.strength = 6.0;
+#endif
         shoot.request.ShootPos = ShootPos;
         shoot_client_.call(shoot);
         dribble.request.enable = 0;
         ballhandle_client_.call(dribble);
+        if(shoot.response.ShootIsDone == true)
+        {
+            isdribble[world_model_info_.AgentID_-1] = false;
+        }
     }
 
     bool isBallHandle(int id)
@@ -808,16 +1023,17 @@ public:
 #endif
     }
 
-#ifdef THREEPLAYER
-    void pubStrategyInfo()
-    {
-        nubot_common::StrategyInfo strategy_info;       // 这个消息的定义可以根据个人需要进行修改
-        strategy_info.header.stamp = ros::Time::now();
-        strategy_info.AgentID     = world_model_info_.AgentID_;
+//#ifdef THREEPLAYER
+//    void pubStrategyInfo()
+//    {
+//        nubot_common::StrategyInfo strategy_info;       // 这个消息的定义可以根据个人需要进行修改
+//        strategy_info.header.stamp = ros::Time::now();
+//        strategy_info.AgentID     = world_model_info_.AgentID_;
 
-        strategy_info_pub_.publish(strategy_info);
-    }
-#endif
+//        strategy_info_pub_.publish(strategy_info);
+//    }
+//#endif
+
     //! 中场于助攻在机器人动态传球时会出现穿过传球线的现象，在此矫正传球时候，中场与助攻的跑位点，防止传球失败
 /*    void coorrect_target(const DPoint & start_pt, const DPoint & end_pt, const DPoint & robot_pos, DPoint & target)
     {

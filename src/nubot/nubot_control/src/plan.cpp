@@ -48,44 +48,33 @@ void Plan::catchMotionlessBall()  //抓住静止的球
 }
 
 /***********postion*************/
-void Plan::positionAvoidObs(DPoint target, double angle_thres)    //朝向目标位置
+void Plan::positionAvoidObs(DPoint target, double maxw, double angle_thres)    //朝向目标位置
 {
-    Angle ori=target.angle()-robot_ori_;
-    m_behaviour_.setAppvx(0.0);
-    m_behaviour_.setAppvy(0.0);
-    double tmp=ori.radian_-robot_ori_.radian_;
-    if(fabs(tmp)>angle_thres)
-        m_behaviour_.rotate2AbsOrienation(KA_MOVE,KB_MOVE,ori.radian_,MAXW,robot_ori_.radian_, angle_thres);
-    else
-        m_behaviour_.setAppw(0);
+    DPoint br = target - robot_pos_;
+    positionAvoidObs2(br.angle().radian_, maxw, angle_thres);
 }
 
-void Plan::positionAvoidObs2(double targetangle, double angle_thres)    //朝向目标位置
+void Plan::positionAvoidObs2(double targetangle, double maxw, double angle_thres)    //朝向目标位置
 {
-    m_behaviour_.setAppvx(0.0);
-    m_behaviour_.setAppvy(0.0);
-    if(fabs(targetangle)>angle_thres)
-        m_behaviour_.rotate2AbsOrienation(KA_MOVE,KB_MOVE,targetangle,MAXW,robot_ori_.radian_, angle_thres);
+    if(fabs(targetangle-robot_ori_.radian_)>angle_thres)
+        m_behaviour_.rotate2AbsOrienation(KA_MOVE,KB_MOVE,targetangle,maxw,robot_ori_.radian_, angle_thres);
     else
         m_behaviour_.setAppw(0);
 }
 
 void Plan::move2Positionwithobs_noball(DPoint target, double distance_thres, float maxvel, float maxacc, bool avoid_ball)  //移动到目标位置
 {
-
     if(fabs(target.distance(robot_pos_))>=distance_thres)
     {
         m_subtargets_.robot_pos_=robot_pos_;
         m_subtargets_.ball_pos_=ball_pos_;
         m_subtargets_.subtarget(target, robot_pos_, avoid_ball);
         m_behaviour_.move2Position(KA_MOVE,KB_MOVE,m_subtargets_.subtargets_pos_,maxvel,robot_pos_,robot_ori_);
-        m_behaviour_.accelerateLimit();
     }
     else
     {
         m_behaviour_.setAppvx(0.0);
         m_behaviour_.setAppvy(0.0);
-        m_behaviour_.setAppw(0);
     }
 }
 
@@ -169,7 +158,7 @@ int Plan::oppneartargetid(DPoint target)
 {
     double max_dist = INF;
     int max_id = 1;
-    for(int i=0; i<OPP_TEAM; ++i)
+    for(int i=0; i<world_model_->Opponents_.size(); ++i)
     {
         if(target.distance(world_model_->Opponents_[i]) < OBLE_RADIUS/2)
         {

@@ -135,3 +135,112 @@ bool FieldInformation::isOurField(DPoint world_pt)
 
     return rtvl;
 }
+
+bool FieldInformation::isInInterRect(DPoint world_pt,double shrink)      // 是否在场地内
+{
+    return (world_pt.x_>xline_[6]-shrink &&
+            world_pt.x_<xline_[0]+shrink &&
+            world_pt.y_>yline_[5]-shrink &&
+            world_pt.y_<yline_[0]+shrink);
+}
+
+bool FieldInformation::isInOuterRect(DPoint world_pt,double shrink)      // 是否在场地外
+{
+    return (world_pt.x_<xline_[6]-shrink ||
+            world_pt.x_>xline_[0]+shrink ||
+            world_pt.y_<yline_[5]-shrink ||
+            world_pt.y_>yline_[0]+shrink);
+}
+
+
+bool FieldInformation::isOppPenalty(DPoint world_pt)     //是否在我方（对方）大禁区
+{
+    bool rtvl = false;
+    static bool inopppenalty = false;
+
+    if(!inopppenalty)
+    {
+        if(world_pt.x_ > opp_penaltyarea_[1].x_ && world_pt.x_ < opp_penaltyarea_[0].x_ &&
+           world_pt.y_ > opp_penaltyarea_[2].y_ && world_pt.y_ < opp_penaltyarea_[1].y_)
+        {
+            inopppenalty = true;
+        }
+        else
+            inopppenalty = false;
+    }
+    else if(inopppenalty)
+    {
+        if(world_pt.x_ > (opp_penaltyarea_[1].x_ - simLOCATIONERROR) && world_pt.x_ < (opp_penaltyarea_[0].x_ + simLOCATIONERROR) &&
+           world_pt.y_ > (opp_penaltyarea_[2].y_ - simLOCATIONERROR) && world_pt.y_ < (opp_penaltyarea_[1].y_ + simLOCATIONERROR))
+        {
+            inopppenalty = true;
+        }
+        else
+            inopppenalty = false;
+    }
+
+    rtvl =  inopppenalty;
+    return rtvl;
+}
+
+bool FieldInformation::isOurPenalty(DPoint world_pt)
+{
+    bool rtvl = false;
+    static bool inourpenalty = false;
+
+    if(!inourpenalty)
+    {
+        if(world_pt.x_ < our_penaltyarea_[1].x_ && world_pt.x_ > our_penaltyarea_[0].x_ &&
+           world_pt.y_ > our_penaltyarea_[2].y_ && world_pt.y_ < our_penaltyarea_[1].y_)
+        {
+            inourpenalty = true;
+        }
+        else
+            inourpenalty = false;
+    }
+    else if(inourpenalty)
+    {
+        if(world_pt.x_ < (our_penaltyarea_[1].x_ +simLOCATIONERROR) && world_pt.x_ > (our_penaltyarea_[0].x_ -simLOCATIONERROR) &&
+           world_pt.y_ > (our_penaltyarea_[2].y_-simLOCATIONERROR) &&  world_pt.y_ < (our_penaltyarea_[1].y_+simLOCATIONERROR))
+        {
+            inourpenalty = true;
+        }
+        else
+            inourpenalty = false;
+    }
+
+    rtvl =  inourpenalty;
+    return rtvl;
+}
+
+bool FieldInformation::isOurArea(DPoint world_pt)        //是否在我方（对方）小禁区
+{
+    bool rtvl = false;
+    static bool inourarea = false;
+
+    if(!inourarea)
+    {
+        if(world_pt.x_ < our_goalarea_[1].x_ && world_pt.x_ > our_goalarea_[0].x_ &&
+           world_pt.y_ > our_goalarea_[2].y_ && world_pt.y_ < our_goalarea_[1].y_)
+        {
+            inourarea = true;
+        }
+        else
+            inourarea = false;
+    }
+    else if(inourarea)
+    {
+        if(world_pt.x_ < (our_goalarea_[1].x_+simLOCATIONERROR) && world_pt.x_ > (our_goalarea_[0].x_ -simLOCATIONERROR) &&
+           world_pt.y_ > (our_goalarea_[2].y_-simLOCATIONERROR) &&  world_pt.y_ < (our_goalarea_[1].y_+simLOCATIONERROR))
+        {
+            inourarea = true;
+        }
+        else
+        {
+            inourarea = false;
+        }
+    }
+
+    rtvl =  inourarea;
+    return rtvl;
+}

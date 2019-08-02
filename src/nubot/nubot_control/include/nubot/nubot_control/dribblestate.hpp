@@ -11,18 +11,18 @@ public:
   DribbleState()
       :is_dribble_(false)
   {
-  };
+  }
 
   void reset()
   {
       is_dribble_ = false;
-  };
+  }
 
   void set(const nubot::DPoint &_pos_satrt)
   {
       is_dribble_ = true;
       satrt_point_ = _pos_satrt;
-  };
+  }
   void update( const bool &_is_dribble, const nubot::DPoint &_pos_robot, const nubot::DPoint &_ball)
   {
 
@@ -36,7 +36,7 @@ public:
           reset();
       else if( !is_dribble_ )
           set(_pos_robot);*/
-  };
+  }
 
   nubot::DPoint limitWithinCircle( const nubot::DPoint &_point_in, const int _radius = 300)
   {
@@ -44,7 +44,7 @@ public:
 		  return _point_in;
 	  else
           return satrt_point_ + (_point_in-satrt_point_) *( _radius/(_point_in-satrt_point_).norm() );
-  };
+  }
 };
 
 #endif

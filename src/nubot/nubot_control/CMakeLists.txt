@@ -65,6 +65,10 @@ add_executable(nubot_control_node src/nubot_control.cpp
                                   src/assistrole.cpp
                                   src/passiverole.cpp
                                   src/staticpass.cpp
+                                  src/normalgame.cpp
+                                  src/location.cpp
+                                  src/avoidance.cpp
+                                  src/passing.cpp
 )
 add_dependencies(nubot_control_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(nubot_control_node

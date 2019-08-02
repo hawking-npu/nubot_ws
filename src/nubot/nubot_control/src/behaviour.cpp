@@ -73,17 +73,12 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
         {
             app_vx_ = tmp.x_;
             app_vy_ = tmp.y_;
-            accelerateLimit();
         }
         else if(past_robot_vel.size() == 1)
         {
             vel1=past_robot_vel[0];
             app_vx_ = basicPDControl(pval,dval,tmp.x_,vel1.Vx,maxvel);
             app_vy_ = basicPDControl(pval,dval,tmp.y_,vel1.Vy,maxvel);
-            //app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel1.Vx)/update_T;
-            //app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel1.Vy)/update_T;
-            accelerateLimit();
-            //cout<<"past vel0: "<<vel1.Vx<<' '<<vel1.Vy<<endl;
         }
         else
         {
@@ -91,12 +86,8 @@ void Behaviour::move2Position(float pval, float dval, DPoint target, float maxve
             vel2=past_robot_vel[1];
             app_vx_ = basicPDControl2(pval,dval,tmp.x_,vel1.Vx,vel2.Vx,maxvel);
             app_vy_ = basicPDControl2(pval,dval,tmp.y_,vel1.Vy,vel2.Vy,maxvel);
-            //app_vx_ = pval*tmp.x_ + dval*(tmp.x_-vel2.Vx*vel2.Vx+vel1.Vx)/(update_T*update_T);
-            //app_vy_ = pval*tmp.y_ + dval*(tmp.y_-vel2.Vy*vel2.Vy+vel1.Vy)/(update_T*update_T);
-            accelerateLimit();
-            //cout<<"past vel0: "<<vel1.Vx<<' '<<vel1.Vy<<endl;
-            //cout<<"past vel1: "<<vel2.Vx<<' '<<vel2.Vy<<endl;
         }
+        accelerateLimit();
     }
     else
     {
@@ -134,14 +125,20 @@ void Behaviour::rotate2AbsOrienation(float pval, float dval, float orientation,f
         {
             vel1=past_robot_vel[0];
             app_w_ = basicPDControl(pval,dval,tmp,vel1.w,maxw);
-            //app_w_ = pval*tmp + dval*(tmp-vel1.w)/update_T;
         }
         else
         {
             vel1=past_robot_vel[0];
             vel2=past_robot_vel[1];
             app_w_ = basicPDControl2(pval,dval,tmp,vel1.w,vel2.w,maxw);
-            //app_w_ = pval*tmp + dval*(tmp-vel2.w*vel2.w+vel1.w)/(update_T*update_T);
+        }
+        if(app_w_ > maxw)
+        {
+            app_w_ = maxw;
+        }
+        else if(app_w_ < -maxw)
+        {
+            app_w_ = -maxw;
         }
     }
     else
@@ -173,14 +170,9 @@ void Behaviour::setTurn(bool isTurn) { isTurn_=isTurn;}
 
 void Behaviour::clearBehaviorState()
 {
-    app_vx_=0;
-    app_vy_=0;
-    app_w_=0;
-    isTurn_=false;
-    last_app_vx_=0;
-    last_app_vy_=0;
-    last_app_w_=0;
-    last_speed=0;
+    app_vx_=0.0;
+    app_vy_=0.0;
+    app_w_=0.0;
 }
 
 void Behaviour::accelerateLimit(const double &_acc_thresh/* = 20*/, const bool & use_convected_acc/* 是否使用传送过来的加速度*/)

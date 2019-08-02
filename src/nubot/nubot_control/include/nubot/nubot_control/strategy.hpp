@@ -24,6 +24,7 @@ public:
    void selectAction();
    void process();
    bool passStrategy();
+
 public:
     RoleAssignment    RoleAssignment_;
     World_Model_Info * world_model_;

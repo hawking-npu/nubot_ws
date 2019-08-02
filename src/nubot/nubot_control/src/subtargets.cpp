@@ -57,6 +57,11 @@ void Subtargets::subtarget(DPoint target, DPoint robot_pos_, bool avoid_ball)
     //坐标转换
     //robot_pos_
 
+  if(target.distance(robot_pos_)<10.0)
+  {
+      subtargets_pos_ = target;
+      return;
+  }
     DPoint tran_ob;
     std::vector<nubot::DPoint> myObstacles_;//自身坐标下，筛选保留x>0的点
     std::vector<nubot::DPoint> _myObstacles;

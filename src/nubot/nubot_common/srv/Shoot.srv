@@ -1,4 +1,4 @@
-float32 strength
-int64 ShootPos
+int32 strength
+int32 ShootPos
 ---
-int64 ShootIsDone
+int32 ShootIsDone

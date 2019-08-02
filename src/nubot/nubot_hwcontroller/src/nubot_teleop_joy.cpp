@@ -50,7 +50,7 @@ TeleopNubot::TeleopNubot()
 {
     joy_sub = n.subscribe<sensor_msgs::Joy>("joy", 2, &TeleopNubot::joyCallback, this);
     vel_pub = n.advertise<nubot_common::VelCmd>("/nubotcontrol/velcmd", 10);
-    vel_publish_timer_ = n.createTimer(ros::Duration(0.03),&TeleopNubot::publish,this);
+    vel_publish_timer_ = n.createTimer(ros::Duration(0.05),&TeleopNubot::publish,this);
 
 //    ball_sub= n.subscribe<nubot_common::OminiVisionInfo>("/omnivision/OminiVisionInfo", 2, &TeleopNubot::ballCallback, this);
     ballhandle_client_ =  n.serviceClient<nubot_common::BallHandle>("BallHandle");
@@ -108,6 +108,7 @@ void TeleopNubot::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
         nubot_common::BallHandle b;
         b.request.enable=BallHandleEnable;
         ballhandle_client_.call(b);
+
     }
 
     // velocity

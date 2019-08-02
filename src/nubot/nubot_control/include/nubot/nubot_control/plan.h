@@ -6,6 +6,8 @@
 #include "nubot/nubot_control/subtargets.h"
 #include "nubot/nubot_control/behaviour.hpp"
 #include "nubot/nubot_control/world_model_info.h"
+#include "nubot/nubot_control/nubot_control.h"
+#include "nubot/nubot_control/dribblestate.hpp"
 
 using namespace std;
 namespace nubot{
@@ -18,12 +20,12 @@ public:
         void catchBall();
         void catchBallForCoop();
         void catchBallSlowly();
-        void catchMovingBall();
-        void catchMotionlessBall();
+        void catchMovingBall(); // 移动的球
+        void catchMotionlessBall(); // 静止的球
 
         /***********postion*************/
-        void positionAvoidObs(DPoint target, double angle_thres = 5.0/180.0/*float theta, float stopdis, float stoptheta*/);
-        void positionAvoidObs2(double targetangle, double angle_thres = 5.0/180.0);
+        void positionAvoidObs(DPoint target, double maxw = MAXW, double angle_thres = 5.0/180.0/*float theta, float stopdis, float stoptheta*/);
+        void positionAvoidObs2(double targetangle, double maxw = MAXW, double angle_thres = 5.0/180.0);
         void driblleControl(DPoint target,double acc,double sacc,double lvel,double maxvel = MAXVEL);
         //void move2Positionwithobs(DPoint target);  // move to the target point with obstacles avoidance
         void move2Positionwithobs_noball(DPoint target, double distance_thres = 10.0, float maxvel = MAXVEL, float maxacc = max_acc, bool avoid_ball=false);
@@ -60,6 +62,7 @@ public:
         World_Model_Info * world_model_;
         Behaviour  m_behaviour_;
         Subtargets m_subtargets_;
+        DribbleState * m_dribble_;
 
         float kp;
         float kalpha;
