@@ -23,7 +23,7 @@ ScanPoints::ScanPoints(OmniImage & _omni_img)
 	}
 
     interval_=6;
-	ratio_=1;
+    ratio_=1;
 
     /*! @brief  guarantee the scanpoints in the image */
     DPoint2i relative_pt= DPoint2i(ratio_*ImgROI.radius_,ratio_*ImgROI.radius_);

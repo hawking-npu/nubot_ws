@@ -21,7 +21,7 @@ Location::~Location()
 {
 }
 
-void Location::process(int n, int usednum[])
+void Location::process(int usednum[], int n)
 {
     DPoint usedPoints[n];
     for(int i=0; i<n; ++i)
@@ -46,14 +46,18 @@ void Location::process(int n, int usednum[])
     addusedPoints[m] = DPoint(0.0, 0.0);
     m++;
 
-    if(CatchBall())
+    if(m_dribble_->is_dribble_ == false)
+    {
+        m_plan_->catchMotionlessBall(ball_pos_);
+    }
+    else
     {
         if(flag_location < m)
         {
             target = addusedPoints[flag_location];
             ROS_INFO("all_points = %d  flag_location = %d", m, flag_location);
             br = target - robot_pos_;
-            //m_plan_->positionAvoidObs2(br.angle().radian_, MAXW, 3.0*DEG2RAD);
+            //m_plan_->positionAvoidObs2(br.angle().radian_, MAXW, 5.0*DEG2RAD);
             m_plan_->m_behaviour_.app_w_ = MAXW;
 //            if(m_plan_->m_behaviour_.app_vx_ < 10.0 && fabs(m_plan_->m_behaviour_.app_w_) > 20*DEG2RAD)
 //            {
@@ -68,10 +72,13 @@ void Location::process(int n, int usednum[])
                 flag_location++;
                 flag_face2target = false;
             }
-            if(flag_face2target == true)
+            if(flag_face2target == true)////!!!!!!
             {
                 m_plan_->positionAvoidObs2(br.angle().radian_, 5.0*DEG2RAD);
-                m_plan_->move2Positionwithobs_noball(target);
+                m_plan_->move2Positionwithobs_noball(target,10.0,2.0*MAXVEL);
+                m_plan_->m_behaviour_.app_vx_ *= 2;
+                m_plan_->m_behaviour_.app_vy_ *= 2;
+                //m_plan_->m_behaviour_.app_w_ = 0.0;////!!!!!!
             }
         }
         else
@@ -80,40 +87,21 @@ void Location::process(int n, int usednum[])
         }
         ROS_INFO("target: (%f, %f)", target.x_, target.y_);
     }
-}
-
-bool Location::CatchBall()
-{
-    if(m_dribble_->is_dribble_ != true)
-    {
-        if(world_model_->BallInfo_[world_model_->AgentID_-1].isLocationKnown() == false)
-        {
-            ROS_INFO("CanNotSeeBall");
-            m_plan_->m_behaviour_.app_vx_ = -10.0;
-            m_plan_->m_behaviour_.app_vy_ = 0.0;
-            m_plan_->m_behaviour_.app_w_  = 0.0;
-        }
-        else
-        {
-            ROS_INFO("location Catch_Ball");
-            target = ball_pos_;
-            br = ball_pos_ - robot_pos_;
-
-            m_plan_->positionAvoidObs2(br.angle().radian_, MAXW, 3*DEG2RAD);
-            if(robot_pos_.distance(ball_pos_) < LIMITDRIBLLEDIS + 20.0)
-            {
-                if(fabs(br.angle().radian_-robot_ori_.radian_)<3*DEG2RAD)
-                {
-                    m_plan_->move2Positionwithobs_noball(ball_pos_);
-                }
-            }
-            else
-            {
-                m_plan_->move2Positionwithobs_noball(ball_pos_);
-            }
-        }
-    }
-    return m_dribble_->is_dribble_;
+//    m_plan_->m_behaviour_.app_vx_ *= 2;
+//    m_plan_->m_behaviour_.app_vy_ *= 2;
+//    double square2 = m_plan_->m_behaviour_.app_vx_*m_plan_->m_behaviour_.app_vx_ + m_plan_->m_behaviour_.app_vy_*m_plan_->m_behaviour_.app_vy_;
+//    if(square2>MAXVEL*MAXVEL)
+//    {
+//        m_plan_->m_behaviour_.app_vx_ *= MAXVEL*MAXVEL/square2;
+//        m_plan_->m_behaviour_.app_vy_ *= MAXVEL*MAXVEL/square2;
+//    }
+//    double up_speed = 90.0;
+//    double down_speed = 20.0;
+//    if(square2 < up_speed*up_speed && square2 > down_speed*down_speed)
+//    {
+//        m_plan_->m_behaviour_.app_vx_ *= up_speed*up_speed/square2;
+//        m_plan_->m_behaviour_.app_vy_ *= up_speed*up_speed/square2;
+//    }
 }
 
 void Location::update()

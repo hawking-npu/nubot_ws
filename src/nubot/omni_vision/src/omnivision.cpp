@@ -127,9 +127,9 @@ public:
         tranfer_     = new Transfer(calibration_path+"/"+ss.str()+"/mirror_calib.xml",*imginfo_);
         scanpts_     = new ScanPoints(*imginfo_);
         whites_      = new Whites(*scanpts_,*tranfer_);
-        optimise_    = new Optimise(calibration_path+"/errortable.bin",
-                                    calibration_path+"/Diff_X.bin",
-                                    calibration_path+"/Diff_Y.bin",
+        optimise_    = new Optimise(calibration_path+"/"+ss.str()+"/errortable.bin",
+                                    calibration_path+"/"+ss.str()+"/Diff_X.bin",
+                                    calibration_path+"/"+ss.str()+"/Diff_Y.bin",
                                     *tranfer_);
         glocation_   = new Globallocalization(*optimise_);
         odometry_    = new Odometry();
@@ -138,11 +138,11 @@ public:
         ball_finder_ = new BallFinder(*tranfer_);
         colorsegment_= new ColorSegment(calibration_path+"/"+ss.str()+"/CTable.dat");
 
-        is_show_ball_=false;
-        is_show_obstacles_=false;
-        is_show_whites_=false;
+        is_show_result_=true;
+        is_show_ball_=true;
+        is_show_obstacles_=true;
+        is_show_whites_=true;
         is_show_scan_points=false;
-        is_show_result_=false;
         is_robot_stuck_ = false;
 
         robot.isglobal_=true;
@@ -175,11 +175,12 @@ public:
     configure(const omni_vision::OmniVisionConfig & config, uint32_t level)
     {
         ROS_INFO("Reconfigure request received");
+        is_show_result_     = config.show;
         is_show_ball_       = config.ball;
         is_show_whites_     = config.white;
         is_show_obstacles_  = config.obstacle;
         is_show_scan_points = config.scan;
-        is_show_result_     = config.show;
+//        ROS_INFO("screen:%d, ball:%d, whites:%d, obs:%d, scan:%d", is_show_result_, is_show_ball_, is_show_whites_, is_show_obstacles_, is_show_scan_points);
         int  obstacle_thres = config.obsthres;
         double obstacle_length_thres = config.obs_length_thres;
         double obstacle_basic_thres = config.obs_basic_thres;
@@ -203,7 +204,7 @@ public:
         robot_info_.isvalid       = is_power_off_;
         if(is_show_result_)
         {
-            ROS_INFO("pos(%.f, %.f, %d, %.1f, %.1f, %.1f, %d ,%d, %d)",
+            ROS_INFO("[SELF](x:%.f, y:%.f, a:%d, vx:%.1f, vy:%.1f, w:%.1f, wp:%d ,g:%d, poff:%d)",
                      robot.final_location_.x_,robot.final_location_.y_,int(robot.angle_.degree()),robot.worldvtrans_.x_,
                      robot.worldvtrans_.y_,robot_info_.vrot,int(whites_->img_white_.size()),int(robot.isglobal_),int(is_power_off_));
         }
@@ -216,7 +217,7 @@ public:
         ball_info_.real_pos.radius = ball_finder_->get_ball_real_loc().radius_;
         if(is_show_result_)
         {
-            ROS_INFO("ball(%.f, %.f, %.1f, %.1f ,%d ,%d)",ball_info_.pos.x,ball_info_.pos.y, ball_info_.velocity.x,
+            ROS_INFO("[BALL](x:%.f, y:%.f, vx:%.1f, vy:%.1f, k:%d ,as:%d)",ball_info_.pos.x,ball_info_.pos.y, ball_info_.velocity.x,
                      ball_info_.velocity.y,ball_info_.pos_known, ball_finder_->ball_area_.area_size_);
         }
         obstacles_info_.header.stamp= ros::Time::now();
@@ -242,7 +243,7 @@ public:
             for(int i = 0 ;i < OBS_VALUABLE_NUMBER ;i++)
             {
                 if (i<obstacles_info_.pos.size())
-                    ROS_INFO("obs_omni(%.f, %.f)",obstacles_info_.pos[i].x,obstacles_info_.pos[i].y);
+                    ROS_INFO("[OBS-%d](%.f, %.f)", i, obstacles_info_.pos[i].x,obstacles_info_.pos[i].y);
                 //  else
                 //       ROS_INFO("obs_omni(%.f, %.f)",-10000.0,-10000.0);
             }
@@ -273,7 +274,7 @@ public:
             ROS_WARN("don't detect the white points");
             return ;
         }
-        if(!is_power_off_)
+        if(is_power_off_)
             is_restart_=true;
         if(is_restart_)
         {
@@ -288,12 +289,15 @@ public:
         }
         else
         {
+//
             DPoint delta_loc=odometry_->getWorldLocaton();
             Angle  delta_ang=odometry_->getDeltaAngle();
             odometry_->clear(robot.angle_);
             robot.realvtrans_       = odometry_->getRealVelocity();
             robot.worldvtrans_      = odometry_->getWorldVelocity();
             robot.angular_velocity_ = odometry_->getAngularVelocity();
+//            ROS_INFO("[real]%f,%f [world]%f,%f [angular]%f", robot.realvtrans_.x_, robot.realvtrans_.y_, robot.worldvtrans_.x_, robot.worldvtrans_.y_, robot.angular_velocity_);
+//            ROS_INFO("[delta_loc]%f, %f, [delta_ang]%f", delta_loc.x_, delta_loc.y_, delta_ang.radian_);
             location_->process(whites_->weights_,whites_->robot_white_,robot.visual_location_,robot.angle_,delta_loc,delta_ang);
         }
         PPoint correct_pt = PPoint(tranfer_->get_offset().angle(),tranfer_->get_offset().norm());
@@ -306,8 +310,8 @@ public:
                 ROS_INFO("Field.bmp is empty");
             cv::Mat image  = field_image_.clone();
             cv::Mat orgnal = imginfo_->getBGRImage().clone();
-            static double length = 640;
-            static double width  = 430;
+            static double length = 700;
+            static double width  = 500;
 //            if(WIDTH_RATIO<1)
 //            {
 //                length = 1920;
@@ -359,7 +363,7 @@ public:
         ros::Duration duration  = ros::Time::now() - time_before;
         ros::Duration duration1 = ros::Time::now() - start;
         time_before = ros::Time::now();
-        ROS_INFO("omni_time: %d %d %d",int(1.0/duration.toSec()),int(1.0/duration1.toSec()),int(whites_->img_white_.size()));
+//        ROS_INFO("omni_time: %d %d %d",int(1.0/duration.toSec()),int(1.0/duration1.toSec()),int(whites_->img_white_.size()));
     }
 
     void

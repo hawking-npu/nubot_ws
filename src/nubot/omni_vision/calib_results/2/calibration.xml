@@ -3,17 +3,17 @@
 <Color_Calib>
   <_>
     <poly_pts>
-      156 176 196 158 189 255 157 203</poly_pts>
+      176 163 222 187 176 254 127 202</poly_pts>
     <line_pts>
       0 255</line_pts></_>
   <_>
     <poly_pts>
-      118 50 169 77 159 192 123 191</poly_pts>
+      80 20 167 29 169 161 92 160</poly_pts>
     <line_pts>
-      0 510</line_pts></_>
+      0 255</line_pts></_>
   <_>
     <poly_pts>
-      226 226 286 226 286 286 226 286</poly_pts>
+      113 113 143 113 143 143 113 143</poly_pts>
     <line_pts>
-      0 510</line_pts></_></Color_Calib>
+      0 255</line_pts></_></Color_Calib>
 </opencv_storage>

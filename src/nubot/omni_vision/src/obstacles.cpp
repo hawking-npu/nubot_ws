@@ -285,7 +285,6 @@ void Obstacles::showObstacles(cv::Mat & _img,DPoint _robot_loc, Angle _angle, in
             cv::circle(_img,cv::Point(int((world_obstacles_[i].x_ + filed_length/2.0)*Xrate),
                                       int((filed_width -(world_obstacles_[i].y_ +filed_width/2.0))*Yrate)),
                        3,cv::Scalar(0,0,255),5,8,0);
-            ROS_INFO("idx obstacle detected");
           }
     }
     imshow("real_info",_img);

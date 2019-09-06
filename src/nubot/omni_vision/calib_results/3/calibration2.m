@@ -47,7 +47,7 @@ for number=1:10
 %p5,p6,p7: orientation
 popsize=1000;
 T=100;%s
-range = [ middle*.96 1.5 .0065 -fieldlength/2  -fieldwidth/2 -0.5;middle*1.04 1.8 .0075 fieldlength/2 fieldwidth/2  0.5]
+range = [ middle*.96 1.5 .0065 -fieldlength/2  -fieldwidth/2 -0.5;middle*1.04 3.0 .0075 fieldlength/2 fieldwidth/2  0.5]
 disp('start mirror parameter optimization...')
 options = gaoptimset( 'PopulationSize',popsize,...
     'PopInitRange',range,...

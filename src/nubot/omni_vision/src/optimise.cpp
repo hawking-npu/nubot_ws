@@ -1,14 +1,15 @@
 #include "nubot/omni_vision/optimise.h"
 #include <fstream>
+#include <ros/ros.h>
 using namespace nubot;
 
 
 Optimise::Optimise(std::string errorpath,std::string diffpathX,std::string diffpathY,Transfer & _transfercoor)
 {
-    startx_ =-fildinfo_.xline_[0]-100;
-    endx_   = fildinfo_.xline_[0]+100;
-    starty_ =-fildinfo_.yline_[0]-100;
-    endy_   = fildinfo_.yline_[0]+100;
+    startx_ =-fildinfo_.xline_[0]-50;
+    endx_   = fildinfo_.xline_[0]+50;
+    starty_ =-fildinfo_.yline_[0]-50;
+    endy_   = fildinfo_.yline_[0]+50;
     xlong_  =endx_-startx_+1;
     ylong_  =endy_-starty_+1;
 
@@ -16,6 +17,7 @@ Optimise::Optimise(std::string errorpath,std::string diffpathX,std::string diffp
     Diff_X=new double[xlong_*ylong_];
     Diff_Y=new double[xlong_*ylong_];
 
+//    ROS_INFO("%s", errorpath.c_str());
     std::ifstream ErrorTable_Read(errorpath.c_str(), std::ios::binary|std::ios::in);
     ErrorTable_Read.read((char *)DistoMarkLine,sizeof(double)*xlong_*ylong_);
     ErrorTable_Read.close();
@@ -48,15 +50,21 @@ Optimise::caculateErrors(const vector<double>& weights,const vector<DPoint> & po
         DPoint relpts = DPoint(polar_pts[i].x_*cosphi-polar_pts[i].y_*sinphi,
                                polar_pts[i].x_*sinphi+polar_pts[i].y_*cosphi);
         DPoint worldpts=pt+relpts;
-        if((std::abs((int)(worldpts.y_))<=endy_)&&(std::abs((int)(worldpts.x_))<=endx_))
-            templut = DistoMarkLine[((int)(worldpts.y_)-starty_)*xlong_+(int)(worldpts.x_)-startx_];
+        if((std::abs((int)(worldpts.y_))<=endy_)&&(std::abs((int)(worldpts.x_))<=endx_)) {
+           templut = DistoMarkLine[((int)(worldpts.y_)-starty_)*xlong_+(int)(worldpts.x_)-startx_];
+//           ROS_INFO("%.f", templut);
+        }
         else
-            templut=500;
+//            templut=500;
+            templut=150;
         dist=(double)templut;
         double ef = c2+dist*dist;
         err+=weights[i]*(1-c2/ef);
     }
+//    ROS_INFO("%.f", err);
     return err;
+
+
 }
 
 void
@@ -87,7 +95,8 @@ Optimise::calculateGradient(const vector<double>& weights,const vector<DPoint> &
         if((std::abs((int)(worldpts.y_))<=endy_)&&(std::abs((int)(worldpts.x_))<=endx_))
             templut = DistoMarkLine[((int)(worldpts.y_)-starty_)*xlong_+(int)(worldpts.x_)-startx_];
         else
-            templut=500;
+//            templut=500;
+            templut=150;
         dist=(double)templut;
         double ef = c2+dist*dist;
         err_tmp+=weights[i]*(1-c2/ef);
@@ -116,14 +125,14 @@ Optimise::process(const vector<double>& weights,const vector<DPoint> &  whites_p
     double param[3]={0};
     double best_param[3] ={0};
     double grad [3]={0};  // Gradient
-    double stepwidth [3] = {4.0,4.0,0.1};
+    double stepwidth [3] = {1.0,1.0,0.1};
     static bool FirstOptimise=false;
     size_t niter(25);
     double min_error = 1e6;
     if(!FirstOptimise)
     {
-        stepwidth[0] = 16.0;
-        stepwidth[1] = 16.0;
+        stepwidth[0] = 4.0;
+        stepwidth[1] = 4.0;
         stepwidth[2] = 0.4;
         niter=50;
         FirstOptimise=true;
@@ -215,7 +224,8 @@ Optimise::analyse(const vector<double>& weights,const vector<DPoint> & polar_pts
         if((std::abs((int)(pos.y_))<=endy_)&&(std::abs((int)(pos.x_))<=endx_))
             templut = DistoMarkLine[((int)(pos.y_)-starty_)*xlong_+(int)(pos.x_)-startx_];
         else
-            templut=500;
+//            templut=500;
+            templut=150;
         dist=(double)templut;
         ddist=DPoint2d(0.0,0.0);
         err_tmp +=weights[i]*(1-c2/(c2+dist*dist));

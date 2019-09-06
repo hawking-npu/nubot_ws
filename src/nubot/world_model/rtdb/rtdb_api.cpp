@@ -114,17 +114,22 @@ int read_configuration(RTDBconf_agents *conf)
   int id, size, period;
   char type;
 
-    int agent_number;
-    char * environment;
-    if((environment = getenv("AGENT"))==NULL)
-    {
-        PERR("this agent number is not read by robot");
-        return -1;
-    }
-    agent_number = atoi(environment);
-    std::stringstream ss;
-    ss<<agent_number;
-    std::string ini_config_file="/home/jensen/nubot_ws/src/nubot/world_model/config/rtdb.ini";
+//    int agent_number;
+//    char * environment;
+//    if((environment = getenv("AGENT"))==NULL)
+//    {
+//        PERR("this agent number is not read by robot");
+//        return -1;
+//    }
+//    agent_number = atoi(environment);
+//    std::stringstream ss;
+//    ss<<agent_number;
+
+    std::stringstream env;
+    char * environment = getenv("HOME");
+    env<<environment;
+
+    std::string ini_config_file=env.str()+"/nubot_ws/src/nubot/world_model/config/rtdb.ini";
     if ((f_def = fopen(ini_config_file.c_str(), "r")) == NULL)
   {
     PERRNO("fopen");

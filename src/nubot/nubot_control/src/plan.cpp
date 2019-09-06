@@ -13,14 +13,14 @@ Plan::Plan()
 /***********catch ball***********/
 void Plan::catchBall()  //
 {
-    if(ball_vec_.norm()<10.0)
+    //if(ball_vec_.norm()<10.0)
     {
-        catchMotionlessBall();
+        catchMotionlessBall(ball_pos_);
     }
-    else
-    {
-        catchMovingBall();
-    }
+//    else
+//    {
+//        catchMovingBall();
+//    }
 }
 
 void Plan::catchBallForCoop()
@@ -37,14 +37,50 @@ void Plan::catchBallSlowly()  //缓慢向球移动，等球接近
     }
 }
 
-void Plan::catchMovingBall()  //抓住移动的球
+void Plan::catchMovingBall(double maxvel, double maxw)  //抓住移动的球
 {
     double time_robot2ball = robot_pos_.distance(ball_pos_)/MAXVEL;
-    move2Positionwithobs_noball(DPoint(ball_pos_.x_+ball_vec_.x_*time_robot2ball, ball_pos_.y_+ball_vec_.y_*time_robot2ball));
+    DPoint ball_pos_fur_ = DPoint(ball_pos_.x_+ball_vec_.x_*time_robot2ball, ball_pos_.y_+ball_vec_.y_*time_robot2ball);
+
+    if(m_dribble_->is_dribble_ != true)
+    {
+        DPoint br = ball_pos_ - robot_pos_;
+
+        positionAvoidObs2(br.angle().radian_, maxw, 5*DEG2RAD);
+        if(robot_pos_.distance(ball_pos_fur_) < LIMITDRIBLLEDIS)
+        {
+            if(fabs(br.angle().radian_-robot_ori_.radian_)<5*DEG2RAD)
+            {
+                move2Positionwithobs_noball(ball_pos_fur_,10.0,maxvel);
+            }
+        }
+        else
+        {
+            move2Positionwithobs_noball(ball_pos_fur_,10.0,maxvel);
+        }
+    }
 }
-void Plan::catchMotionlessBall()  //抓住静止的球
+
+void Plan::catchMotionlessBall(DPoint target, double maxvel, double maxw)  //抓住静止的球
 {
-    move2Positionwithobs_noball(ball_pos_);
+    if(m_dribble_->is_dribble_ != true)
+    {
+        ROS_INFO("Catch_Motionless_Ball (%f,%f)", target.x_, target.y_);
+        DPoint br = target - robot_pos_;
+
+        positionAvoidObs2(br.angle().radian_, maxw, 5*DEG2RAD);
+        if(robot_pos_.distance(target) < LIMITDRIBLLEDIS)
+        {
+            if(fabs(br.angle().radian_-robot_ori_.radian_)<5*DEG2RAD)
+            {
+                move2Positionwithobs_noball(target,10.0,maxvel);
+            }
+        }
+        else
+        {
+            move2Positionwithobs_noball(target,10.0,maxvel);
+        }
+    }
 }
 
 /***********postion*************/
@@ -160,10 +196,10 @@ int Plan::oppneartargetid(DPoint target)
     int max_id = 1;
     for(int i=0; i<world_model_->Opponents_.size(); ++i)
     {
-        if(target.distance(world_model_->Opponents_[i]) < OBLE_RADIUS/2)
-        {
-            continue;
-        }
+//        if(target.distance(world_model_->Opponents_[i]) < OBLE_RADIUS/2)
+//        {
+//            continue;
+//        }
         if(target.distance(world_model_->Opponents_[i]) < max_dist)
         {
             max_dist = target.distance(world_model_->Opponents_[i]);

@@ -57,13 +57,13 @@ const unsigned char  CTRL_PENALTY		=	47 ;
 const double          MAXWHELLVELOCITY = 432;
 const double          FRICONRATIO      = 0.85;
 
-const double          RADIUS = 30;
+const double          RADIUS = 20; //30
 const double          GEARREDUCTIONRATIO = 21.3571;
-const double          MAXVEL   =    100;//500;
+const double          MAXVEL   =    100*2.0;//500;
 const double          MAXW     =    SINGLEPI_CONSTANT*2.0/7.0; //SINGLEPI_CONSTANT/6.0;//15;
 const double          MINW     =    SINGLEPI_CONSTANT/12.0;//15;
 const double          Max_ObsVision = 10;
-const double          OBLE_RADIUS   = 30;
+const double          OBLE_RADIUS   = 10; //30
 const double          POSITION_LIMIT_VEL =  250;
 const double          CHASSISRADIUS =  20.3;   //cm the radius of chassiss
 const double          REDUCTIONRATIO = 12.0;  //   reduction gear ratio

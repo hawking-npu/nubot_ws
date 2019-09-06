@@ -1,0 +1,8 @@
+prefix=/home/lzz/nubot_ws/install
+
+Name: world_model
+Description: Description of world_model
+Version: 0.0.0
+Cflags: -I/home/lzz/nubot_ws/install/include
+Libs: -L/home/lzz/nubot_ws/install/lib -lworld_model
+Requires: dynamic_reconfigure message_filters message_generation roscpp rospy std_msgs std_srvs

@@ -1,0 +1,2 @@
+/usr/bin/ar qc /home/lzz/nubot_ws/devel/lib/librtdb.a  CMakeFiles/rtdb.dir/rtdb_api.cpp.o
+/usr/bin/ranlib /home/lzz/nubot_ws/devel/lib/librtdb.a

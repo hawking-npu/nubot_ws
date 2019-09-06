@@ -1,10 +1,10 @@
 #include "nubot/omni_vision/glocalization.h"
-
+#include "ros/ros.h"
 using namespace nubot;
 
 Globallocalization::Globallocalization(Optimise & _optimise)
 {
-	samples_.reserve(315);
+  samples_.reserve(165); //11*15
 	opti_=&_optimise;
 }
 
@@ -13,8 +13,8 @@ Globallocalization::rankErrorsforSamples(const std::vector<double> & _weights,co
 {
 	CV_Assert(_times<3&&_times>=0);
 	samples_.clear();
-	int startx = opti_->startx_+_times*35;  
-	int starty = opti_->starty_+_times*35;
+  int startx = opti_->startx_+_times*15;
+  int starty = opti_->starty_+_times*15;
 	int endx   = opti_->endx_;
 	int endy   = opti_->endy_;
 	location_err tmpLocErr;
@@ -23,12 +23,15 @@ Globallocalization::rankErrorsforSamples(const std::vector<double> & _weights,co
 	{                      
     for(int m=startx;m<=endx;m=m+50)
 		{
+
 			tmpLocErr.loction=DPoint(m,n);
 			tmpLocErr.ang=_angle;
 			tmpLocErr.error=opti_->caculateErrors(_weights,_white_pt,tmpLocErr.loction,_angle);
-	        samples_.push_back(tmpLocErr);
-		}
+      samples_.push_back(tmpLocErr);
+//      ROS_INFO("%d, %d: %.f", m, n, tmpLocErr.error);
+    }
 	}
+
 	if(_times==1)
 	{
     for (int n=starty;n<=endy;n=n+50)
@@ -51,6 +54,7 @@ Globallocalization::rankErrorsforSamples(const std::vector<double> & _weights,co
         tmpLocErr.error=opti_->caculateErrors(_weights,_white_pt,tmpLocErr.loction,_angle);
 		samples_.push_back(tmpLocErr);
 	}
+
 	if(_times==2)
 	{
     for (int n=starty;n<=endy;n=n+50)
@@ -143,5 +147,6 @@ Globallocalization::process(const std::vector<double> & _weights,const std::vect
 	}
 	_robotloction=tempglobalpos;
 	_angle=tempglobalangle;
+//  ROS_INFO("%d", IsGlobalAgain);
 	return IsGlobalAgain;
 }

@@ -15,9 +15,8 @@ public:
     Location();
     Location(World_Model_Info & _world_model, Plan & _plan, DribbleState & _dribble);
     ~Location();
-    void process(int n, int usednum[]);
+    void process(int usednum[], int n=5);
     void update();
-    bool CatchBall();
     void init();
 
 public:

@@ -79,18 +79,19 @@ Localization::process(const std::vector<double> & _weights,const std::vector<PPo
 	double referror=0.0;
 	static bool first_optimise=false;
 	static int cycles_since_reset=0;
-	if (numtrans>15)
+  if (numtrans>15){
         referror=opti_->process(_weights,real_white,_robotloction,_angle);
+  }
     if(numtrans>20)     //  if (internal_alternatives && lines.objectlist.size()>=10)
 	{
-		DPoint offsets [] = { DPoint(60.0,0.0), DPoint(0.0,60.0), DPoint(-60.0,0.0), DPoint(0.0,-60.0) };
+    DPoint offsets [] = { DPoint(20.0,0.0), DPoint(0.0,20.0), DPoint(-20.0,0.0), DPoint(0.0,-20.0) };
 		if(!first_optimise)
 		{
 			first_optimise=true;
-			offsets[0]=DPoint(120.0,0.0);
-			offsets[1]=DPoint(0.0,120.0);
-			offsets[2]=DPoint(-120.0,0.0);
-			offsets[3]=DPoint(0.0,-120.0);
+      offsets[0]=DPoint(40.0,0.0);
+      offsets[1]=DPoint(0.0,40.0);
+      offsets[2]=DPoint(-40.0,0.0);
+      offsets[3]=DPoint(0.0,-40.0);
 		}
 		double min_error = referror;
 		int min_index=-1;
@@ -98,10 +99,10 @@ Localization::process(const std::vector<double> & _weights,const std::vector<PPo
 		double sfac = 1.7-0.7/(cycles_since_reset+1.0);  
 		for (size_t i=0; i<4; i++) 
 		{
-            srand(cv::getTickCount());
-			DPoint trial_pos = pos_odo+offsets[i];
-            Angle trial_heading = facing_odo+(stdhead*(rand()/32767.0-0.5)*4.0);
-            double err = opti_->process(_weights,real_white,trial_pos,trial_heading);
+      srand(cv::getTickCount());
+      DPoint trial_pos = pos_odo+offsets[i];
+      Angle trial_heading = facing_odo+(stdhead*(rand()/32767.0-0.5)*4.0);
+      double err = opti_->process(_weights,real_white,trial_pos,trial_heading);
 			if (err<min_error && sfac*err<referror)
 			{
 				min_index=i;
@@ -115,10 +116,10 @@ Localization::process(const std::vector<double> & _weights,const std::vector<PPo
 			cycles_since_reset++;
 	}
 
-    double ddphi(0.0);
+  double ddphi(0.0);
 	DPoint2d ddxy(0.0,0.0);
-    if (numtrans>15)
-        opti_->analyse(_weights,real_white,ddxy, ddphi, _robotloction, _angle);
+  if (numtrans>15)
+      opti_->analyse(_weights,real_white,ddxy, ddphi, _robotloction, _angle);
 	double fnum = 16.0/(numtrans+4.0)+0.7; 
 	DPoint2d trans_welt=delta_pos;
 	double tempddxyx=std::abs(log(std::abs(ddxy.x_)+1e-6)+7);

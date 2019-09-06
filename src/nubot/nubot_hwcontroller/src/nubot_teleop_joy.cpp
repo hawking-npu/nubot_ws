@@ -115,6 +115,14 @@ void TeleopNubot::joyCallback(const sensor_msgs::Joy::ConstPtr& joy)
     cmd.Vx = - joy->axes[linearVel_X]*2000;
     cmd.Vy = joy->axes[linearVel_Y]*2000;
     cmd.w  = - joy->axes[angularVel]*1500;
+    if(cmd.Vx==0 && cmd.Vy==0 && cmd.w==0)
+    {
+        cmd.stop_ = true;
+    }
+    else
+    {
+        cmd.stop_ = false;
+    }
 //    vel_pub.publish(cmd);
 }
 

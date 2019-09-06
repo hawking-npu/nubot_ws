@@ -452,12 +452,12 @@ int main(int argc, char *argv[])
     RUNNING_AGENTS = 1;
 
     /* Assign a real-time priority to process */
-    proc_sched.sched_priority=60;
+    /*proc_sched.sched_priority=60;
     if ((sched_setscheduler(getpid(), SCHED_FIFO, &proc_sched)) < 0)
     {
         PERRNO("setscheduler");
         return -1;
-    }
+    }*/
 
     if(signal(SIGALRM, signal_catch) == SIG_ERR)
     {

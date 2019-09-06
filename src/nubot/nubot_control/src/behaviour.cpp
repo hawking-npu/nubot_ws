@@ -41,7 +41,14 @@ float Behaviour::basicPDControl2(float pgain, float dgain, float err, float err1
 }
 
 void Behaviour::move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target, float maxvel,
-                          const DPoint  & _robot_pos,const Angle  & _robot_ori ){}
+                          const DPoint  & _robot_pos,const Angle  & _robot_ori )
+{
+    double error = _robot_pos.distance(target);
+    double wantvel = kp*error;//p
+    //kalpha i
+    //kbeta d
+}
+
 void Behaviour::move2PositionForDiff(float kp, float kalpha, float kbeta, DPoint target0, DPoint target1,
                           float maxvel, const DPoint & _robot_pos,const Angle  & _robot_ori, const DPoint & _robot_vel){}
 // 采用PD控制运动到目标点

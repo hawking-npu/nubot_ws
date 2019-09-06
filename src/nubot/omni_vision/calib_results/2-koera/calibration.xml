@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<Color_Calib>
+  <_>
+    <poly_pts>
+      178 185 201 208 152 251 127 201</poly_pts>
+    <line_pts>
+      0 255</line_pts></_>
+  <_>
+    <poly_pts>
+      97 52 168 45 172 159 101 158</poly_pts>
+    <line_pts>
+      0 255</line_pts></_>
+  <_>
+    <poly_pts>
+      113 113 143 113 143 143 113 143</poly_pts>
+    <line_pts>
+      0 255</line_pts></_></Color_Calib>
+</opencv_storage>

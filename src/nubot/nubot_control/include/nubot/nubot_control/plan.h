@@ -6,7 +6,6 @@
 #include "nubot/nubot_control/subtargets.h"
 #include "nubot/nubot_control/behaviour.hpp"
 #include "nubot/nubot_control/world_model_info.h"
-#include "nubot/nubot_control/nubot_control.h"
 #include "nubot/nubot_control/dribblestate.hpp"
 
 using namespace std;
@@ -20,8 +19,8 @@ public:
         void catchBall();
         void catchBallForCoop();
         void catchBallSlowly();
-        void catchMovingBall(); // 移动的球
-        void catchMotionlessBall(); // 静止的球
+        void catchMovingBall(double maxvel=MAXVEL, double maxw=MAXW); // 移动的球
+        void catchMotionlessBall(DPoint target, double maxvel=MAXVEL, double maxw=MAXW); // 静止的球
 
         /***********postion*************/
         void positionAvoidObs(DPoint target, double maxw = MAXW, double angle_thres = 5.0/180.0/*float theta, float stopdis, float stoptheta*/);

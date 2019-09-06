@@ -63,6 +63,16 @@ public:
     void setTurn(bool isTurn);
     void accelerateLimit(const double &_acc_thresh = 20, const bool & use_convected_acc = true);
     void clear();
+    DPoint velLimit(DPoint want_vel, double maxvel = MAXVEL)
+    {
+        DPoint changed_vel;
+        double wantvel = want_vel.norm();
+        if(wantvel > maxvel)
+        {
+            changed_vel.x_ = want_vel.x_ * maxvel / wantvel;
+            changed_vel.y_ = want_vel.y_ * maxvel / wantvel;
+        }
+    }
 
 public:
     float app_vx_;

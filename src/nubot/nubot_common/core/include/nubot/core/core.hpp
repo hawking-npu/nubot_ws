@@ -81,7 +81,7 @@ const int FIELD_YLINE5 = -100; // -325
 const int FIELD_YLINE6 = -200; // -600
 #endif
 const int FIELD_CENTER_RADIUS = 60; // 150;
-const int FIELD_POST_RADIUS = 0;
+const int FIELD_POST_RADIUS = 25; //0
 const int LOCATIONERROR = 10; // 30
 
 ///========================================================
@@ -96,10 +96,10 @@ const double RAD2DEG = 180.0/SINGLEPI_CONSTANT;     // 角度到弧度的转换
 ////可能需要修改
 const double update_T = 50;//30ms更新一次
 const double LENGTH_FIX = 0.3;
-const nubot::DPoint oppGoalPosr = nubot::DPoint( 280, -60);
-const nubot::DPoint oppGoalPosl = nubot::DPoint( 280,  60);
-const nubot::DPoint ourGoalPosr = nubot::DPoint(-280, -60);
-const nubot::DPoint ourGoalPosl = nubot::DPoint(-280,  60);
+const nubot::DPoint oppGoalPosr = nubot::DPoint( 300, -80);
+const nubot::DPoint oppGoalPosl = nubot::DPoint( 300,  80);
+const nubot::DPoint ourGoalPosr = nubot::DPoint(-300, -80);
+const nubot::DPoint ourGoalPosl = nubot::DPoint(-300,  80);
 const nubot::DPoint parking_point[3] = {nubot::DPoint(-800*LENGTH_FIX, 0.0), nubot::DPoint(-200*LENGTH_FIX, -100*LENGTH_FIX), nubot::DPoint(-200*LENGTH_FIX, 100*LENGTH_FIX)};
 
 ////需要修改
@@ -146,7 +146,9 @@ enum MatchMode {
     /// Challenge
                  LOCATION = 30,
                  AVOIDANCE = 31,
-                 PASSING = 32
+                 PASSING = 32,
+
+                 CHECKGIGE = 40
                };
 
 enum StrategyTyples {  STRATEGY_ATTACK = 0,

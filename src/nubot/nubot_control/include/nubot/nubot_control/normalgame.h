@@ -12,10 +12,16 @@ class NormalGame
 
 public:
     NormalGame();
-    NormalGame(World_Model_Info & _world_model, Plan & _plan);
+    NormalGame(World_Model_Info & _world_model, Plan & _plan, DribbleState &_dribble);
     ~NormalGame();
-   void process();
+   void process(int role_ = NOROLE);
+   void asGoalie();
+   void asActive();
+   void asAssist();
+   void one2one();
    void update();
+   void init();
+   bool velzero();
 
 public:
    World_Model_Info * world_model_;
@@ -24,7 +30,11 @@ public:
    Angle robot_ori_;
    DPoint ball_pos_;
    DPoint ball_vel_;
+   DPoint opp_robot_[3];//goalie active me
    DribbleState * m_dribble_;
+
+   Actions selected_action_;
+   bool kick_enable_;
 };
 
 }

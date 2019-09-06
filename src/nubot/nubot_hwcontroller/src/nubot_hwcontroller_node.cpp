@@ -82,6 +82,7 @@ void Nubot_HWController::SerialWrite(const int ShootPower)
     std_msgs::String write_stream;
     write_stream.data = write_stream_.str();
     serial.write(write_stream.data);
+    ROS_INFO("hw_shoot");
 }
 
 void Nubot_HWController::SerialWrite(const bool PowerSwitch)

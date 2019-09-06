@@ -60,8 +60,11 @@ Odometry::process(std::vector<double> & _motor_data, double duration)
 
     interval_real_pos  = real_velocity_ * duration;
     interval_angle     = angular_velocity_* duration;
-    world_velocity_    = real_velocity_.rotate(-angle_);
-    interval_world_pos = interval_real_pos.rotate(-angle_);
+
+    world_velocity_.x_    = real_velocity_.rotate(-angle_).y_;
+    world_velocity_.y_    = real_velocity_.rotate(-angle_).x_;
+    interval_world_pos.x_ = interval_real_pos.rotate(-angle_).y_;
+    interval_world_pos.y_ = interval_real_pos.rotate(-angle_).x_;
 
 	delta_real_pos_ += interval_real_pos;
   delta_world_pos_+= interval_world_pos;

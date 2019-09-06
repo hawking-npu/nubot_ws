@@ -23,7 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen REQUIRED)
-find_package(OpenCV 3.4.3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 add_message_files(FILES
    DebugInfo.msg
@@ -75,7 +75,3 @@ target_link_libraries(nubot_control_node
    ${catkin_LIBRARIES}
    ${OpenCV_LIBS}
  )
-
-
-file(GLOB_RECURSE SOURCES ${SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/*") ####
-add_library(whatever STATIC ${SOURCES}) ####

@@ -6,7 +6,8 @@
 #include "nubot/nubot_control/plan.h"
 #include "nubot/nubot_control/dribblestate.hpp"
 
-const int maxseentime = 1.0*1000/update_T;
+const int maxseentime = 7.0*1000/update_T;
+const int checktime   = 0.5*1000/update_T;
 
 namespace nubot{
 
@@ -35,8 +36,9 @@ public:
     void process();
     void update();
     void process_level(int ball_id_, DishColor color_);
-    bool move2kick(DishColor color_);
-    bool CatchBall(DPoint target);
+    void move2kick(DishColor color_);
+    void move2catchball(DPoint target);
+    bool velzero();
 
 public:
    World_Model_Info * world_model_;
@@ -54,13 +56,16 @@ public:
    bool kick_enable_;
    BallKnow ball_know[5];
    bool have_kick[5];
-   bool can_dribble[5];
+   bool flag_move2catch;
    bool flag_face2kick;
+   bool flag_move2kick;
 
    double dish_y[6];
    double dish_x_;
    double kick_x_;
    double ball_x_;
+   double move_x_;
+   int checktime_;
 };
 
 }

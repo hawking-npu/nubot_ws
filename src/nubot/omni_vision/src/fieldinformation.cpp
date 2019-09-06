@@ -62,6 +62,12 @@ FieldInformation::FieldInformation()
     ourGoal_[GOAL_MIDDLE]   = DPoint(xline_[6],0);
     ourGoal_[GOAL_MIDLOWER] = DPoint(xline_[6],-40);
     ourGoal_[GOAL_LOWER]    = DPoint(xline_[6],-100);
+
+    goalcircle_.resize(2);
+    for(size_t i=0; i<2; i++)
+        goalcircle_[i].radius_=60;
+    goalcircle_[0].center_=DPoint2d(225.0,0.0);
+    goalcircle_[1].center_=DPoint2d(-225.0,0.0);
 }
 
 FieldInformation::FieldInformation(string infopath)

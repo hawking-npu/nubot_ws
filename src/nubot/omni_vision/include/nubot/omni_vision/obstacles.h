@@ -24,11 +24,17 @@ namespace nubot
 
 const int    OBS_MINDARKNESS_CONST  = 50;
 const double OBS_WEIGHT_THRES_CONST = 0.04;
-const double OBS_RADIUS_CONST       = 40;
+const double OBS_RADIUS_CONST       = 30; //40
 const double OBS_PARTITION_CONST    = 35;
-const int    OBS_MAXDISTANCE_CONST  = 333; //1000;
-const int    OBS_NUMBER_CONST       = 50;
-const int    OBS_VALUABLE_NUMBER    = 12;
+const int    OBS_MAXDISTANCE_CONST  = 500; //1000;
+
+#ifdef THREEPLAYER
+const int    OBS_VALUABLE_NUMBER    = 7; //12
+const int    OBS_NUMBER_CONST       = 25; //50
+#else
+const int    OBS_VALUABLE_NUMBER    = 2;
+const int    OBS_NUMBER_CONST       = 10;
+#endif
 
 const double OBS_LIGHTFACTOR = 0.05;
 const double OBS_LIGHTFACTORINCREASE = 0.3 ;

@@ -1,4 +1,5 @@
 #include "nubot/omni_vision/whites.h"
+#include "ros/ros.h"
 
 using namespace nubot;
 Whites::Whites(ScanPoints & _scanpts,Transfer & _coor_transfer)
@@ -6,12 +7,12 @@ Whites::Whites(ScanPoints & _scanpts,Transfer & _coor_transfer)
    scanpts_   = &_scanpts;
    transfer_ =&_coor_transfer;
   
-   //img_white_.reserve(1000);
-   img_white_.reserve(333);
+//   img_white_.reserve(1000);
+   img_white_.reserve(500);
 
    h_low_=45;
    h_high_=120;
-   nums_pts_line_=5;
+   nums_pts_line_=4;
    filter_width_=2;          
    merge_wave_=3;
 
@@ -31,8 +32,10 @@ void
 Whites::showWhitePoints(cv::Mat & _img)
 {
 	size_t numstrans=img_white_.size();
-	for(size_t i=0 ;i<numstrans; i++)
+  for(size_t i=0 ;i<numstrans; i++){
         cv::circle(_img,cv::Point(img_white_[i].x_,img_white_[i].y_),1,cv::Scalar(255,0,0),2,8,0);
+//        ROS_INFO("%d %d", img_white_[i].x_, img_white_[i].y_);
+  }
     nubot::Circle Big_ROI = scanpts_->omni_img_->getBigROI();
     nubot::Circle Small_ROI =scanpts_->omni_img_->getSmallROI();
     cv::circle(_img,cv::Point(Big_ROI.center_.x_,Big_ROI.center_.y_),Big_ROI.radius_,cv::Scalar(0,0,255),1,8,0);
@@ -155,7 +158,8 @@ Whites::findNearHollow(vector<uchar> & colors,vector<bool> & wave_peak,vector<bo
 						Peak.near_hollow=Peak.right_hollow;
 				}
 				Peak.width=std::abs(Peak.peak_index-Peak.near_hollow);
-				if(Peak.peak_index+Peak.width<Line_Length && Peak.peak_index-Peak.width>0)
+
+        if(Peak.peak_index+Peak.width<Line_Length && Peak.peak_index-Peak.width>0)
                     Peak.boundaries=true;
 				else 
 					Peak.boundaries=false;
@@ -197,7 +201,7 @@ Whites::IsWhitePoint(std::vector<DPoint2i> & _pts,double _color_average,vector<u
                     (_colors[_peaks.peak_index-_peaks.width]>=0.45*100 &&
                      _colors[_peaks.peak_index+_peaks.width]>=0.45*100))
 				{		
-					if (nwhites<nums_pts_line_&& _colors[_peaks.peak_index]>150)
+          if (nwhites<nums_pts_line_&& _colors[_peaks.peak_index]>150)
 					{
 						nwhites++;
 						return true;
@@ -242,20 +246,20 @@ void
 Whites::calculateWeights()
 {
 	weights_.clear();
-	double ref2=150.0*150.0;
-	double d2=250.0*250.0;
+  double ref2=150.0*150.0;
+  double d2=250.0*250.0;
 	double tmpweight(0);
-    double distofeature(0);
+  double distofeature(0);
 	size_t numtrans=robot_white_.size();
-    weights_.resize(numtrans);
+  weights_.resize(numtrans);
 #ifdef using_openmp
 #pragma omp parallel for private(tmpweight,distofeature) shared(ref2,d2)
 #endif
 	for(size_t index=0; index < numtrans; index++)
 	{
-        distofeature=robot_white_[index].radius_*robot_white_[index].radius_;
-		tmpweight=(ref2+d2)/(d2+distofeature);
-        weights_[index]= tmpweight;
+      distofeature=robot_white_[index].radius_*robot_white_[index].radius_;
+      tmpweight=(ref2+d2)/(d2+distofeature);
+      weights_[index]= tmpweight;
 	}
 }
 
@@ -295,5 +299,5 @@ Whites::process()
            img_white_.push_back(whites[i][j]);
 
     transfer_->calculateRealCoordinates(img_white_,robot_white_);
-	calculateWeights();
+    calculateWeights();
 }

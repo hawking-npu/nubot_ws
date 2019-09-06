@@ -40,6 +40,8 @@ public:
     DPoint oppGoal_[5]; /** 5 the number of GoalLocation */
     DPoint ourGoal_[5];
     Circle centercircle_;
+
+    std::vector<Circle > goalcircle_;
 };
 
 

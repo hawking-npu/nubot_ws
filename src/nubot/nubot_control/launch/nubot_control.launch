@@ -1,3 +1,54 @@
 <launch>
 <node name="nubot_control_node" pkg="nubot_control" type="nubot_control_node" output="screen"/>
+<!--
+                 STOPROBOT  =  0,
+                 OUR_KICKOFF = 1,
+                 OPP_KICKOFF = 2,
+                 OUR_THROWIN = 3,
+                 OPP_THROWIN = 4,
+                 OUR_PENALTY = 5,
+                 OPP_PENALTY = 6,
+                 OUR_GOALKICK = 7 ,
+                 OPP_GOALKICK = 8,
+                 OUR_CORNERKICK = 9,
+                 OPP_CORNERKICK = 10,
+                 OUR_FREEKICK = 11,
+                 OPP_FREEKICK = 12,
+                 DROPBALL     = 13,
+                 PARKINGROBOT = 25,
+                 AVOIDANCE = 31,
+
+                 STARTROBOT   = 15,
+                 LOCATION = 30,
+                 PASSING = 32,
+                 CHECKGIGE = 40   -->
+
+        <param name="mode_launch" type="int" value="40" />
+
+
+        <param name="check_gige_launch" type="int" value="5" />
+
+        <param name="point1_launch" type="int" value="6" />
+        <param name="point2_launch" type="int" value="18" />
+        <param name="point3_launch" type="int" value="9" />
+        <param name="point4_launch" type="int" value="20" />
+        <param name="point5_launch" type="int" value="21" />
+
+        <param name="level_launch" type="int" value="4" />
+<!--
+enum Roles{3cGYP{"
+           PASSIVE = 2,
+           MIDFIELD = 3,
+           ACIDPASSIVE = 5,
+           GAZER = 6,
+           BLOCK = 7,
+           NOROLE = 8,
+           CATCHOFPASS = 9,
+           PASSOFPASS =10
+
+           GOALIE = 0 ,
+           ACTIVE = 1,
+           ASSISTANT = 4,};  -->
+
+           <param name="role_launch" type="int" value="4" />
 </launch>
