@@ -78,7 +78,6 @@ public:
     DPoint  past_ball_pos_;
     DPoint  opp_robot_;
     bool isdribble[10];
-    int roletime;
     int defender_ID_;
     int flag;
     bool past_ball_known;
@@ -150,9 +149,6 @@ public:
         past_ball_pos_ = ball_pos_;
         known_time = 0;
 
-#ifdef THREEPLAYER
-        roletime = 0;
-#endif
 
 
         m_normalgame_ = new NormalGame(world_model_info_,m_plan_,m_dribble_);
@@ -336,10 +332,7 @@ public:
         {
             ROS_INFO("nubotcontrol loopControl STOPROBT");
             m_plan_.m_behaviour_.clearBehaviorState();
-            if(m_dribble_.is_dribble_)
-                ROS_INFO("ballhandle = true");
-            else
-                ROS_INFO("ballhandle = false");
+            ROS_INFO("ballhandle = %d", m_dribble_.is_dribble_);
             //setShoot();
         }
         /** 机器人在开始之前的跑位. 开始静态传接球的目标点计算*/
@@ -349,7 +342,7 @@ public:
             m_plan_.move2Positionwithobs_noball(parking_point[world_model_info_.AgentID_-1]);
             m_plan_.positionAvoidObs2(br.angle().radian_);
         }
-        else if(match_mode_ == OUR_KICKOFF)
+        else if(match_mode_ == OUR_KICKOFF) //test
         {
             ROS_INFO("wanttime=%d, waittime=%d", maxknowtime, wait_time);
             if(isBallHandle(world_model_info_.AgentID_))
@@ -366,9 +359,6 @@ public:
         {
             //m_plan_.positionAvoidObs(ball_pos_, MAXW, check_gige_*DEG2RAD);
             m_plan_.catchMotionlessBall(ball_pos_);
-//            srand((unsigned)time(NULL));
-//            int rand_num_ = rand()%170;
-//            ROS_INFO("rand_num = %d", rand_num_);
         }
         else if(match_mode_ == STARTROBOT)// 机器人正式比赛了，进入start之后的机器人状态
         {
@@ -395,12 +385,7 @@ public:
         /// Challenge
         else if(match_mode_ == LOCATION) //找框
         {
-//            int n = 22;
-//            int usednum[n] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22};
-            //int n=5;
-            //int usednum[n] = {2,9,15,17,7};
             m_location_->update();
-            //m_location_->process(usednum, 5);
             m_location_->process(location_point);
         }
         else if(match_mode_ == AVOIDANCE) //避障
@@ -441,15 +426,6 @@ public:
         vx = (m_plan_.m_behaviour_.app_vx_+m_plan_.m_behaviour_.last_app_vx_)/2;
         vy = (m_plan_.m_behaviour_.app_vy_+m_plan_.m_behaviour_.last_app_vy_)/2;
         w  = (m_plan_.m_behaviour_.app_w_+m_plan_.m_behaviour_.last_app_w_)/2;
-
-//        if(m_plan_.m_behaviour_.app_w_ > 0 && m_plan_.m_behaviour_.app_w_ < MINW)
-//        {
-//          m_plan_.m_behaviour_.app_w_ = MINW;
-//        }
-//        if(m_plan_.m_behaviour_.app_w_ < 0 && m_plan_.m_behaviour_.app_w_ > -MINW)
-//        {
-//          m_plan_.m_behaviour_.app_w_ = -MINW;
-//        }
 
         double sqare2 = vx*vx + vy*vy;
         if(sqare2 > MAXVEL*MAXVEL)
