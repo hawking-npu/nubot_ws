@@ -76,6 +76,8 @@ public:
 
     std::vector<LineSegment> x_white_line_;
     std::vector<LineSegment> y_white_line_;
+
+    std::vector<Circle > goalcircle_;
 };
 
 

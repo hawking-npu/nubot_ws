@@ -1,4 +1,5 @@
 #include "errortable.h"
+#include "ros/ros.h"
 using namespace nubot;
 
 ErrorTable::ErrorTable()
@@ -29,6 +30,7 @@ ErrorTable::getErrorTable()
    {
        for(int i = startx_; i <= endx_;i++)
        {
+
           double Mindis = DBL_MAX;
           DPoint pt(i,j);
           for(int m = 0 ;m <xline_nums ;m++ )
@@ -66,6 +68,7 @@ ErrorTable::getErrorTable()
           }
 
           DistoMarkLine_[count]  = Mindis;
+//          ROS_INFO("%d, %.f", count, Mindis);
           count++;
        }
     }

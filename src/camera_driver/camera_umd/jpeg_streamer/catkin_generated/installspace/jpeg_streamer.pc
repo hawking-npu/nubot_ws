@@ -1,0 +1,8 @@
+prefix=/home/lzz/nubot_ws/install
+
+Name: jpeg_streamer
+Description: Description of jpeg_streamer
+Version: 0.2.1
+Cflags: 
+Libs: -L/home/lzz/nubot_ws/install/lib 
+Requires: 

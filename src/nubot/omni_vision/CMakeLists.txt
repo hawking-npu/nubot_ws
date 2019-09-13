@@ -26,7 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   std_srvs
 )
-find_package(OpenCV 3.4.3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 generate_dynamic_reconfigure_options(cfg/OmniVision.cfg)
 

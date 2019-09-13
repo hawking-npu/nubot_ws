@@ -22,23 +22,6 @@ FieldInformation::FieldInformation()
 //  centercircle_.radius_=150;
 //  centercircle_.center_=DPoint2d(0,0);
 
-     //FIRA 600*400
-//     xline_.push_back(300);
-//     xline_.push_back(260);
-//     xline_.push_back(235);
-//     xline_.push_back(0);
-//     xline_.push_back(-235);
-//     xline_.push_back(-260);
-//     xline_.push_back(-300);
-
-//     yline_.push_back(200);
-//     yline_.push_back(100);
-//     yline_.push_back(80);
-//     yline_.push_back(-80);
-//     yline_.push_back(-100);
-//     yline_.push_back(-200);
-//     centercircle_.radius_=60;
-//     centercircle_.center_=DPoint2d(0,0);
 
      //FIRA@Home 600*400
      xline_.push_back(300);
@@ -55,9 +38,8 @@ FieldInformation::FieldInformation()
      yline_.push_back(-80);
      yline_.push_back(-100);
      yline_.push_back(-200);
-     centercircle_.radius_=60;
-     centercircle_.center_=DPoint2d(0,0);
 
+     /** 场地中存在的所有的白线线段*/
      x_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[5]),DPoint(xline_[0],yline_[0])));
      x_white_line_.push_back(LineSegment(DPoint(xline_[1],yline_[3]),DPoint(xline_[1],yline_[2])));
      x_white_line_.push_back(LineSegment(DPoint(xline_[2],yline_[4]),DPoint(xline_[2],yline_[1])));
@@ -66,17 +48,20 @@ FieldInformation::FieldInformation()
      x_white_line_.push_back(LineSegment(DPoint(xline_[5],yline_[3]),DPoint(xline_[5],yline_[2])));
      x_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[5]),DPoint(xline_[6],yline_[0])));
 
+     y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[5]),DPoint(xline_[0],yline_[5])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[0]),DPoint(xline_[0],yline_[0])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[4]),DPoint(xline_[4],yline_[4])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[4]),DPoint(xline_[2],yline_[4])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[1]),DPoint(xline_[4],yline_[1])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[1]),DPoint(xline_[2],yline_[1])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[3]),DPoint(xline_[5],yline_[3])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[3]),DPoint(xline_[1],yline_[3])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[2]),DPoint(xline_[5],yline_[2])));
+     y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[2]),DPoint(xline_[1],yline_[2])));
 
-      y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[5]),DPoint(xline_[0],yline_[5])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[0]),DPoint(xline_[0],yline_[0])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[4]),DPoint(xline_[4],yline_[4])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[4]),DPoint(xline_[2],yline_[4])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[1]),DPoint(xline_[4],yline_[1])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[1]),DPoint(xline_[2],yline_[1])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[3]),DPoint(xline_[5],yline_[3])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[3]),DPoint(xline_[1],yline_[3])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[6],yline_[2]),DPoint(xline_[5],yline_[2])));
-      y_white_line_.push_back(LineSegment(DPoint(xline_[0],yline_[2]),DPoint(xline_[1],yline_[2])));
+     centercircle_.radius_=60;
+     centercircle_.center_=DPoint2d(0,0);
+
 
     /*
     x_white_line_.push_back(LineSegment(DPoint(900,-600),DPoint(900,600)));
@@ -103,16 +88,22 @@ FieldInformation::FieldInformation()
 
     postcircle_.resize(4);
     for(size_t i=0; i< 4;i++)
-         postcircle_[i].radius_=0;
+         postcircle_[i].radius_=25;
     postcircle_[0].center_=DPoint2d(xline_[0],-yline_[0]);
     postcircle_[1].center_=DPoint2d(xline_[0],yline_[0]);
     postcircle_[2].center_=DPoint2d(-xline_[0],yline_[0]);
     postcircle_[3].center_=DPoint2d(-xline_[0],-yline_[0]);
 
     opp_goal_[0] = DPoint(xline_[6],yline_[3]);
-	opp_goal_[0] = DPoint(xline_[6],yline_[2]);
-	our_goal_[0] = DPoint(xline_[0],yline_[3]);
-	our_goal_[0] = DPoint(xline_[0],yline_[2]);
+    opp_goal_[0] = DPoint(xline_[6],yline_[2]);
+    our_goal_[0] = DPoint(xline_[0],yline_[3]);
+    our_goal_[0] = DPoint(xline_[0],yline_[2]);
+
+    goalcircle_.resize(2);
+    for(size_t i=0; i<2; i++)
+        goalcircle_[i].radius_=60;
+    goalcircle_[0].center_=DPoint2d(225.0,0.0);
+    goalcircle_[1].center_=DPoint2d(-225.0,0.0);
 }
 
 FieldInformation::FieldInformation(string infopath)

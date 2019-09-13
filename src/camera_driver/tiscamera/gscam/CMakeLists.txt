@@ -48,7 +48,7 @@ if(USE_ROSBUILD)
 
 else()
   # Use Catkin
-  find_package(OpenCV 3.4.3 REQUIRED)
+  find_package(OpenCV REQUIRED)
   find_package(Boost  REQUIRED)
   find_package(catkin REQUIRED COMPONENTS
     roscpp image_transport sensor_msgs nodelet

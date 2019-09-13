@@ -1,0 +1,8 @@
+prefix=/home/lzz/nubot_ws/install
+
+Name: calibration_util
+Description: Description of calibration_util
+Version: 0.0.0
+Cflags: -I/home/lzz/nubot_ws/install/include
+Libs: -L/home/lzz/nubot_ws/install/lib 
+Requires: 
