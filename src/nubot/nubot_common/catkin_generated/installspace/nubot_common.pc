@@ -1,8 +1,0 @@
-prefix=/home/lzz/nubot_ws/install
-
-Name: nubot_common
-Description: Description of nubot_common
-Version: 0.0.0
-Cflags: -I/home/lzz/nubot_ws/install/include -I/opt/ros/kinetic/include -I/opt/ros/kinetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/usr/include
-Libs: -L/home/lzz/nubot_ws/install/lib 
-Requires: 

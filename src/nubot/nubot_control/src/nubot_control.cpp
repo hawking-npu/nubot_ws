@@ -33,7 +33,7 @@
 #include <nubot/nubot_control/normalgame.h>
 
 const int ROLEMAXTIME = 500;
-const int maxknowtime = 10.0*1000/update_T;//1
+const int maxknowtime = 1;//10.0*1000/update_T;//1
 
 using namespace std;
 namespace nubot{
@@ -344,8 +344,8 @@ public:
         }
         else if(match_mode_ == OUR_KICKOFF) //test
         {
-            ROS_INFO("wanttime=%d, waittime=%d", maxknowtime, wait_time);
-            if(isBallHandle(world_model_info_.AgentID_))
+            ROS_INFO("maxtime=%d, waittime=%d", maxknowtime, wait_time);
+            //if(isBallHandle(world_model_info_.AgentID_))
             {
                 wait_time++;
                 if(wait_time == maxknowtime)
@@ -405,6 +405,8 @@ public:
             }
         }
 
+        m_plan_.m_behaviour_.clearBehaviorState();
+        m_plan_.m_behaviour_.app_w_ = 1.0;
         setEthercatCommond();
 /*
 #ifdef THREEPLAYER

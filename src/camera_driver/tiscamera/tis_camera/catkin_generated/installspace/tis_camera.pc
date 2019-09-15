@@ -1,8 +1,0 @@
-prefix=/home/lzz/nubot_ws/install
-
-Name: tis_camera
-Description: Description of tis_camera
-Version: 0.1.0
-Cflags: 
-Libs: -L/home/lzz/nubot_ws/install/lib 
-Requires: 
