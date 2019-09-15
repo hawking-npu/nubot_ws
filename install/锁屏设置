@@ -1,0 +1,6 @@
+锁屏设置
+sudo gedit /etc/systemd/logind.conf
+
+#  HandleLidSwitch=suspend  ##原本没有空格 不锁屏改为ignore
+
+sudo restart systemd-logind
