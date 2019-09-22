@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(nubot_hwcontroller)
+project(sensor_gyro)
 #  std=gnu++0x" enables c++ 11
 #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 set(CMAKE_BUILD_TYPE "Release")
@@ -99,30 +99,27 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-set(nubot_hwcontroller_includes
+set(sensor_gyro_includes
                 #realtime_tools
                 ${catkin_INCLUDE_DIRS}
                 ${PROJECT_SOURCE_DIR}/include
 )
 
-include_directories(${nubot_hwcontroller_includes})
+include_directories(${sensor_gyro_includes})
 
 ## Declare a cpp executable
-add_executable(nubot_hwcontroller_node src/nubot_hwcontroller_node.cpp)
-add_executable(nubot_teleop_joy src/nubot_teleop_joy.cpp)
+add_executable(sensor_gyro_node src/sensor_gyro.cpp
+                                src/packet.c
+                                src/imu_data_decode.c
+    )
 
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(nubot_hwcontroller_node ${catkin_EXPORTED_TARGETS})
-add_dependencies(nubot_teleop_joy ${catkin_EXPORTED_TARGETS})
+add_dependencies(sensor_gyro_node ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(nubot_hwcontroller_node
-   ${catkin_LIBRARIES}
-)
-
-target_link_libraries(nubot_teleop_joy
+target_link_libraries(sensor_gyro_node
    ${catkin_LIBRARIES}
 )
 

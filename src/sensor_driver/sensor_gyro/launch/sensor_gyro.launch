@@ -1,0 +1,3 @@
+<launch>
+    <node name="sensor_gyro_node" pkg="sensor_gyro" type="sensor_gyro_node" output="screen"/>
+</launch>

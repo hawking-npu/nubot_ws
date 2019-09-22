@@ -8,6 +8,7 @@
 #include <nubot_common/StrategyInfo.h>
 #include <nubot_common/TargetInfo.h>
 #include <nubot_common/OdoInfo.h>
+#include <nubot_common/GyroInfo.h>
 #ifndef SIMULATION
 #include <nubot_control/nubotcontrolConfig.h>
 #endif
@@ -44,6 +45,7 @@ class NuBotControl
 public:
     ros::Subscriber  ballinfo3d_sub1_;
     ros::Subscriber  odoinfo_sub_;
+    ros::Subscriber  gyroinfo_sub_;
     ros::Subscriber  obstaclesinfo_sub_;
     ros::Subscriber  worldmodelinfo_sub_;
 
@@ -126,6 +128,7 @@ public:
         ballinfo3d_sub1_    = nh_->subscribe("stereovision/StereoBallInfo",1, &NuBotControl::ballInfo3dCallback, this);
 #ifndef SIMULATION
         odoinfo_sub_        = nh_->subscribe("nubotdriver/odoinfo", 1, &NuBotControl::update_my_dribble_info,this);
+        gyroinfo_sub_        = nh_->subscribe("nubotdriver/gyroinfo", 1, &NuBotControl::update_my_dribble_info,this);
 #endif
         worldmodelinfo_sub_ = nh_->subscribe("worldmodel/worldmodelinfo", 1, &NuBotControl::update_world_model_info,this);
         control_timer_      = nh_->createTimer(ros::Duration(update_T/1000),&NuBotControl::loopControl,this);
@@ -345,7 +348,7 @@ public:
         else if(match_mode_ == OUR_KICKOFF) //test
         {
             ROS_INFO("maxtime=%d, waittime=%d", maxknowtime, wait_time);
-            //if(isBallHandle(world_model_info_.AgentID_))
+            if(isBallHandle(world_model_info_.AgentID_))
             {
                 wait_time++;
                 if(wait_time == maxknowtime)

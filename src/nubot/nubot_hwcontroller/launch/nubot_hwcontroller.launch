@@ -1,4 +1,7 @@
 <launch>
+  <!-- HI216 Gyro Selected -->
+  <include file="$(find sensor_gyro)/launch/sensor_gyro.launch"> </include>
+
   <node name="nubot_hwcontroller_node" pkg="nubot_hwcontroller" type="nubot_hwcontroller_node" output="screen"/>
   <node name="nubot_teleop_joy" pkg="nubot_hwcontroller" type="nubot_teleop_joy"/>
 </launch>

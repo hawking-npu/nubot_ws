@@ -5,6 +5,7 @@
 
 #include "nubot_hwcontroller_node.h"
 
+
 template <class Type>
 Type stringToNum(const string& str)
 {
@@ -19,7 +20,8 @@ Nubot_HWController::Nubot_HWController()
     //设置串口属性，并打开串口
     try
     {
-        serial.setPort("/dev/ttyUSB0");
+        //serial.setPort("/dev/ttyUSB0");
+        serial.setPort("/dev/Robot_control");
         serial.setBaudrate(115200);
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);
         serial.setTimeout(to);
@@ -181,9 +183,4 @@ int main(int argc,char** argv)
    }
    return 0;
 }
-
-
-
-
-
 

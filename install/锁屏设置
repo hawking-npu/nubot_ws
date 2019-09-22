@@ -4,3 +4,5 @@ sudo gedit /etc/systemd/logind.conf
 #  HandleLidSwitch=suspend  ##原本没有空格 不锁屏改为ignore
 
 sudo restart systemd-logind
+#如果不行就用下面的命令
+systemctl restart systemd-logind
