@@ -23,7 +23,7 @@
                  PASSING = 32,
                  CHECKGIGE = 40   -->
 
-        <param name="mode_launch" type="int" value="1" />
+        <param name="mode_launch" type="int" value="40" />
 
 
         <param name="check_gige_launch" type="int" value="5" />

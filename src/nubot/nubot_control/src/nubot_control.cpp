@@ -407,9 +407,6 @@ public:
                 setShoot();
             }
         }
-
-        m_plan_.m_behaviour_.clearBehaviorState();
-        m_plan_.m_behaviour_.app_w_ = 1.0;
         setEthercatCommond();
 /*
 #ifdef THREEPLAYER
@@ -442,6 +439,7 @@ public:
         m_plan_.m_behaviour_.last_app_vy_ = vy;
         m_plan_.m_behaviour_.last_app_w_  = w;
         m_plan_.m_behaviour_.clearBehaviorState();
+        m_plan_.m_behaviour_.last_app_vy_ = 100;
 #ifdef SIMULATION
         command.Vx = vx;
         command.Vy = vy;
