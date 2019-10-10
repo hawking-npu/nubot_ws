@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../devel/lib/libworld_model.a  CMakeFiles/world_model.dir/src/ball.cpp.o CMakeFiles/world_model.dir/src/obstacles.cpp.o CMakeFiles/world_model.dir/src/robot.cpp.o CMakeFiles/world_model.dir/src/MTTracker.cpp.o CMakeFiles/world_model.dir/src/iAuction.cpp.o
+/usr/bin/ranlib ../../devel/lib/libworld_model.a

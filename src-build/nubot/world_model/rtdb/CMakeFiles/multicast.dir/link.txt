@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../../devel/lib/libmulticast.a  CMakeFiles/multicast.dir/multicast.cpp.o
+/usr/bin/ranlib ../../../devel/lib/libmulticast.a

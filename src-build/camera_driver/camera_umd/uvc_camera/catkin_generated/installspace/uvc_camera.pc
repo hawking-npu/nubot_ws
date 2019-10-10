@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: uvc_camera
+Description: Description of uvc_camera
+Version: 0.2.1
+Cflags: 
+Libs: -L/usr/local/lib -lnodelet_uvc_camera
+Requires: roscpp nodelet sensor_msgs

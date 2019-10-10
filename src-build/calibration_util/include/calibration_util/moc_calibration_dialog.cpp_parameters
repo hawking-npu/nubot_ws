@@ -1,0 +1,14 @@
+-I/home/jerry/nubot_ws/src-build/calibration_util
+-I/opt/ros/kinetic/include
+-I/opt/ros/kinetic/include/opencv-3.3.1-dev
+-I/opt/ros/kinetic/include/opencv-3.3.1-dev/opencv
+-I/opt/ros/kinetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp
+-I/usr/include
+-I/home/jerry/nubot_ws/src/calibration_util/include/calibration_util
+-DROS_BUILD_SHARED_LIBS=1
+-DROS_BUILD_SHARED_LIBS=1
+-DROS_PACKAGE_NAME="calibration_util"
+-DROSCONSOLE_BACKEND_LOG4CXX
+-o
+/home/jerry/nubot_ws/src-build/calibration_util/include/calibration_util/moc_calibration_dialog.cpp
+/home/jerry/nubot_ws/src/calibration_util/include/calibration_util/calibration_dialog.h
