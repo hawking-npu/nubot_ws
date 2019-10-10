@@ -6,6 +6,7 @@ import roslib; roslib.load_manifest('teleop_twist_keyboard')
 import rospy
 
 from nubot_common.msg import VelCmd
+from nubot_common.srv import *
 
 import sys, select, termios, tty
 
@@ -81,6 +82,7 @@ if __name__=="__main__":
 
     cmd_pub_ = rospy.Publisher('nubotcontrol/velcmd', VelCmd, queue_size = 10)
     rospy.init_node('twist_keyboard')
+    rospy.wait_for_service('Shoot')
 
     speed = rospy.get_param("~speed", 0.5)
     turn = rospy.get_param("~turn", 1.0)
@@ -105,9 +107,15 @@ if __name__=="__main__":
                 turn = turn * speedBindings[key][1]
 
                 print(vels(speed,turn))
-                if (status == 14):
-                    print(msg)
+                #if (status == 14):
+                    #print(msg)
                 status = (status + 1) % 15
+	    elif key==' ':
+		try:
+    		    shoot_client_ = rospy.ServiceProxy('Shoot',Shoot)
+    		    rsp = shoot_client_(1,1)
+		except rospy.ServiceException, e:
+		    rospy.logwarn("Service call failed: %s"%e)
             else:
                 x = 0
                 y = 0
@@ -117,8 +125,8 @@ if __name__=="__main__":
                     break
 
 	    cmd = VelCmd()
-	    cmd.Vx = -y*speed*200
-	    cmd.Vy = x*speed*200
+	    cmd.Vx = x*speed*200
+	    cmd.Vy = y*speed*200
 	    cmd.w  = th*turn*50
 	    if cmd.Vx==0 and cmd.Vy==0 and cmd.w==0:
 		cmd.stop_ = True
@@ -126,7 +134,8 @@ if __name__=="__main__":
 		cmd.stop_ = False
 	    
             cmd_pub_.publish(cmd)
-	    rospy.loginfo("V: %d %d %d", cmd.Vx, cmd.Vy, cmd.w)
+	    #rospy.loginfo("V: %d %d %d", cmd.Vx, cmd.Vy, cmd.w)
+	    #print("V: %d %d %d" % (cmd.Vx,cmd.Vy,cmd.w))
 
     except Exception as e:
         print(e)
@@ -138,6 +147,8 @@ if __name__=="__main__":
 	cmd.w  = 0
 	cmd.stop_ = True
 	    
+	#rospy.loginfo("V: %d %d %d", cmd.Vx, cmd.Vy, cmd.w)
+	#print("V: %d %d %d" % (cmd.Vx,cmd.Vy,cmd.w))
         cmd_pub_.publish(cmd)
 
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
