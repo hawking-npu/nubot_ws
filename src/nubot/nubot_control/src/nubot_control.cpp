@@ -438,8 +438,6 @@ public:
         m_plan_.m_behaviour_.last_app_vx_ = vx;
         m_plan_.m_behaviour_.last_app_vy_ = vy;
         m_plan_.m_behaviour_.last_app_w_  = w;
-        m_plan_.m_behaviour_.clearBehaviorState();
-        m_plan_.m_behaviour_.last_app_vy_ = 100;
 #ifdef SIMULATION
         command.Vx = vx;
         command.Vy = vy;
