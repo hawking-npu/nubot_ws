@@ -42,10 +42,10 @@
 
    `$ sudo make install`
 
-   `$ sudo systemctl daemon-reload                 # make systemd aware of gige-da    emon
+   `$ sudo systemctl daemon-reload                 # make systemd aware of gige-daemon
     $ sudo systemctl enable gige-daemon.service    # start on every boot
     $ sudo systemctl start gige-daemon.service     # start the actual daemon
-    $ sudo systemctl status gige-daemon.service    # check if statemd say everythi    ng is ok`
+    $ sudo systemctl status gige-daemon.service    # check if statemd say everything is ok`
 
 6. ssh设置
 
@@ -91,9 +91,9 @@
 
     `$ source ~/.bashrc`
 
-    `$ sudo chmod +x ~/nubot_ws/src/camera_driver/tiscamera/tis_camera/scripts/gige    _camera_node.py`
+    `$ sudo chmod +x ~/nubot_ws/src/camera_driver/tiscamera/tis_camera/scripts/gige_camera_node.py`
 
-    `$ sudo chmod +x ~/nubot_ws/src/nubot/nubot_hwcontroller/scripts/twist_keyboard    .py`
+    `$ sudo chmod +x ~/nubot_ws/src/nubot/nubot_hwcontroller/scripts/twist_keyboard.py`
 
 ## 编译
 
