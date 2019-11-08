@@ -108,5 +108,3 @@
 ## 其他
 
 可以使用qtcreator-ros打开nubot_ws.workspace, 也可以查看ROS_Qt.doc进行相关配置
-
-1. 安装Ub
