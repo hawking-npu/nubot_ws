@@ -67,7 +67,7 @@
 
    `$ sudo chmod 666 70-ttyusb.rules`
 
-9. 锁屏设置
+9. 锁屏设置(可选)
 
    将`/etc/systemd/logind.conf`文件中的`HandleLidSwitch=suspend`修改为`HandleLidSwitch=ignore`, 然后执行
 
