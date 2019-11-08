@@ -42,10 +42,10 @@
 
    `$ sudo make install`
 
-   `$ sudo systemctl daemon-reload                 # make systemd aware of gige-daemon
-    $ sudo systemctl enable gige-daemon.service    # start on every boot
-    $ sudo systemctl start gige-daemon.service     # start the actual daemon
-    $ sudo systemctl status gige-daemon.service    # check if statemd say everything is ok`
+   `$ sudo systemctl daemon-reload                 # make systemd aware of gige-daemon`
+   `$ sudo systemctl enable gige-daemon.service    # start on every boot`
+   `$ sudo systemctl start gige-daemon.service     # start the actual daemon`
+   `$ sudo systemctl status gige-daemon.service    # check if statemd say everything is ok`
 
 6. ssh设置
 
