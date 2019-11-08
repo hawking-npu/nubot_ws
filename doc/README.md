@@ -84,7 +84,7 @@
 
     `$ sudo chmod +x configure`
 
-    `sudo ./configure`
+    `$ sudo ./configure`
 
     `$ catkin_make`
 
