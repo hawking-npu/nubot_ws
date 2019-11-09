@@ -104,9 +104,21 @@
 
 ## 运行
 
+### 正常运行
+
 `$ roslaunch nubot_common nubot.launch`
 
 `$ roslaunch nubot_control nubot_control.launch`
+
+### 运行特定部分
+
+`$ roslaunch nubot_hwcontrol nubot_hwcontrol.launch   #上下位机通信`
+
+`$ roslaunch nubot_control nubot_control.launch       #策略算法`
+
+`$ roslaunch nubot_hwcontrol teleop_keyboard.py       #简单键盘控制`
+
+`$ roslaunch nubot_omnivision nubot_omnivision.launch #打开全景`
 
 ## 其他
 
