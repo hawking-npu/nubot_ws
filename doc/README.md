@@ -116,7 +116,7 @@
 
 `$ roslaunch nubot_control nubot_control.launch       #策略算法`
 
-`$ roslaunch nubot_hwcontrol teleop_keyboard.py       #简单键盘控制`
+`$ roslaunch nubot_hwcontrol twist_keyboard.py       #简单键盘控制`
 
 `$ roslaunch nubot_omnivision nubot_omnivision.launch #打开全景`
 
