@@ -13,6 +13,8 @@
 
 using namespace std;
 
+const int spinrate = 30;
+
 class Nubot_HWController
 {
 public:
@@ -31,14 +33,21 @@ public:
     bool BallIsHolding;
     bool PowerState;
     bool RobotStuck; //const
+    int V_rpm[3];
+    int angle;
+    double V_m[3];
+    double I_x;
+    double I_y;
 
     ros::ServiceServer ballhandle_service_;
     ros::ServiceServer shoot_service_;
+
 
     void SerialWrite(const nubot_common::VelCmd::ConstPtr& cmd);
     void SerialWrite(const int ShootPower);//, const int ShootDep);
     void SerialWrite(const bool PowerSwitch);
     void SerialRead();
+    void SerialRead_test();
     bool BallHandleControlService(nubot_common::BallHandle::Request  &req,
                                   nubot_common::BallHandle::Response &res);
     bool ShootControlServive(nubot_common::Shoot::Request  &req,

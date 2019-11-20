@@ -4,5 +4,5 @@
 
   <node name="nubot_hwcontroller_node" pkg="nubot_hwcontroller" type="nubot_hwcontroller_node" output="screen"/>
   <!-- <node name="nubot_teleop_joy" pkg="nubot_hwcontroller" type="nubot_teleop_joy"/> -->
-  <node name="twist_keyboard" pkg="nubot_hwcontroller" type="twist_keyboard.py" output="screen"/>
+  <!--<node name="twist_keyboard" pkg="nubot_hwcontroller" type="twist_keyboard.py" output="screen"/>-->
 </launch>

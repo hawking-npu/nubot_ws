@@ -41,7 +41,6 @@ StrategyInfo.msg
 TargetInfo.msg
 FrontBallInfo.msg
 simulation_strategy.msg
-GyroInfo.msg
 )
 
 add_service_files(DIRECTORY srv FILES BallHandle.srv Shoot.srv)

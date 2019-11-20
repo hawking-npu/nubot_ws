@@ -114,7 +114,7 @@ if __name__=="__main__":
 		try:
     		    shoot_client_ = rospy.ServiceProxy('Shoot',Shoot)
     		    rsp = shoot_client_(1,1)
-		except rospy.ServiceException, e:
+		except rospy.ServiceException as e:
 		    rospy.logwarn("Service call failed: %s"%e)
             else:
                 x = 0
@@ -129,9 +129,9 @@ if __name__=="__main__":
             cmd.Vy = x*speed*200
 	    cmd.w  = th*turn*50
 	    if cmd.Vx==0 and cmd.Vy==0 and cmd.w==0:
-		cmd.stop_ = True
+		    cmd.stop_ = True
 	    else:
-		cmd.stop_ = False
+		    cmd.stop_ = False
 	    
             cmd_pub_.publish(cmd)
 	    #rospy.loginfo("V: %d %d %d", cmd.Vx, cmd.Vy, cmd.w)

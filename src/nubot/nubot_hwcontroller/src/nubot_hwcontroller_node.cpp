@@ -20,8 +20,8 @@ Nubot_HWController::Nubot_HWController()
     //设置串口属性，并打开串口
     try
     {
-        //serial.setPort("/dev/ttyUSB0");
-        serial.setPort("/dev/Robot_control");
+        serial.setPort("/dev/ttyUSB0");
+        //serial.setPort("/dev/Robot_control");
         serial.setBaudrate(115200);
         serial::Timeout to = serial::Timeout::simpleTimeout(1000);
         serial.setTimeout(to);
@@ -51,6 +51,9 @@ Nubot_HWController::Nubot_HWController()
    // 注册主动带球以及射门服务
    ballhandle_service_ = nh.advertiseService("BallHandle",&Nubot_HWController::BallHandleControlService,this);
    shoot_service_ = nh.advertiseService("Shoot",&Nubot_HWController::ShootControlServive,this);
+
+   I_x = 0.0;
+   I_y = 0.0;
 
 }
 
@@ -133,19 +136,68 @@ void Nubot_HWController::SerialRead()
     }
 }
 
+void Nubot_HWController::SerialRead_test()
+{
+    if(serial.available() && OdoInfo_pub->trylock())
+    {
+//        ROS_INFO_STREAM("Reading from serial port\n");
+        std_msgs::String read_stream;
+        read_stream.data = serial.read(serial.available());
+        std::istringstream read_stream_(read_stream.data);
+        string tmph,tmpe;
+        string tmp1,tmp2,tmp3,tmp4,tmp5;
+        read_stream_ >> tmph >> tmp1 >> tmp2 >> tmp3 >> tmp4 >> tmp5 >> tmpe;
+        if(tmph == "+" && tmpe == "-")
+        {
+            V_rpm[0] = stringToNum<int>(tmp1);
+            V_rpm[1] = stringToNum<int>(tmp2);
+            V_rpm[2] = stringToNum<int>(tmp3);
+            Real_angle = stringToNum<int>(tmp4);
+            BallIsHolding = stringToNum<bool>(tmp5);
+        }
+        V_m[0] = V_rpm[0]*39.9/960;
+        V_m[1] = V_rpm[1]*39.9/960;
+        V_m[2] = V_rpm[2]*39.9/960;
+        Real_Vx = V_m[0]*0.6667 - V_m[1]*0.3333 - V_m[2]*0.3333;
+        Real_Vy = V_m[1]*(-0.5774) + V_m[2]*0.5774;
+        Real_w = (V_m[0]+V_m[1]+V_m[2])/3;
+        PowerState = true;
+        RobotStuck = false; // not controlled by the upper computer
+
+        OdoInfo_pub->msg_.header.stamp = ros::Time::now();
+        OdoInfo_pub->msg_.Vx=Real_Vx;
+        OdoInfo_pub->msg_.Vy=Real_Vy;
+        OdoInfo_pub->msg_.w =Real_w;
+        OdoInfo_pub->msg_.angle=Real_angle;
+        OdoInfo_pub->msg_.BallIsHolding = BallIsHolding;
+        OdoInfo_pub->msg_.RobotStuck =RobotStuck;
+        OdoInfo_pub->msg_.PowerState =PowerState;
+
+        OdoInfo_pub->unlockAndPublish();
+
+//        ROS_INFO("V = (%d, %d, %d)", V_rpm[0], V_rpm[1], V_rpm[2]);
+//        ROS_INFO("angle = %d", Real_angle);
+
+//        I_x += odometer[0]*(1.0/spinrate)*cos((Real_angle-90)*0.0175) + odometer[1]*(1.0/spinrate)*cos(Real_angle*0.0175);
+//        I_y += odometer[0]*(1.0/spinrate)*sin((Real_angle-90)*0.0175) + odometer[1]*(1.0/spinrate)*sin(Real_angle*0.0175);
+
+//        ROS_INFO("I = (%.2f, %.2f)", I_x, I_y);
+    }
+}
+
 bool Nubot_HWController::BallHandleControlService(nubot_common::BallHandle::Request  &req,
                              nubot_common::BallHandle::Response &res)
 {
-//   if(BallHandleEnable!=req.enable)
-//       Ballhandle_Enable(req.enable);
-//   BallHandleEnable=req.enable;
-//   SerialWrite(BallHandleEnable);
-//   res.BallIsHolding = BallIsHolding;
+//    if(BallHandleEnable!=req.enable)
+//        Ballhandle_Enable(req.enable);
+//    BallHandleEnable=req.enable;
+//    SerialWrite(BallHandleEnable);
+//    res.BallIsHolding = BallIsHolding;
 
-   PowerSwitch=req.enable;
-   SerialWrite(PowerSwitch);
+    PowerSwitch=req.enable;
+    SerialWrite(PowerSwitch);
 
-   return true;
+    return true;
 }
 
 bool Nubot_HWController::ShootControlServive(nubot_common::Shoot::Request  &req,
@@ -171,13 +223,12 @@ bool Nubot_HWController::ShootControlServive(nubot_common::Shoot::Request  &req,
 
 int main(int argc,char** argv)
 {
-
    ros::init(argc,argv, "nubot_hwcontroller_node");
    Nubot_HWController controller;
-   ros::Rate loop_rate(30);
+   ros::Rate loop_rate(spinrate);
    while(ros::ok())
    {
-     controller.SerialRead();
+     controller.SerialRead_test();
      ros::spinOnce();
      loop_rate.sleep();
    }
