@@ -129,7 +129,7 @@ int read_configuration(RTDBconf_agents *conf)
     char * environment = getenv("HOME");
     env<<environment;
 
-    std::string ini_config_file=env.str()+"/nubot_ws/src/nubot/world_model/config/rtdb.ini";
+    std::string ini_config_file=env.str()+"/nubot_ws/src/nubot/world_model/config/rtdb.ini";//
     if ((f_def = fopen(ini_config_file.c_str(), "r")) == NULL)
   {
     PERRNO("fopen");
@@ -646,6 +646,7 @@ int DB_get_from (int _agent, int _from_agent, int _id, void *_value)
   life = (int)(((time.tv_sec - (p_rec->timestamp[p_rec->read_bank]).tv_sec) * 1E3) + ((time.tv_usec - (p_rec->timestamp[p_rec->read_bank]).tv_usec) / 1E3));
 
   PDEBUG("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
+  //printf("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec\n", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
 
   return (life);
 }

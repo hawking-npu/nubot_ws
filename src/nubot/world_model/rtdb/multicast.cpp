@@ -128,7 +128,7 @@ int openSocket(char* interface)
 	memset((void *) &mreqn, 0, sizeof(mreqn));
 	mreqn.imr_ifindex=if_NameToIndex(interface, address);
 	if((setsockopt(multiSocket, SOL_IP, IP_MULTICAST_IF, &mreqn, sizeof(mreqn))) == -1)
-	{
+  {
 	  PERRNO("setsockopt");
 		return (-1);
 	}
@@ -145,15 +145,15 @@ int openSocket(char* interface)
 	mreq.imr_interface.s_addr = inet_addr(address);
 
 	if((setsockopt(multiSocket, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq))) == -1)
-	{
+  {
 	  PERRNO("setsockopt");
-		return (-1);
-	}
+    return (-1);/////////////////
+  }
 						
 	/* Disable reception of our own multicast */
 	opt = RECEIVE_OUR_DATA;
 	if((setsockopt(multiSocket, IPPROTO_IP, IP_MULTICAST_LOOP, &opt, sizeof(opt))) == -1)
-	{
+  {
 		PERRNO("setsockopt");
 		return (-1);
 	}

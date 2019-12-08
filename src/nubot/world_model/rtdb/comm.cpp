@@ -411,11 +411,11 @@ void *receiveDataThread(void *arg)
 //
 int main(int argc, char *argv[])
 {
-
     argc =2;
     argv[0]= "comm";
 //    argv[1] = "wlan0"
-    argv[1]= "wlp3s0";
+    //argv[1]= "wlp3s0";
+    argv[1]= "wlp2s0";
 
 #ifdef UNI_DEBUG
     char tempBuffer[BUFFER_SIZE];

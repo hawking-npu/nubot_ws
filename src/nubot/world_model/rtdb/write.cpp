@@ -65,7 +65,6 @@ int main(int argc, char **argv)
             DB_free();
             return -1;
         }
-
     }
     DB_free();
     return 0;
