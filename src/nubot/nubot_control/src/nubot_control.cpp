@@ -8,7 +8,6 @@
 #include <nubot_common/StrategyInfo.h>
 #include <nubot_common/TargetInfo.h>
 #include <nubot_common/OdoInfo.h>
-#include <nubot_common/GyroInfo.h>
 #ifndef SIMULATION
 #include <nubot_control/nubotcontrolConfig.h>
 #endif
