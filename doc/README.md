@@ -63,6 +63,7 @@
    `$ sudo apt-get install ros-kinetic-teleop-twist-keyboard`
 
 8. 串口设置
+
    `$ sudo vim /etc/udev/rules.d/70-ttyusb.rules`
 
    在其中输入
