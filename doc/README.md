@@ -63,12 +63,13 @@
    `$ sudo apt-get install ros-kinetic-teleop-twist-keyboard`
 
 8. 串口设置
+   `$ sudo vim /etc/udev/rules.d/70-ttyusb.rules`
 
-   在`/etc/udev/rules.d`中新建`70-ttyusb.rules`文件,在其中输入
+   在其中输入
 
    `KERNEL=="ttyUSB[0-9]*",MODE="0666"`, 然后在终端中输入
 
-   `$ sudo chmod 666 70-ttyusb.rules`
+   `$ sudo chmod 666 /etc/udev/rules.d/70-ttyusb.rules`
 
 9. 锁屏设置(可选)
 
