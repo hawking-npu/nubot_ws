@@ -65,7 +65,7 @@ void Plan::catchMotionlessBall(DPoint target, double maxvel, double maxw)  //抓
 {
     if(m_dribble_->is_dribble_ != true)
     {
-        ROS_INFO("Catch_Motionless_Ball (%f,%f)", target.x_, target.y_);
+        //ROS_INFO("Catch_Motionless_Ball (%f,%f)", target.x_, target.y_);
         DPoint br = target - robot_pos_;
 
         positionAvoidObs2(br.angle().radian_, maxw, 5*DEG2RAD);

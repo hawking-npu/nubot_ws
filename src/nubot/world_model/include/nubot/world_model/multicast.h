@@ -22,8 +22,8 @@
  */
 
 
-#define MULTICAST_IP	"225.17.21.24" //"224.16.32.53" //
-#define MULTICAST_PORT	5081
+#define MULTICAST_IP	"192.168.1.101" //"224.16.32.53" //
+#define MULTICAST_PORT	2000
 #define TTL				64
 
 #define RECEIVE_OUR_DATA 0

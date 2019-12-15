@@ -1,4 +1,5 @@
 #include "nubot/core/core.hpp"
+#define THREEPLAYER
 
 #include <nubot_common/VelCmd.h>
 #include <nubot_common/WorldModelInfo.h>
@@ -237,6 +238,7 @@ public:
         for(std::size_t i = 0 ; i < OUR_TEAM ; i++)
         {
             world_model_info_.RobotInfo_[i].setID(_world_msg.robotinfo[i].AgentID);
+            ROS_INFO("%d and ",_world_msg.robotinfo[i].AgentID);
 
             world_model_info_.RobotInfo_[i].setTargetNum(1,_world_msg.robotinfo[i].targetNum1);
             world_model_info_.RobotInfo_[i].setTargetNum(2,_world_msg.robotinfo[i].targetNum2);
@@ -253,6 +255,8 @@ public:
             world_model_info_.RobotInfo_[i].setKick(_world_msg.robotinfo[i].iskick);
             world_model_info_.RobotInfo_[i].setValid(_world_msg.robotinfo[i].isvalid);
             world_model_info_.RobotInfo_[i].setW(_world_msg.robotinfo[i].vrot);
+
+            world_model_info_.Obstacles_.clear();
             /** 信息是来源于队友，则要更新机器人策略信息*/
             //if(world_model_info_.AgentID_ != i+1)
             {
@@ -288,6 +292,22 @@ public:
         //world_model_info_.CoachInfo_.MatchMode =_world_msg.coachinfo.MatchMode;
         //world_model_info_.CoachInfo_.MatchType =_world_msg.coachinfo.MatchType;
 
+
+        /**
+         * @author JR
+         * @version 19.11.10
+         *
+         * 更新传球信息*/
+        world_model_info_.pass_cmds_.catchrobot_id  = _world_msg.pass_cmd.catch_id;
+        world_model_info_.pass_cmds_.passrobot_id   = _world_msg.pass_cmd.pass_id;
+        world_model_info_.pass_cmds_.isvalid        = _world_msg.pass_cmd.is_valid;
+        world_model_info_.pass_cmds_.is_dynamic_pass   = _world_msg.pass_cmd.is_dynamic_pass;
+        world_model_info_.pass_cmds_.is_static_pass    = _world_msg.pass_cmd.is_static_pass;
+        world_model_info_.pass_cmds_.is_passout = _world_msg.pass_cmd.is_passout;
+        world_model_info_.pass_cmds_.pass_pt    = DPoint(_world_msg.pass_cmd.pass_pt.x,_world_msg.pass_cmd.pass_pt.y);
+        world_model_info_.pass_cmds_.catch_pt   = DPoint(_world_msg.pass_cmd.catch_pt.x,_world_msg.pass_cmd.catch_pt.y);
+
+
         past_ball_vel.push_back(ball_vel_);
         m_plan_.update();
     }
@@ -300,6 +320,7 @@ public:
     /** 主要的控制框架位于这里*/
     void loopControl(const ros::TimerEvent& event)
     {
+
         //match_mode_ = world_model_info_.CoachInfo_.MatchMode;               //! 当前比赛模式
         //pre_match_mode_ = world_model_info_.CoachInfo_.MatchType;           //! 上一个比赛模式
         robot_pos_  = world_model_info_.RobotInfo_[world_model_info_.AgentID_-1].getLocation();
@@ -407,15 +428,12 @@ public:
                 setShoot();
             }
         }
-
-        m_plan_.m_behaviour_.clearBehaviorState();
-        m_plan_.m_behaviour_.app_w_ = 1.0;
         setEthercatCommond();
-/*
+
 #ifdef THREEPLAYER
         pubStrategyInfo();  // 发送策略消息让其他机器人看到，这一部分一般用于多机器人之间的协同
 #endif
-*/
+
     }
 
     void setEthercatCommond()
@@ -441,7 +459,6 @@ public:
         m_plan_.m_behaviour_.last_app_vx_ = vx;
         m_plan_.m_behaviour_.last_app_vy_ = vy;
         m_plan_.m_behaviour_.last_app_w_  = w;
-        m_plan_.m_behaviour_.clearBehaviorState();
 #ifdef SIMULATION
         command.Vx = vx;
         command.Vy = vy;
@@ -455,8 +472,8 @@ public:
         {
             command.stop_ = true;
         }
-        ROS_INFO("V: %d, %d, %d", command.Vx, command.Vy, command.w);
-        ROS_INFO("pos: %f, %f", robot_pos_.x_, robot_pos_.y_);
+        //ROS_INFO("V: %d, %d, %d", command.Vx, command.Vy, command.w);
+        //ROS_INFO("pos: %f, %f", robot_pos_.x_, robot_pos_.y_);
         motor_cmd_pub_.publish(command);
 
         //(60*vx*16)/(12.7*PI);
@@ -495,16 +512,24 @@ public:
 #endif
     }
 
-//#ifdef THREEPLAYER
-//    void pubStrategyInfo()
-//    {
-//        nubot_common::StrategyInfo strategy_info;       // 这个消息的定义可以根据个人需要进行修改
-//        strategy_info.header.stamp = ros::Time::now();
-//        strategy_info.AgentID     = world_model_info_.AgentID_;
+#ifdef THREEPLAYER
+    void pubStrategyInfo()
+    {
+        nubot_common::StrategyInfo strategy_info;       // 这个消息的定义可以根据个人需要进行修改
+        strategy_info.header.stamp = ros::Time::now();
+        strategy_info.AgentID     = world_model_info_.AgentID_;
 
-//        strategy_info_pub_.publish(strategy_info);
-//    }
-//#endif
+
+        strategy_info.pass_cmd.is_passout = 1;//
+        strategy_info.pass_cmd.is_valid = 1;
+        strategy_info.pass_cmd.pass_id = 3;  //
+        strategy_info.pass_cmd.catch_id = 2;//
+        strategy_info.pass_cmd.is_dynamic_pass = 1;//
+        strategy_info.pass_cmd.is_static_pass = 1;//
+
+        strategy_info_pub_.publish(strategy_info);
+    }
+#endif
 
     //! 中场于助攻在机器人动态传球时会出现穿过传球线的现象，在此矫正传球时候，中场与助攻的跑位点，防止传球失败
 /*    void coorrect_target(const DPoint & start_pt, const DPoint & end_pt, const DPoint & robot_pos, DPoint & target)

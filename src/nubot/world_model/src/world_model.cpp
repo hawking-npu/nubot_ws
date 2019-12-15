@@ -402,6 +402,14 @@ nubot::World_Model::update(const ros::TimerEvent & )
             DB_free();
             ROS_ERROR("RTDB发送信息失败，请重启");
         }
+
+//        PassCommands & pass_cmd_  = teammatesinfo_[AgentID_-1].pass_cmds_;
+//        ROS_INFO("%d  before",pass_cmd_.catchrobot_id);
+//        pass_cmd_.catchrobot_id = 22;
+//        ROS_INFO("%d  middle",pass_cmd_.catchrobot_id);
+//        std::cout<<DB_get(AgentID_, TEAMMATESINFO, &teammatesinfo_[AgentID_-1])<<std::endl;
+//        ROS_INFO("%d  after",pass_cmd_.catchrobot_id);
+
         streaming_cout++;
     }
     else
@@ -539,6 +547,8 @@ nubot::World_Model::updateInfo()            // if the simulation flag is set, th
     teammateIDforBallSelected = -1;
     DPoint ball_vec = DPoint(0,0);
     bool   ball_vec_known = false;
+
+
     for( int i = 0 ; i < OUR_TEAM ; i++ )
     {
         if( AgentID_ != i+1 )

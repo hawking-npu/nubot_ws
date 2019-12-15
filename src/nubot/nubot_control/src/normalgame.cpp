@@ -42,8 +42,8 @@ void NormalGame::process(int role_)
 
     if(role_ != GOALIE)
     {
-        m_plan_->m_behaviour_.app_vx_ *= 2.0;
-        m_plan_->m_behaviour_.app_vy_ *= 2.0;
+        m_plan_->m_behaviour_.app_vx_ *= 1.0;
+        m_plan_->m_behaviour_.app_vy_ *= 1.0;
     }
 
     if(selected_action_ == AtShootSituation) //踢球
@@ -58,7 +58,7 @@ void NormalGame::process(int role_)
 
     if(selected_action_ == No_Action)
     {
-        ROS_INFO("No_Action");
+        //ROS_INFO("No_Action");
         m_plan_->m_behaviour_.clearBehaviorState();
     }
 }
@@ -91,12 +91,12 @@ void NormalGame::asActive()
     }
     if(selected_action_ == Catch_Positioned) //走到球的位置并完成抓球
     {
-        ROS_INFO("robot%d Catch_Positioned", world_model_->AgentID_);
+        //ROS_INFO("robot%d Catch_Positioned", world_model_->AgentID_);
         m_plan_->catchBall();
     }
     if(selected_action_ == Positioned) //移动到目标位置 move to position 射门位置
     {
-        ROS_INFO("robot%d Positioned", world_model_->AgentID_);
+        //ROS_INFO("robot%d Positioned", world_model_->AgentID_);
         target = DPoint(FIELD_LENGTH*1.0/2+50.0, 0.0);
         br = target - robot_pos_;
         m_plan_->positionAvoidObs2(br.angle().radian_);
@@ -190,7 +190,7 @@ void NormalGame::asAssist()
     }
     if(selected_action_ == Catch_Positioned) //走到球的位置并完成抓球
     {
-        ROS_INFO("robot%d Catch_Positioned", world_model_->AgentID_);
+        //ROS_INFO("robot%d Catch_Positioned", world_model_->AgentID_);
         if(!(ball_pos_.x_<=-210.0 && fabs(ball_pos_.y_)<=80.0))
         {
             m_plan_->catchBall();
@@ -404,7 +404,7 @@ void NormalGame::one2one()
 
     if(selected_action_ == Catch_Positioned) //走到球的位置并完成抓球
     {
-        ROS_INFO("robot%d Catch_Positioned", world_model_->AgentID_);
+        //ROS_INFO("robot%d Catch_Positioned", world_model_->AgentID_);
         m_plan_->catchBall();
     }
     if(selected_action_ == Positioned) //移动到目标位置 move to position 射门位置
@@ -438,20 +438,20 @@ void NormalGame::one2one()
 
 void NormalGame::update()
 {
-    ROS_INFO("update");
+    //ROS_INFO("update");
     robot_pos_ = world_model_->RobotInfo_[world_model_->AgentID_-1].getLocation();
     robot_ori_ = world_model_->RobotInfo_[world_model_->AgentID_-1].getHead();
     ball_pos_  = world_model_->BallInfo_[world_model_->AgentID_-1].getGlobalLocation();
     ball_vel_   = world_model_->BallInfo_[world_model_->AgentID_-1].getVelocity();
-    ROS_INFO("opp=%d, obs=%d", world_model_->Opponents_.size(), world_model_->Obstacles_.size());
+    //ROS_INFO("opp=%d, obs=%d", world_model_->Opponents_.size(), world_model_->Obstacles_.size());
     if(robot_pos_.x_==0.0 && robot_pos_.y_==0.0 && ball_pos_.x_==0.0 && ball_pos_.y_==0.0)
     {
         selected_action_ = No_Action;
     }
-    if(world_model_->Opponents_.size() == 0)
-    {
-        world_model_->Opponents_.push_back(DPoint(0.0,0.0));
-    }
+//    if(world_model_->Opponents_.size() == 0)
+//    {
+//        world_model_->Opponents_.push_back(DPoint(0.0,0.0));
+//    }
     if(m_dribble_->is_dribble_)
     {
         world_model_->BallInfo_[world_model_->AgentID_-1].setLocationKnown(true);
@@ -459,12 +459,13 @@ void NormalGame::update()
     }
 
     //goalie active me
-    opp_robot_[0] = world_model_->Opponents_[m_plan_->oppneartargetid(DPoint(FIELD_LENGTH*1.0/2, 0.0))-1];
-    opp_robot_[1] = world_model_->Opponents_[m_plan_->oppneartargetid(ball_pos_)-1];
-    opp_robot_[2] = world_model_->Opponents_[m_plan_->oppneartargetid(robot_pos_)-1];
+//    opp_robot_[0] = world_model_->Opponents_[m_plan_->oppneartargetid(DPoint(FIELD_LENGTH*1.0/2, 0.0))-1];
+//    opp_robot_[1] = world_model_->Opponents_[m_plan_->oppneartargetid(ball_pos_)-1];
+//    opp_robot_[2] = world_model_->Opponents_[m_plan_->oppneartargetid(robot_pos_)-1];
 
-    ROS_INFO("kick_enable=%d", kick_enable_);
-    ROS_INFO("dribble=%d", m_dribble_->is_dribble_);
+    //ROS_INFO("kick_enable=%d", kick_enable_);
+    //ROS_INFO("dribble=%d", m_dribble_->is_dribble_);
+    //ROS_INFO("obs_number=%d", world_model_->Obstacles_.size());
 }
 
 bool NormalGame::velzero()

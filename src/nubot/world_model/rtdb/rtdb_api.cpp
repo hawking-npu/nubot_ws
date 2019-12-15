@@ -624,12 +624,13 @@ int DB_get_from (int _agent, int _from_agent, int _id, void *_value)
   struct timeval time;
   int life;
 
-  if (_from_agent == SELF)
-    _from_agent = p_def[_agent]->self_agent;
+  if (_from_agent == SELF){printf("dd1\n");
+    _from_agent = p_def[_agent]->self_agent;}
 
   if((lut = p_def[_agent]->rec_lut[_from_agent][_id]) == -1)
   {
     PERR("Unknown record %d for agent %d", _id, _from_agent);
+    printf("dd2\n");
     return -1;
   }
 
@@ -646,7 +647,7 @@ int DB_get_from (int _agent, int _from_agent, int _id, void *_value)
   life = (int)(((time.tv_sec - (p_rec->timestamp[p_rec->read_bank]).tv_sec) * 1E3) + ((time.tv_usec - (p_rec->timestamp[p_rec->read_bank]).tv_usec) / 1E3));
 
   PDEBUG("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
-
+printf("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec \n", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
   return (life);
 }
 

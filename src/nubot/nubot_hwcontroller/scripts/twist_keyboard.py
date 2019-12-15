@@ -125,8 +125,8 @@ if __name__=="__main__":
                     break
 
 	    cmd = VelCmd()
-	    cmd.Vx = x*speed*200
-	    cmd.Vy = y*speed*200
+	    cmd.Vx = -y*speed*200
+	    cmd.Vy = x*speed*200
 	    cmd.w  = th*turn*50
 	    if cmd.Vx==0 and cmd.Vy==0 and cmd.w==0:
 		cmd.stop_ = True

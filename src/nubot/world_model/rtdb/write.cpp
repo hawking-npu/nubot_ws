@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     nubot::Teammatesinfo rtdb_teammate;
     rtdb_teammate.robot_info_.setID(3);
     rtdb_teammate.robot_info_.setLocation(nubot::DPoint(10,10));
-
+    ROS_INFO("RTDB");
     if(signal(SIGINT, signal_catch) == SIG_ERR)
     {
         printf("Error registering signal handler");

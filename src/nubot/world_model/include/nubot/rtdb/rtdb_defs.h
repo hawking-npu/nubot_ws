@@ -30,7 +30,7 @@
 
 #define SELF 3333
 
-#define CONFIG_FILE  "/home/jensen/nubot_ws/src/nubot/world_model/config/rtdb.ini"
+#define CONFIG_FILE  "/home/jerry/nubot_ws/src/nubot/world_model/config/rtdb.ini"
 
 #define SHMEM_KEY 0x2000
 #define SHMEM_SECOND_TEAM_KEY 0x3000

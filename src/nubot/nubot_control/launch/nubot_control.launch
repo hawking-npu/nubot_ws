@@ -23,7 +23,7 @@
                  PASSING = 32,
                  CHECKGIGE = 40   -->
 
-        <param name="mode_launch" type="int" value="1" />
+        <param name="mode_launch" type="int" value="15" />
 
 
         <param name="check_gige_launch" type="int" value="5" />
@@ -34,7 +34,7 @@
         <param name="point4_launch" type="int" value="20" />
         <param name="point5_launch" type="int" value="21" />
 
-        <param name="level_launch" type="int" value="4" />
+        <param name="level_launch" type="int" value="1" />
 <!--
 enum Roles{3cGYP{"
            PASSIVE = 2,
@@ -50,5 +50,5 @@ enum Roles{3cGYP{"
            ACTIVE = 1,
            ASSISTANT = 4,};  -->
 
-           <param name="role_launch" type="int" value="4" />
+           <param name="role_launch" type="int" value="3" />
 </launch>
