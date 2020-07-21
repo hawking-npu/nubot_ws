@@ -4,7 +4,11 @@
 
 本文档将持续记录并更新轮式机器人软件组的环境配置，以期为后来者们提供帮助，快速上手轮式足球机器人软件系统。
 
+对于文本中出现的命令，除了按照步骤做了还需要你们都了解它们各自的作用。
+
 本文档整理于nubot以及tiscanera的各个文档，[点我进行一览](http://git.codesdream.com/yws/nwpu_hawking_doc)。
+
+
 
 ## 安装Ubuntu
 
@@ -14,6 +18,8 @@
 * i advice you to change source to tsinghua university sourc or ali source.
 
 在软件源配置过程中可能会出现等待时长过久的问题，请耐心等待。
+
+
 
 ## 安装ros
 
@@ -69,6 +75,8 @@ sudo apt-get install ros-kinetic-serial
 sudo apt-get install ros-kinetic-driver-base
 sudo apt-get install ros-kinetic-teleop-twist-keyboard
 ```
+
+
 
 ## 安装opencv
 
@@ -273,6 +281,8 @@ sudo gedit /etc/bash.bashrc
 sudo apt-get install git
 ```
 
+
+
 ## 安装摄像头相关
 
 按ctrl+T打开终端，这将使你位于home下，注意这是必要的，tiscamera以及nubot_ws工程文件都要直接放在home下，不要在home下新建其他的文件夹然后将工程文件放在这些文件夹中，这将使得工程文件无法被找到。
@@ -307,6 +317,8 @@ sudo systemctl status gige-daemon.service    # check if statemd say everything i
 
 配置tiscamera的过程参阅自[这里](https://github.com/TheImagingSource/tiscamera)。
 
+
+
 ## 配置U转串
 
 ```
@@ -318,6 +330,8 @@ when you execute command above,you may get error like:
 sudo echo 'KERNEL=="ttyUSB[0-9]*",MODE="0666"' >> /etc/udev/rules.d/70-ttyusb.rules
 bash: /etc/udev/rules.d/70-ttyusb.rules: Permission denied
 ```
+
+
 
 ## 配置机器人工程代码
 
@@ -337,6 +351,9 @@ catkin_make
 sudo echo 'source ~/nubot_ws/devel/setup.bash' >> ~/.bashrc
 sudo echo 'export AGENT=2' >> ~/.bashrc
 source ~/.bashrc
+
+# 这里bashrc实际上相当于Windows的环境变量文件，设置了环境变量后才能在命令行快捷使用我们的指令
+
 sudo chmod +x ~/nubot_ws/src/camera_driver/tiscamera/tis_camera/scripts/gige_camera_node.py
 sudo chmod +x ~/nubot_ws/src/nubot/nubot_hwcontroller/scripts/twist_keyboard.py
 ```
@@ -346,6 +363,8 @@ sudo chmod +x ~/nubot_ws/src/nubot/nubot_hwcontroller/scripts/twist_keyboard.py
 ```
 catkin_make
 ```
+
+
 
 ## 配置摄像头
 
@@ -372,13 +391,13 @@ iface lo inet loopback
 
 auto enx503eaadf3bb1
 iface enx503eaadf3bb1 inet static
-address 192.168.0.100
+address 192.168.1.100
 netmask 255.255.255.0
-gateway 192.168.0.1
+gateway 192.168.1.1
 dns-nameservers 8.8.4.4 8.8.8.8
 ```
 
-其中enx503eaadf3bb1为我的转接器名称。
+其中 enx503eaadf3bb1 为 ifconfig 查看到的网口的编号。
 
 完成后执行：
 
@@ -411,6 +430,8 @@ cmake .
 make
 ./opencv_example
 
+
+
 ## 运行
 
 ### 正常运行
@@ -431,8 +452,20 @@ roslaunch nubot_control nubot_control.launch      #策略算法
 roslaunch nubot_hwcontrol twist_keyboard.py       #简单键盘控制
 
 roslaunch omni_vision omni_vision.launch          #打开全景
+```
+
+#####    #这里建议自行学习launch文件的语法，以便调试
+
+###  机器人运行配置
 
 ```
+/nubot_ws/src/nubot/nubot_control/launch/nubot_control.launch  
+#包括了策略中的比赛模式'mode_launch'以及机器人编号'role_launch'等 都在这里更改
+
+~/.bashrc 文件中，AGENT也要同时更改为对应机器人编号
+```
+
+
 
 ## 问题修复
 
@@ -444,8 +477,13 @@ in path ~/nubot_ws/src/camera_driver/tiscamera file `gscam` come from:
 - [gscam](https://github.com/ros-drivers/gscam) and [tiscamera ROS example](https://github.com/TheImagingSource/tiscamera/tree/master/examples/ROS)
 - [zed-ros-wrapper](https://github.com/stereolabs/zed-ros-wrapper) 
 
+
+
 ## 修改记录
 
-@yws，20200714
+@yws, 20200714
+
 @shy, 20200716
+
+@cjr, 20200721 
 
