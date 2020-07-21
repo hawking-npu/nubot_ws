@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: gscam
-Description: Description of gscam
-Version: 1.0.1
-Cflags: -I/usr/local/include -I/usr/include/gstreamer-0.10 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/libxml2
-Libs: -L/usr/local/lib -lgscam -lgstapp-0.10 -lgstbase-0.10 -lgstreamer-0.10 -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lxml2
-Requires: roscpp nodelet image_transport sensor_msgs cv_bridge camera_calibration_parsers camera_info_manager dynamic_reconfigure

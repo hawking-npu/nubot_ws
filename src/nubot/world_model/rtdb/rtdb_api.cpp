@@ -546,6 +546,7 @@ int DB_put_in (int _agent, int _to_agent, int _id, void *_value, int life)
   p_rec->read_bank = write_bank;
 
   PDEBUG("agent: %d, id: %d, lut: %d, size: %d, write_bank: %d, previous life: %umsec", _to_agent, p_rec->id, lut, p_rec->size, p_rec->read_bank, life);
+  //printf("agent: %d, id: %d, lut: %d, size: %d, write_bank: %d, previous life: %umsec \n", _to_agent, p_rec->id, lut, p_rec->size, p_rec->read_bank, life);
 
   return p_rec->size;
 }
@@ -647,7 +648,8 @@ int DB_get_from (int _agent, int _from_agent, int _id, void *_value)
   life = (int)(((time.tv_sec - (p_rec->timestamp[p_rec->read_bank]).tv_sec) * 1E3) + ((time.tv_usec - (p_rec->timestamp[p_rec->read_bank]).tv_usec) / 1E3));
 
   PDEBUG("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
-printf("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec \n", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
+  //printf("agent: %d, from_agent: %d, id: %d, read_bank: %d, life: %umsec \n", _agent, _from_agent, p_rec->id, p_rec->read_bank, life);
+
   return (life);
 }
 

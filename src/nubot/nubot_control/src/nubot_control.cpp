@@ -238,7 +238,7 @@ public:
         for(std::size_t i = 0 ; i < OUR_TEAM ; i++)
         {
             world_model_info_.RobotInfo_[i].setID(_world_msg.robotinfo[i].AgentID);
-            ROS_INFO("%d and ",_world_msg.robotinfo[i].AgentID);
+            //ROS_INFO("%d and ",_world_msg.robotinfo[i].AgentID);
 
             world_model_info_.RobotInfo_[i].setTargetNum(1,_world_msg.robotinfo[i].targetNum1);
             world_model_info_.RobotInfo_[i].setTargetNum(2,_world_msg.robotinfo[i].targetNum2);
@@ -519,9 +519,8 @@ public:
         strategy_info.header.stamp = ros::Time::now();
         strategy_info.AgentID     = world_model_info_.AgentID_;
 
-
         strategy_info.pass_cmd.is_passout = 1;//
-        strategy_info.pass_cmd.is_valid = 1;
+        strategy_info.pass_cmd.is_valid = 0;
         strategy_info.pass_cmd.pass_id = 3;  //
         strategy_info.pass_cmd.catch_id = 2;//
         strategy_info.pass_cmd.is_dynamic_pass = 1;//

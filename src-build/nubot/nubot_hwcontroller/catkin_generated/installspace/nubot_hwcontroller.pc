@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: nubot_hwcontroller
-Description: Description of nubot_hwcontroller
-Version: 1.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib 
-Requires: roscpp std_msgs message_generation realtime_tools nubot_common

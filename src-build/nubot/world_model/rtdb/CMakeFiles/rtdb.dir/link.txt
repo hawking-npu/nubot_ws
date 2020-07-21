@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../../../devel/lib/librtdb.a  CMakeFiles/rtdb.dir/rtdb_api.cpp.o
-/usr/bin/ranlib ../../../devel/lib/librtdb.a

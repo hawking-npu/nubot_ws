@@ -132,6 +132,7 @@ nubot::World_Model::updateStrategyinfo(const nubot_common::StrategyInfo &strateg
     PassCommands & pass_cmd_  = teammatesinfo_[AgentID_-1].pass_cmds_;
     pass_cmd_.catchrobot_id   = strategyinfo.pass_cmd.catch_id;
     pass_cmd_.passrobot_id    = strategyinfo.pass_cmd.pass_id;
+
     pass_cmd_.is_dynamic_pass = strategyinfo.pass_cmd.is_dynamic_pass;
     pass_cmd_.is_static_pass  = strategyinfo.pass_cmd.is_static_pass;
     pass_cmd_.is_passout = strategyinfo.pass_cmd.is_passout;
@@ -554,6 +555,7 @@ nubot::World_Model::updateInfo()            // if the simulation flag is set, th
         if( AgentID_ != i+1 )
         {
             int ltime = DB_get(i+1, TEAMMATESINFO, &teammatesinfo_[i]);
+            ROS_INFO("%d",ltime);
             /**接收到的队友信息，并记录其间隔时间，可能表示信息无效；*/
             teammatesinfo_[i].robot_info_.setlifetime(ltime);
             teammatesinfo_[i].ball_info_.setlifetime(ltime);

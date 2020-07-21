@@ -1,8 +1,0 @@
-prefix=/usr/local
-
-Name: front_vision
-Description: Description of front_vision
-Version: 0.0.0
-Cflags: -I/usr/local/include
-Libs: -L/usr/local/lib 
-Requires: cv_bridge dynamic_reconfigure image_transport message_filters message_generation opencv2/ roscpp rospy sensor_msgs std_msgs std_srvs

@@ -1,1 +1,0 @@
-/usr/bin/cc  -g   CMakeFiles/xrtdb.dir/xrtdb.c.o CMakeFiles/xrtdb.dir/rtdb_errors.c.o CMakeFiles/xrtdb.dir/rtdb_functions.c.o CMakeFiles/xrtdb.dir/rtdb_user_creator.c.o CMakeFiles/xrtdb.dir/rtdb_ini_creator.c.o CMakeFiles/xrtdb.dir/xrtdb.tab.c.o  -o ../../../../devel/lib/world_model/xrtdb -rdynamic 
